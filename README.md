@@ -136,129 +136,141 @@ Le MCD :
 <img width="8192" height="5568" alt="User Recipe Ecosystem-2026-07-03-092009" src="https://github.com/user-attachments/assets/96de1d50-1335-457c-a6c6-3631dea8041e" />
 
 Le MPD :
-title: Au fil des saisons — MPD (Modèle Physique de Données) 
 ```mermaid
-erDiagram 
-  
-USER { 
-INT id PK "AUTO_INCREMENT" 
-VARCHAR(100) prenom "NOT NULL" 
-VARCHAR(100) nom "NOT NULL" 
-VARCHAR(180) email "NOT NULL UNIQUE" 
-VARCHAR(255) password "NOT NULL" 
-VARCHAR(255) photo "NULL" 
-ENUM role "visiteur,utilisateur,administrateur DEFAULT visiteur" 
-BOOLEAN is_blocked "NOT NULL DEFAULT 0" 
-DATETIME created_at "NOT NULL DEFAULT CURRENT_TIMESTAMP" 
-}
+title: Au fil des saisons — MPD (Modèle Physique de Données)
 
-RECETTE { 
-INT id PK "AUTO_INCREMENT" 
-VARCHAR(150) titre "NOT NULL" 
-VARCHAR(255) photo "NULL" 
-ENUM type_plat "entree,plat,dessert NOT NULL" 
-INT user_id FK "NOT NULL" 
-FLOAT nbr_person "NOT NULL" 
-INT time_prepa "NULL (en minutes)" 
-TEXT ingredient "NOT NULL" 
-TEXT preparation "NOT NULL" 
-BOOLEAN is_oven "NOT NULL DEFAULT 0" 
-FLOAT temp_oven "NULL" 
-FLOAT time_oven "NULL" 
-BOOLEAN is_public "NOT NULL DEFAULT 0" 
-ENUM statut "attente,publiee,rejetee,signalee DEFAULT attente" 
-DATETIME created_at "NOT NULL DEFAULT CURRENT_TIMESTAMP" 
-} 
-
-PRODUCT { 
-INT id PK "AUTO_INCREMENT" 
-VARCHAR(100) nom "NOT NULL" 
-ENUM category "legume,fruit,viande,poisson NOT NULL" 
-VARCHAR(255) photo "NULL" 
-INT debut_recolte_mois_id  "FK NOT NULL" 
-INT fin_recolte_mois_id "FK NOT NULL" 
-TEXT conservation "NOT NULL" 
-DATETIME created_at "NOT NULL DEFAULT CURRENT_TIMESTAMP" 
-} 
- 
-SEASON { 
-INT id PK "AUTO_INCREMENT" 
-ENUM name_season "printemps,ete,automne,hiver NOT NULL UNIQUE" 
-DATETIME created_at "NOT NULL DEFAULT CURRENT_TIMESTAMP" 
-} 
- 
-MONTH { 
-INT id PK "AUTO_INCREMENT" 
-ENUM name_month "janvier,fevrier,mars,avril,mai,juin,
-juillet,aout,septembre,octobre,novembre,decembre NOT NULL UNIQUE" 
-INT month_order "NOT NULL UNIQUE" 
-} 
- 
-FAVORIS { 
-INT user_id FK "NOT NULL PK" 
-INT recette_id FK "NOT NULL PK" 
-DATETIME date_ajout "NOT NULL DEFAULT CURRENT_TIMESTAMP" 
-}  
-
-RECETTE_PRODUCT { 
-INT recette_id FK "NOT NULL PK" 
-INT product_id FK "NOT NULL PK" 
-} 
- 
-RECETTE_SEASON { 
-INT recette_id FK "NOT NULL PK" 
-INT season_id FK "NOT NULL PK" 
-} 
- 
-PRODUCT_SEASON { 
-INT product_id FK "NOT NULL PK" 
-INT season_id FK "NOT NULL PK" 
-} 
- 
-AVIS { 
-INT id PK "AUTO_INCREMENT" 
-INT user_id FK "NOT NULL" 
-INT recette_id FK "NOT NULL" 
-INT note "NOT NULL CHECK 1-5" 
-BOOLEAN signale "NOT NULL DEFAULT 0"  
-DATETIME created_at "NOT NULL DEFAULT CURRENT_TIMESTAMP" 
-} 
- 
-%% ----------------------------------------------- 
-%% RELATIONS avec cardinalités physiques exactes 
-%% ----------------------------------------------- 
- 
-%% USER -> RECETTE : un utilisateur crée 0 à N recettes 
-USER ||--o{ RECETTE : "user_id" 
- 
-%% USER -> FAVORIS : un utilisateur a 0 à N favoris 
-USER ||--o{ FAVORIS : "user_id" 
- 
-%% USER -> AVIS : un utilisateur rédige 0 à N avis 
-USER ||--o{ AVIS : "user_id" 
- 
-%% RECETTE -> FAVORIS : une recette est dans 0 à N favoris 
-RECETTE ||--o{ FAVORIS : "recette_id" 
- 
-%% RECETTE -> AVIS : une recette reçoit 0 à N avis 
-RECETTE ||--o{ AVIS : "recette_id" 
- 
-%% RECETTE <-> PRODUCT via table de jonction (N-N) 
-RECETTE ||--o{ RECETTE_PRODUCT : "recette_id" 
-PRODUCT ||--o{ RECETTE_PRODUCT : "product_id" 
- 
-%% RECETTE <-> SEASON via table de jonction (N-N) 
-RECETTE ||--o{ RECETTE_SEASON : "recette_id" 
-SEASON ||--o{ RECETTE_SEASON : "season_id" 
- 
-%% PRODUCT <-> SEASON via table de jonction (N-N) 
-PRODUCT ||--o{ PRODUCT_SEASON : "product_id" 
-SEASON ||--o{ PRODUCT_SEASON : "season_id" 
- 
-%% PRODUCT -> MONTH : période de récolte (début et fin) 
-MONTH ||--o{ PRODUCT : "debut_recolte_mois_id" 
-MONTH ||--o{ PRODUCT : "fin_recolte_mois_id"
+erDiagram
  
+USER {
+INT id PK "AUTO_INCREMENT"
+VARCHAR(100) prenom "NOT NULL"
+VARCHAR(100) nom "NOT NULL"
+VARCHAR(180) email "NOT NULL UNIQUE"
+VARCHAR(255) password "NOT NULL"
+VARCHAR(255) photo "NULL"
+ENUM role "visiteur,utilisateur,administrateur DEFAULT visiteur"
+BOOLEAN is_blocked "NOT NULL DEFAULT 0"
+DATETIME created_at "NOT NULL DEFAULT CURRENT_TIMESTAMP"
+}
+ 
+RECETTE {
+INT id PK "AUTO_INCREMENT"
+VARCHAR(150) titre "NOT NULL"
+VARCHAR(255) photo "NULL"
+ENUM type_plat "entree,plat,dessert NOT NULL"
+INT user_id FK "NOT NULL"
+FLOAT nbr_person "NOT NULL"
+INT time_prepa "NULL (en minutes)"
+TEXT ingredient "NOT NULL"
+TEXT preparation "NOT NULL"
+BOOLEAN is_oven "NOT NULL DEFAULT 0"
+FLOAT temp_oven "NULL"
+FLOAT time_oven "NULL"
+BOOLEAN is_public "NOT NULL DEFAULT 0"
+ENUM statut "attente,publiee,rejetee,signalee DEFAULT attente"
+DATETIME created_at "NOT NULL DEFAULT CURRENT_TIMESTAMP"
+}
+ 
+
+
+PRODUCT {
+INT id PK "AUTO_INCREMENT"
+VARCHAR(100) nom "NOT NULL"
+ENUM category "legume,fruit,viande,poisson NOT NULL"
+VARCHAR(255) photo "NULL"
+INT debut_recolte_mois_id FK "NOT NULL"
+INT fin_recolte_mois_id FK "NOT NULL"
+TEXT conservation "NOT NULL"
+DATETIME created_at "NOT NULL DEFAULT CURRENT_TIMESTAMP"
+}
+ 
+SEASON {
+INT id PK "AUTO_INCREMENT"
+ENUM name_season "printemps,ete,automne,hiver NOT NULL UNIQUE"
+DATETIME created_at "NOT NULL DEFAULT CURRENT_TIMESTAMP"
+}
+ 
+MONTH {
+INT id PK "AUTO_INCREMENT"
+ENUM name_month "janvier,fevrier,mars,avril,mai,juin,
+juillet,aout,septembre,octobre,novembre,decembre NOT NULL UNIQUE"
+INT month_order "NOT NULL UNIQUE"
+}
+ 
+FAVORIS {
+INT user_id FK "NOT NULL PK"
+INT recette_id FK "NOT NULL PK"
+DATETIME date_ajout "NOT NULL DEFAULT CURRENT_TIMESTAMP"
+}
+ 
+
+
+
+
+RECETTE_PRODUCT {
+INT recette_id FK "NOT NULL PK"
+INT product_id FK "NOT NULL PK"
+}
+ 
+RECETTE_SEASON {
+INT recette_id FK "NOT NULL PK"
+INT season_id FK "NOT NULL PK"
+}
+ 
+PRODUCT_SEASON {
+INT product_id FK "NOT NULL PK"
+INT season_id FK "NOT NULL PK"
+}
+ 
+AVIS {
+INT id PK "AUTO_INCREMENT"
+INT user_id FK "NOT NULL"
+INT recette_id FK "NOT NULL"
+INT note "NOT NULL CHECK 1-5"
+TEXT commentaire "NULL"
+BOOLEAN signale "NOT NULL DEFAULT 0"
+TEXT motif_signalement "NULL"
+DATETIME created_at "NOT NULL DEFAULT CURRENT_TIMESTAMP"
+}
+ 
+
+
+
+
+%% -----------------------------------------------
+%% RELATIONS avec cardinalités physiques exactes
+%% -----------------------------------------------
+ 
+%% USER -> RECETTE : un utilisateur crée 0 à N recettes
+USER ||--o{ RECETTE : "user_id"
+ 
+%% USER -> FAVORIS : un utilisateur a 0 à N favoris
+USER ||--o{ FAVORIS : "user_id"
+ 
+%% USER -> AVIS : un utilisateur rédige 0 à N avis
+USER ||--o{ AVIS : "user_id"
+ 
+%% RECETTE -> FAVORIS : une recette est dans 0 à N favoris
+RECETTE ||--o{ FAVORIS : "recette_id"
+ 
+%% RECETTE -> AVIS : une recette reçoit 0 à N avis
+RECETTE ||--o{ AVIS : "recette_id"
+ 
+%% RECETTE <-> PRODUCT via table de jonction (N-N)
+RECETTE ||--o{ RECETTE_PRODUCT : "recette_id"
+PRODUCT ||--o{ RECETTE_PRODUCT : "product_id"
+ 
+%% RECETTE <-> SEASON via table de jonction (N-N)
+RECETTE ||--o{ RECETTE_SEASON : "recette_id"
+SEASON ||--o{ RECETTE_SEASON : "season_id"
+ 
+%% PRODUCT <-> SEASON via table de jonction (N-N)
+PRODUCT ||--o{ PRODUCT_SEASON : "product_id"
+SEASON ||--o{ PRODUCT_SEASON : "season_id"
+ 
+%% PRODUCT -> MONTH : période de récolte (début et fin)
+MONTH ||--o{ PRODUCT : "debut_recolte_mois_id"
+MONTH ||--o{ PRODUCT : "fin_recolte_mois_id"
 ```
 
 ## 🎨 Identité visuelle
