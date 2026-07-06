@@ -135,9 +135,8 @@ L'UML :
 Le MCD :
 <img width="8192" height="5568" alt="User Recipe Ecosystem-2026-07-03-092009" src="https://github.com/user-attachments/assets/96de1d50-1335-457c-a6c6-3631dea8041e" />
 
-Le MPD :
+Le MPD : title: Au fil des saisons — MPD (Modèle Physique de Données)
 ```mermaid
-title: Au fil des saisons — MPD (Modèle Physique de Données)
 
 erDiagram
  
@@ -171,8 +170,6 @@ ENUM statut "attente,publiee,rejetee,signalee DEFAULT attente"
 DATETIME created_at "NOT NULL DEFAULT CURRENT_TIMESTAMP"
 }
  
-
-
 PRODUCT {
 INT id PK "AUTO_INCREMENT"
 VARCHAR(100) nom "NOT NULL"
@@ -203,10 +200,6 @@ INT recette_id FK "NOT NULL PK"
 DATETIME date_ajout "NOT NULL DEFAULT CURRENT_TIMESTAMP"
 }
  
-
-
-
-
 RECETTE_PRODUCT {
 INT recette_id FK "NOT NULL PK"
 INT product_id FK "NOT NULL PK"
@@ -227,16 +220,11 @@ INT id PK "AUTO_INCREMENT"
 INT user_id FK "NOT NULL"
 INT recette_id FK "NOT NULL"
 INT note "NOT NULL CHECK 1-5"
-TEXT commentaire "NULL"
 BOOLEAN signale "NOT NULL DEFAULT 0"
 TEXT motif_signalement "NULL"
 DATETIME created_at "NOT NULL DEFAULT CURRENT_TIMESTAMP"
 }
  
-
-
-
-
 %% -----------------------------------------------
 %% RELATIONS avec cardinalités physiques exactes
 %% -----------------------------------------------
