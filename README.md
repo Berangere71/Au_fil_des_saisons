@@ -118,19 +118,10 @@ admin.png
 | Sécurité | Symfony Security |
 | Frontend | HTML5 / CSS3 |
 | API météo | OpenWeather API |
-| Géolocalisation | HTML5 Geolocation API |
 
 ---
 
 # 🌤️ APIs utilisées
-
-## 📍 HTML5 Geolocation API
-
-L'application utilise l'API de géolocalisation du navigateur afin de récupérer automatiquement la position de l'utilisateur (latitude et longitude), après obtention de son autorisation.
-
-Les coordonnées GPS sont utilisées uniquement pour interroger l'API météo et ne sont pas enregistrées en base de données.
-
----
 
 ## ☀️ OpenWeather API
 
