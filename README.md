@@ -121,18 +121,16 @@ admin.png
 
 ---
 
-# 🌤️ APIs utilisées
+# 🌤️ API utilisée
 
 ## ☀️ OpenWeather API
 
-Les coordonnées récupérées grâce à la géolocalisation sont envoyées à l'API OpenWeather afin d'obtenir la météo locale.
+Les coordonnées récupérées grâce à la recherche de localité via l'API OpenWeather afin d'obtenir la météo locale.
 
 Les informations récupérées sont :
 
 - Température actuelle
 - Température ressentie
-- Humidité
-- Vitesse du vent
 - Conditions météorologiques
 - Icône météo
 
