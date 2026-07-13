@@ -2,7 +2,7 @@
 
 > **Découvrez les produits de saison et cuisinez des recettes adaptées à votre région et à la météo.**
 
-**Au fil des saisons** est une application web développée avec **Symfony 8** permettant de découvrir les produits alimentaires de saison en France, de créer et partager des recettes, tout en proposant des suggestions culinaires adaptées à la météo locale grâce à l'intégration des APIs **HTML5 Geolocation** et **OpenWeather**.
+**Au fil des saisons** est une application web développée avec **Symfony 8** permettant de découvrir les produits alimentaires de saison en France, de créer et partager des recettes, tout en proposant des suggestions culinaires adaptées à la météo locale grâce à l'intégration de l'API **OpenWeather**.
 
 L'objectif du projet est de promouvoir une alimentation locale, responsable et respectueuse des saisons.
 
@@ -118,30 +118,19 @@ admin.png
 | Sécurité | Symfony Security |
 | Frontend | HTML5 / CSS3 |
 | API météo | OpenWeather API |
-| Géolocalisation | HTML5 Geolocation API |
 
 ---
 
-# 🌤️ APIs utilisées
-
-## 📍 HTML5 Geolocation API
-
-L'application utilise l'API de géolocalisation du navigateur afin de récupérer automatiquement la position de l'utilisateur (latitude et longitude), après obtention de son autorisation.
-
-Les coordonnées GPS sont utilisées uniquement pour interroger l'API météo et ne sont pas enregistrées en base de données.
-
----
+# 🌤️ API utilisée
 
 ## ☀️ OpenWeather API
 
-Les coordonnées récupérées grâce à la géolocalisation sont envoyées à l'API OpenWeather afin d'obtenir la météo locale.
+Les coordonnées récupérées grâce à la recherche de localité via l'API OpenWeather afin d'obtenir la météo locale.
 
 Les informations récupérées sont :
 
 - Température actuelle
 - Température ressentie
-- Humidité
-- Vitesse du vent
 - Conditions météorologiques
 - Icône météo
 
