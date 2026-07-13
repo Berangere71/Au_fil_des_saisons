@@ -7,11 +7,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'user')]
-class User
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -39,7 +43,7 @@ class User
     private ?string $photo = null;
 
     #[ORM\Column(type: 'string', enumType: UserRole::class)]
-    private UserRole $role = UserRole::VISITEUR;
+    private UserRole $role = UserRole::UTILISATEUR;
 
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $isBlocked = false;
@@ -77,6 +81,25 @@ class User
     public function setPhoto(?string $photo): self { $this->photo = $photo; return $this; }
     public function getRole(): UserRole { return $this->role; }
     public function setRole(UserRole $role): self { $this->role = $role; return $this; }
+
+    public function getRoles(): array
+    {
+        return match ($this->role) {
+            UserRole::ADMINISTRATEUR => ['ROLE_ADMIN', 'ROLE_USER'],
+            UserRole::UTILISATEUR => ['ROLE_USER'],
+            default => ['ROLE_USER'],
+        };
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
+    }
+
+    public function eraseCredentials(): void
+    {
+    }
+
     public function isBlocked(): bool { return $this->isBlocked; }
     public function setIsBlocked(bool $isBlocked): self { $this->isBlocked = $isBlocked; return $this; }
     public function getCreatedAt(): \DateTimeInterface { return $this->createdAt; }
