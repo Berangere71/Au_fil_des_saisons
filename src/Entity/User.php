@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Enum\UserRole;
+use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -12,9 +13,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
-#[ORM\Entity]
+#[UniqueEntity(
+    fields: ['email'],
+    message: 'Cette adresse e-mail est déjà utilisée.'
+)]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'user')]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -23,21 +27,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-    #[Assert\NotBlank]
-    private string $prenom;
+    #[Assert\NotBlank(message: 'Le prénom est obligatoire.')]
+    private string $prenom = '';
 
     #[ORM\Column(length: 100)]
-    #[Assert\NotBlank]
-    private string $nom;
+    #[Assert\NotBlank(message: 'Le nom est obligatoire.')]
+    private string $nom = '';
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Assert\Email]
-    #[Assert\NotBlank]
-    private string $email;
+    #[Assert\NotBlank(message: 'L\'adresse e-mail est obligatoire.')]
+    #[Assert\Email(message: 'Veuillez saisir une adresse e-mail valide.')]
+    private string $email = '';
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
-    private string $password;
+    private string $password = '';
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
@@ -62,25 +65,82 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new \DateTime();
         $this->recettes = new ArrayCollection();
         $this->favoris = new ArrayCollection();
         $this->avis = new ArrayCollection();
     }
 
-    public function getId(): ?int { return $this->id; }
-    public function getPrenom(): string { return $this->prenom; }
-    public function setPrenom(string $prenom): self { $this->prenom = $prenom; return $this; }
-    public function getNom(): string { return $this->nom; }
-    public function setNom(string $nom): self { $this->nom = $nom; return $this; }
-    public function getEmail(): string { return $this->email; }
-    public function setEmail(string $email): self { $this->email = $email; return $this; }
-    public function getPassword(): string { return $this->password; }
-    public function setPassword(string $password): self { $this->password = $password; return $this; }
-    public function getPhoto(): ?string { return $this->photo; }
-    public function setPhoto(?string $photo): self { $this->photo = $photo; return $this; }
-    public function getRole(): UserRole { return $this->role; }
-    public function setRole(UserRole $role): self { $this->role = $role; return $this; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getPrenom(): string
+    {
+        return $this->prenom;
+    }
+
+    public function setPrenom(string $prenom): self
+    {
+        $this->prenom = $prenom;
+        return $this;
+    }
+
+    public function getNom(): string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
+        return $this;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = strtolower($email);
+        return $this;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): self
+    {
+        $this->photo = $photo;
+        return $this;
+    }
+
+    public function getRole(): UserRole
+    {
+        return $this->role;
+    }
+
+    public function setRole(UserRole $role): self
+    {
+        $this->role = $role;
+        return $this;
+    }
 
     public function getRoles(): array
     {
@@ -98,14 +158,59 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials(): void
     {
+        // Si tu ajoutes un champ plainPassword plus tard,
+        // tu pourras l'effacer ici.
     }
 
-    public function isBlocked(): bool { return $this->isBlocked; }
-    public function setIsBlocked(bool $isBlocked): self { $this->isBlocked = $isBlocked; return $this; }
-    public function getCreatedAt(): \DateTimeInterface { return $this->createdAt; }
-    public function getRecettes(): Collection { return $this->recettes; }
-    public function addRecette(Recette $recette): self { if (!$this->recettes->contains($recette)) { $this->recettes->add($recette); $recette->setUser($this); } return $this; }
-    public function removeRecette(Recette $recette): self { if ($this->recettes->removeElement($recette)) { if ($recette->getUser() === $this) { $recette->setUser(null); } } return $this; }
-    public function getFavoris(): Collection { return $this->favoris; }
-    public function getAvis(): Collection { return $this->avis; }
+    public function isBlocked(): bool
+    {
+        return $this->isBlocked;
+    }
+
+    public function setIsBlocked(bool $isBlocked): self
+    {
+        $this->isBlocked = $isBlocked;
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function getRecettes(): Collection
+    {
+        return $this->recettes;
+    }
+
+    public function addRecette(Recette $recette): self
+    {
+        if (!$this->recettes->contains($recette)) {
+            $this->recettes->add($recette);
+            $recette->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRecette(Recette $recette): self
+    {
+        if ($this->recettes->removeElement($recette)) {
+            if ($recette->getUser() === $this) {
+                $recette->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getFavoris(): Collection
+    {
+        return $this->favoris;
+    }
+
+    public function getAvis(): Collection
+    {
+        return $this->avis;
+    }
 }
