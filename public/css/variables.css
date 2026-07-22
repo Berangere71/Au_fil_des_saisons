@@ -1,0 +1,105 @@
+/* ==========================================================
+   AU FIL DES SAISONS
+   VARIABLES CSS
+   ========================================================== */
+
+:root {
+
+    /* ==========================
+       COULEURS PRINCIPALES
+    ========================== */
+
+    --color-primary: #2F5E2E;
+    --color-primary-light: #4D7A47;
+    --color-primary-dark: #234723;
+
+    --color-secondary: #D98A00;
+    --color-secondary-light: #F2A93B;
+
+    --color-background: #F7F3E9;
+    --color-card: #F2D39B;
+    --color-white: #FFFFFF;
+
+    --color-text: #2E2E2E;
+    --color-text-light: #6B6B6B;
+
+    --color-error: #C62828;
+    --color-success: #2E7D32;
+
+    /* ==========================
+       COULEURS DES SAISONS
+    ========================== */
+
+    --spring: #8BC34A;
+    --summer: #FFC107;
+    --autumn: #E67E22;
+    --winter: #42A5F5;
+
+    /* ==========================
+       TYPOGRAPHIE
+    ========================== */
+
+    --font-family:
+        "Poppins",
+        "Nunito",
+        Arial,
+        sans-serif;
+
+    --font-size-xs: .75rem;
+    --font-size-sm: .875rem;
+    --font-size-md: 1rem;
+    --font-size-lg: 1.25rem;
+    --font-size-xl: 2rem;
+    --font-size-xxl: 2.5rem;
+
+    /* ==========================
+       GRAISSE
+    ========================== */
+
+    --font-light:300;
+    --font-normal:400;
+    --font-medium:500;
+    --font-semibold:600;
+    --font-bold:700;
+
+    /* ==========================
+       ESPACEMENTS
+    ========================== */
+
+    --space-xs:5px;
+    --space-sm:10px;
+    --space-md:20px;
+    --space-lg:30px;
+    --space-xl:50px;
+
+    /* ==========================
+       BORDURES
+    ========================== */
+
+    --radius-sm:10px;
+    --radius-md:18px;
+    --radius-lg:25px;
+    --radius-round:50%;
+
+    /* ==========================
+       OMBRES
+    ========================== */
+
+    --shadow-light:0 4px 10px rgba(0,0,0,.08);
+    --shadow-medium:0 8px 18px rgba(0,0,0,.15);
+    --shadow-heavy:0 12px 28px rgba(0,0,0,.20);
+
+    /* ==========================
+       TRANSITIONS
+    ========================== */
+
+    --transition:.25s ease;
+
+    /* ==========================
+       HAUTEURS
+    ========================== */
+
+    --header-height:90px;
+    --footer-height:75px;
+
+}

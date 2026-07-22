@@ -1,0 +1,28 @@
+.legal-container{
+    max-width:900px;
+    margin:60px auto;
+    background:#fff;
+    padding:50px;
+    border-radius:20px;
+    box-shadow:0 15px 35px rgba(0,0,0,.08);
+}
+
+.legal-container h1{
+    color:var(--color-primary);
+    text-align:center;
+    margin-bottom:40px;
+}
+
+.legal-container h2{
+    color:var(--color-primary);
+    margin-top:35px;
+}
+
+.legal-container p,
+.legal-container li{
+    line-height:1.8;
+}
+
+.legal-container ul{
+    margin-left:20px;
+}

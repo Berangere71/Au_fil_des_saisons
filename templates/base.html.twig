@@ -1,33 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
+
 	<head>
+
 		<meta charset="UTF-8">
-		<style>
-			.alert {
-				padding: 15px;
-				margin: 20px;
-				border-radius: 6px;
-				font-weight: bold;
-			}
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-			.alert-success {
-				background-color: #d1e7dd;
-				color: #0f5132;
-				border: 1px solid #badbcc;
-			}
-
-			.alert-danger {
-				background-color: #f8d7da;
-				color: #842029;
-				border: 1px solid #f5c2c7;
-			}
-		</style>
 		<title>
-			{% block title %}Welcome!
+			{% block title %}Au fil des saisons
 			{% endblock %}
 		</title>
 
-		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>"> {% block stylesheets %}{% endblock %}
+		<link
+		rel="icon" href="{{ asset('images/logo/favicon.png') }}">
+
+		{# =========================
+		       FEUILLES DE STYLE
+		    ========================== #}
+
+		{% block stylesheets %}
+
+			<link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
+		{% endblock %}
+
+		{# =========================
+		       IMPORTMAP SYMFONY
+		    ========================== #}
 
 		{% block javascripts %}
 			{% block importmap %}
@@ -35,26 +34,58 @@
 			{% endblock %}
 		{% endblock %}
 
+		{# =========================
+		       FRANKENPHP HOT RELOAD
+		    ========================== #}
+
 		{% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
+
 		{% if frankenphpHotReload %}
+
 			<meta name="frankenphp-hot-reload:url" content="{{ frankenphpHotReload }}">
+
 			<script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
+
 			<script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
+
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
 		{% endif %}
+
 	</head>
 
 	<body>
 
-		{# ===== Messages Flash ===== #}
-		{% for label, messages in app.flashes %}
-			{% for message in messages %}
-				<div class="alert alert-{{ label }}">
-					{{ message }}
-				</div>
-			{% endfor %}
-		{% endfor %}
+		{# =========================
+		       HEADER
+		    ========================== #}
 
-		{% block body %}{% endblock %}
+		{% include 'components/_header.html.twig' %}
+
+		{% include 'components/_hero.html.twig' %}
+
+		{# =========================
+		       MESSAGES FLASH
+		    ========================== #}
+
+		{% include 'components/_flash.html.twig' %}
+
+		{# =========================
+		       CONTENU DES PAGES
+		    ========================== #}
+
+		<main>
+			
+			{% block body %}{% endblock %}
+
+		</main>
+
+		{# =========================
+		       FOOTER
+		    ========================== #}
+
+		{% include 'components/_footer.html.twig' %}
 
 	</body>
+
 </html>

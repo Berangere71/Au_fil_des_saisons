@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -20,7 +21,7 @@ class RegistrationFormType extends AbstractType
     {
         $builder
 
-           ->add('prenom', TextType::class, [
+            ->add('prenom', TextType::class, [
                 'label' => 'Prénom',
                 'attr' => [
                     'placeholder' => 'Votre prénom',
@@ -52,19 +53,35 @@ class RegistrationFormType extends AbstractType
             ])
 
             ->add('agreeTerms', CheckboxType::class, [
+                'label' => "J'accepte les Conditions Générales d'Utilisation (CGU) et la Politique de confidentialité.",
                 'mapped' => false,
                 'constraints' => [
-                    new IsTrue(
-                        message: 'Vous devez accepter les conditions générales.',
-                    ),
+                    new IsTrue([
+                        'message' => 'Vous devez accepter les conditions pour créer votre compte.',
+                    ]),
                 ],
             ])
-            ->add('plainPassword', PasswordType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
+
+                'first_options' => [
+                    'label' => 'Mot de passe',
+                    'attr' => [
+                        'placeholder' => 'Votre mot de passe'
+                    ]
+                ],
+
+                'second_options' => [
+                    'label' => 'Confirmer le mot de passe',
+                    'attr' => [
+                        'placeholder' => 'Confirmez votre mot de passe'
+                    ]
+                ],
+
+                'invalid_message' => 'Les mots de passe ne correspondent pas.',
+
                 'mapped' => false,
-                'required' => true,
-                'attr' => ['autocomplete' => 'new-password'],
+
                 'constraints' => [
                     new NotBlank(
                         message: 'Veuillez saisir un mot de passe',
@@ -77,7 +94,7 @@ class RegistrationFormType extends AbstractType
                     ),
                 ],
             ])
-            
+
         ;
     }
 
