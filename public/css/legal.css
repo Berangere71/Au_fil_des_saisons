@@ -1,28 +1,37 @@
 .legal-container{
     max-width:900px;
     margin:60px auto;
-    background:#fff;
     padding:50px;
-    border-radius:20px;
-    box-shadow:0 15px 35px rgba(0,0,0,.08);
+    background:#fff;
+    border-radius:24px;
+    box-shadow:0 20px 40px rgba(0,0,0,.08);
 }
 
 .legal-container h1{
     color:var(--color-primary);
     text-align:center;
-    margin-bottom:40px;
+    margin-bottom:15px;
 }
 
 .legal-container h2{
     color:var(--color-primary);
     margin-top:35px;
+    margin-bottom:15px;
+    padding-left:12px;
+    border-left:5px solid var(--color-secondary);
+    text-align:left;
 }
 
-.legal-container p,
-.legal-container li{
+.legal-container p{
     line-height:1.8;
+    text-align:justify;
+    margin-bottom:20px;
 }
 
 .legal-container ul{
-    margin-left:20px;
+    padding-left:25px;
+}
+
+.legal-container li{
+    margin-bottom:10px;
 }
