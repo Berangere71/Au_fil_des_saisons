@@ -20,20 +20,25 @@
 			{{ form_start(registrationForm) }}
 
 			{{ form_row(registrationForm.prenom) }}
+			{{ form_errors(registrationForm.prenom) }}
 
 			{{ form_row(registrationForm.nom) }}
+			{{ form_errors(registrationForm.nom) }}
 
 			{{ form_row(registrationForm.email) }}
+			{{ form_errors(registrationForm.email) }}
 
 			{{ form_row(registrationForm.plainPassword, {
                 label: 'Mot de passe'
             }) }}
+			{{ form_errors(registrationForm.plainPassword) }}
 
 			<div class="rgpd-container">
 
 				<div class="rgpd-checkbox">
 
 					{{ form_widget(registrationForm.agreeTerms) }}
+					
 
 					<div class="rgpd-text">
 
@@ -47,6 +52,7 @@
 
 					</div>
 
+					{{ form_errors(registrationForm.agreeTerms) }}
 					{{ form_errors(registrationForm.agreeTerms) }}
 
 				

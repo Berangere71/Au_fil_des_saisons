@@ -35,3 +35,10 @@
 .legal-container li{
     margin-bottom:10px;
 }
+
+.legal-footer{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    margin-top:50px;
+}
