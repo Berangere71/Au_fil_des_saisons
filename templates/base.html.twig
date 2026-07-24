@@ -15,18 +15,22 @@
 		rel="icon" href="{{ asset('images/logo/favicon.png') }}">
 
 		{# =========================
-				       FEUILLES DE STYLE
-				    ========================== #}
+			FEUILLES DE STYLE
+		========================== #}
 
-		{% block stylesheets %}
+			{% block stylesheets %}
 
-			<link rel="stylesheet" href="{{ asset('css/style.css') }}">
+   			 	<link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
-		{% endblock %}
+   			 	<link rel="stylesheet" href="{{ asset('css/components.css') }}">
+
+    			<link rel="stylesheet" href="{{ asset('css/profile.css') }}">
+
+			{% endblock %}
 
 		{# =========================
-				       IMPORTMAP SYMFONY
-				    ========================== #}
+			IMPORTMAP SYMFONY
+		========================== #}
 
 		{% block javascripts %}
 			{% block importmap %}
@@ -35,8 +39,8 @@
 		{% endblock %}
 
 		{# =========================
-				       FRANKENPHP HOT RELOAD
-				    ========================== #}
+			FRANKENPHP HOT RELOAD
+		========================== #}
 
 		{% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
 
@@ -57,28 +61,24 @@
 	<body>
 
 		{# =========================
-				       HEADER
-				    ========================== #}
+				HEADER
+		========================== #}
 
 		{% include 'components/_header.html.twig' %}
 
 		{% include 'components/_hero.html.twig' %}
 
 		{# =========================
-				       MESSAGES FLASH
-				    ========================== #}
+				MESSAGES FLASH
+		========================== #}
 
 		{% include 'components/_flash.html.twig' %}
 
-		{% for message in app.flashes('success') %}
-			<div class="alert-success">
-				{{ message }}
-			</div>
-		{% endfor %}
+	
 
 		{# =========================
-				       CONTENU DES PAGES
-				    ========================== #}
+				CONTENU DES PAGES
+		========================== #}
 
 		<main>
 
@@ -87,10 +87,15 @@
 		</main>
 
 		{# =========================
-				       FOOTER
-				    ========================== #}
+				FOOTER
+		========================== #}
 
 		{% include 'components/_footer.html.twig' %}
+
+		<script src="{{ asset('js/flash.js') }}"></script>
+
+		
+
 
 	</body>
 

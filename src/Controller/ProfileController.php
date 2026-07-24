@@ -9,6 +9,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -17,18 +19,20 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 final class ProfileController extends AbstractController
 {
     #[Route('/profile', name: 'app_profile')]
-public function index(): Response
-{
-    return $this->render('profile/index.html.twig', [
-        'user' => $this->getUser(),
-    ]);
-}
+    public function index(): Response
+    {
+        return $this->render('profile/index.html.twig', [
+            'user' => $this->getUser(),
+        ]);
+    }
 
     #[Route('/profile/edit', name: 'app_profile_edit')]
     public function edit(
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        SluggerInterface $slugger
     ): Response {
+
 
         /** @var User $user */
         $user = $this->getUser();
@@ -39,7 +43,38 @@ public function index(): Response
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // L'upload de la photo sera ajouté dans une prochaine étape.
+            $photo = $form->get('photoFile')->getData();
+
+            if ($photo) {
+
+                $originalFilename = pathinfo(
+                    $photo->getClientOriginalName(),
+                    PATHINFO_FILENAME
+                );
+
+                $safeFilename = $slugger->slug($originalFilename);
+
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $photo->guessExtension();
+
+                try {
+
+                    $photo->move(
+                        $this->getParameter('users_directory'),
+                        $newFilename
+                    );
+
+                    $user->setPhoto($newFilename);
+
+                } catch (FileException $e) {
+
+                    $this->addFlash(
+                        'danger',
+                        'Une erreur est survenue lors de l’envoi de la photo.'
+                    );
+
+                    return $this->redirectToRoute('app_profile_edit');
+                }
+            }
 
             $entityManager->flush();
 
@@ -55,7 +90,6 @@ public function index(): Response
             'profileForm' => $form->createView(),
         ]);
     }
-
 
     #[Route('/profile/password', name: 'app_profile_password')]
     public function changePassword(
