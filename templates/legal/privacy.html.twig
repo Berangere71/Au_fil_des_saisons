@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Politique de confidentialité{% endblock %}
+
+{% block body %}
+
+<div class="legal-container">
+
+    <h1>Politique de confidentialité</h1>
+
+    <p>
+        Au fil des saisons collecte uniquement les informations nécessaires
+        à la création et à la gestion de votre compte.
+    </p>
+
+    <h2>Données collectées</h2>
+
+    <ul>
+        <li>Nom</li>
+        <li>Prénom</li>
+        <li>Adresse e-mail</li>
+    </ul>
+
+    <h2>Utilisation des données</h2>
+
+    <p>
+        Vos données servent uniquement à l'authentification et au fonctionnement
+        de votre compte.
+    </p>
+
+    <h2>Vos droits</h2>
+
+    <p>
+        Conformément au RGPD, vous pouvez demander la consultation,
+        la modification ou la suppression de vos données personnelles.
+    </p>
+
+    <div class="legal-footer">
+    <a href="{{ path('app_register') }}">
+        ← Retour à l'inscription
+    </a>
+
+       <a class="btn-home" href="{{ path('app_home') }}">
+        Accueil
+    </a>
+</div>
+
+</div>
+
+{% endblock %}

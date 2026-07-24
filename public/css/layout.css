@@ -1,0 +1,309 @@
+/* ==========================================================
+   LAYOUT
+   AU FIL DES SAISONS
+========================================================== */
+
+body {
+
+    background-color: var(--color-background);
+    color: var(--color-text);
+
+    font-family: var(--font-family);
+
+    min-height: 100vh;
+
+    margin: 0;
+
+}
+
+/* ===================================
+   CONTENEUR PRINCIPAL
+=================================== */
+
+main {
+
+    width: 100%;
+
+    min-height: 100vh;
+
+    background: var(--color-background);
+
+}
+
+/* ===================================
+   HEADER
+=================================== */
+
+
+
+.site-header {
+
+    background: var(--color-primary);
+
+    height: 90px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 0 25px;
+
+    box-shadow: var(--shadow-medium);
+
+}
+
+/* ===================================
+   LOGO
+=================================== */
+
+.logo {
+
+    width: 190px;
+    height: auto;
+
+}
+
+/* ===================================
+   ICÔNES HEADER
+=================================== */
+
+.header-icons {
+
+    display: flex;
+
+    gap: 20px;
+
+
+}
+
+
+
+.icon-button {
+
+    border: none;
+
+    background: none;
+
+    color: var(--color-secondary);
+
+    font-size: 30px;
+
+    transition: var(--transition);
+
+    cursor: pointer;
+
+    text-decoration: none;
+
+}
+
+.icon-button:hover {
+
+    color: white;
+
+    transform: scale(1.1);
+
+}
+
+
+
+/* ===================================
+   TITRES
+=================================== */
+
+h1 {
+
+    color: var(--color-primary);
+
+    font-size: 2rem;
+
+    text-align: center;
+
+    margin-bottom: 10px;
+
+}
+
+.subtitle {
+
+    text-align: center;
+
+    color: var(--color-text-light);
+
+    margin-bottom: 40px;
+
+}
+
+
+.page-subtitle {
+
+    text-align: center;
+
+    color: var(--color-text-light);
+
+    margin-bottom: 30px;
+
+    font-size: .95rem;
+
+}
+
+/* ===================================
+   FOOTER
+=================================== */
+
+.footer {
+
+
+    height: 75px;
+
+    background: var(--color-primary);
+
+    border-radius: 25px 25px 0 0;
+
+    display: flex;
+
+    justify-content: space-around;
+
+    align-items: center;
+
+}
+
+/* ===================================
+   CARD
+=================================== */
+
+.card {
+
+    width: min(90%, 520px);
+
+    margin: -90px auto 60px;
+
+    position: relative;
+
+    z-index: 10;
+
+    padding: 40px;
+
+    background: rgba(255, 255, 255, .65);
+
+    backdrop-filter: blur(15px);
+
+    -webkit-backdrop-filter: blur(15px);
+
+    border-radius: 30px;
+
+    border: 1px solid rgba(255, 255, 255, .40);
+
+    box-shadow: 0 20px 45px rgba(0, 0, 0, .12);
+
+}
+
+/* ===================================
+   SECTION HERO
+=================================== */
+
+.hero {
+
+    position: relative;
+
+    width: 100%;
+
+    height: 240px;
+
+    background: url("../images/backgrounds/leaves-banner.png") center center / cover no-repeat;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    overflow: hidden;
+
+}
+
+/* Dégradé du feuillage */
+
+.hero::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    right: 0;
+
+    bottom: 0;
+
+    height: 140px;
+
+    background: linear-gradient(to bottom,
+
+            rgba(247, 240, 227, 0) 0%,
+
+            rgba(247, 240, 227, .45) 35%,
+
+            rgba(247, 240, 227, .80) 70%,
+
+            #F7F0E3 100%);
+
+}
+
+.hero-overlay {
+
+    width: 100%;
+
+    text-align: center;
+
+}
+
+.page-title {
+
+    color: var(--color-primary);
+
+    font-size: 2rem;
+
+    font-weight: 700;
+
+    margin-bottom: 10px;
+
+}
+
+.page-subtitle {
+
+    color: #5f5f5f;
+
+    font-size: .95rem;
+
+}
+
+/* ===================================
+   RESPONSIVE
+=================================== */
+
+@media (max-width:768px) {
+
+    .hero {
+
+        height: 180px;
+
+    }
+
+    .card {
+
+        margin-top: -60px;
+
+        width: 92%;
+
+        padding: 30px;
+
+    }
+
+    .logo {
+
+        width: 150px;
+
+    }
+
+}

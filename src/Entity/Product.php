@@ -49,6 +49,9 @@ class Product
     #[ORM\JoinTable(name: 'product_season')]
     private Collection $seasons;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -56,22 +59,99 @@ class Product
         $this->seasons = new ArrayCollection();
     }
 
-    public function getId(): ?int { return $this->id; }
-    public function getNom(): string { return $this->nom; }
-    public function setNom(string $nom): self { $this->nom = $nom; return $this; }
-    public function getCategory(): ProductCategory { return $this->category; }
-    public function setCategory(ProductCategory $category): self { $this->category = $category; return $this; }
-    public function getPhoto(): ?string { return $this->photo; }
-    public function setPhoto(?string $photo): self { $this->photo = $photo; return $this; }
-    public function getDebutRecolteMois(): ?Month { return $this->debutRecolteMois; }
-    public function setDebutRecolteMois(?Month $debutRecolteMois): self { $this->debutRecolteMois = $debutRecolteMois; return $this; }
-    public function getFinRecolteMois(): ?Month { return $this->finRecolteMois; }
-    public function setFinRecolteMois(?Month $finRecolteMois): self { $this->finRecolteMois = $finRecolteMois; return $this; }
-    public function getConservation(): string { return $this->conservation; }
-    public function setConservation(string $conservation): self { $this->conservation = $conservation; return $this; }
-    public function getCreatedAt(): \DateTimeInterface { return $this->createdAt; }
-    public function getRecettes(): Collection { return $this->recettes; }
-    public function getSeasons(): Collection { return $this->seasons; }
-    public function addSeason(Season $season): self { if (!$this->seasons->contains($season)) { $this->seasons->add($season); } return $this; }
-    public function removeSeason(Season $season): self { $this->seasons->removeElement($season); return $this; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+    public function getNom(): string
+    {
+        return $this->nom;
+    }
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
+        return $this;
+    }
+    public function getCategory(): ProductCategory
+    {
+        return $this->category;
+    }
+    public function setCategory(ProductCategory $category): self
+    {
+        $this->category = $category;
+        return $this;
+    }
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): self
+    {
+        $this->photo = $photo;
+        return $this;
+    }
+    public function getDebutRecolteMois(): ?Month
+    {
+        return $this->debutRecolteMois;
+    }
+    public function setDebutRecolteMois(?Month $debutRecolteMois): self
+    {
+        $this->debutRecolteMois = $debutRecolteMois;
+        return $this;
+    }
+    public function getFinRecolteMois(): ?Month
+    {
+        return $this->finRecolteMois;
+    }
+    public function setFinRecolteMois(?Month $finRecolteMois): self
+    {
+        $this->finRecolteMois = $finRecolteMois;
+        return $this;
+    }
+    public function getConservation(): string
+    {
+        return $this->conservation;
+    }
+    public function setConservation(string $conservation): self
+    {
+        $this->conservation = $conservation;
+        return $this;
+    }
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+    public function getRecettes(): Collection
+    {
+        return $this->recettes;
+    }
+    public function getSeasons(): Collection
+    {
+        return $this->seasons;
+    }
+    public function addSeason(Season $season): self
+    {
+        if (!$this->seasons->contains($season)) {
+            $this->seasons->add($season);
+        }
+        return $this;
+    }
+    public function removeSeason(Season $season): self
+    {
+        $this->seasons->removeElement($season);
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
 }

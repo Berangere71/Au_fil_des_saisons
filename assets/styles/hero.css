@@ -1,0 +1,15 @@
+.hero {
+
+    width:100%;
+
+    min-height:220px;
+
+    background-image:url('/images/backgrounds/leaves-banner.png');
+
+    background-repeat:no-repeat;
+
+    background-position:center;
+
+    background-size:cover;
+
+}

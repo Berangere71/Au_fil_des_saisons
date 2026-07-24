@@ -1,0 +1,35 @@
+
+
+
+<header class="site-header">
+
+    <a href="{{ path('app_home') }}">
+        <img
+            src="{{ asset('images/logo/logo.png') }}"
+            alt="Au fil des saisons"
+            class="logo">
+    </a>
+
+    <div class="header-icons">
+
+        <button class="icon-button" aria-label="Menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        {% if app.user %}
+
+            <a href="{{ path('app_logout') }}" class="icon-button">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </a>
+
+        {% else %}
+
+            <a href="{{ path('app_login') }}" class="icon-button">
+                <i class="fa-solid fa-user"></i>
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</header>
