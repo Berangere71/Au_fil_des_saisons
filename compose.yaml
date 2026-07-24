@@ -3,7 +3,7 @@ services:
   php:
     build:
       context: .
-      dockerfile: docker/php/Dockerfile
+      dockerfile: Dockerfile
 
     container_name: aufildessaisons_php
 

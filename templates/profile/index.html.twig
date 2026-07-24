@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon profil
+{% endblock %}
+
+{% block body %}
+
+	<section class="profile">
+
+		<h1>Mon profil</h1>
+
+		<div class="profile-card">
+
+			<div class="profile-photo">
+
+				{% if user.photo %}
+					<img src="{{ asset('uploads/users/' ~ user.photo) }}" alt="Photo de profil">
+				{% else %}
+					<img src="{{ asset('images/default-user.png') }}" alt="Photo par défaut">
+				{% endif %}
+
+			</div>
+
+			<div class="profile-infos">
+
+				<p>
+					<strong>Prénom :</strong>
+					{{ user.prenom }}</p>
+
+				<p>
+					<strong>Nom :</strong>
+					{{ user.nom }}</p>
+
+				<p>
+					<strong>Email :</strong>
+					{{ user.email }}</p>
+
+				<p>
+					<strong>Membre depuis :</strong>
+					{{ user.createdAt|date('d/m/Y') }}</p>
+
+			</div>
+
+		</div>
+
+		<div class="profile-actions">
+
+			<a href="{{ path('app_profile_edit') }}" class="btn">
+				Modifier mon profil
+			</a>
+
+			<a href="{{ path('app_profile_password') }}" class="btn">
+				Changer mon mot de passe
+			</a>
+
+		</div>
+
+	</section>
+
+{% endblock %}

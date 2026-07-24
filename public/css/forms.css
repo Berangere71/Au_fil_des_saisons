@@ -1,0 +1,81 @@
+/* ==========================================
+   FORMULAIRES
+========================================== */
+
+form{
+
+    padding:30px;
+
+}
+
+label{
+
+    display:block;
+
+    color:var(--color-primary);
+
+    font-weight:700;
+
+    margin-top:25px;
+
+    margin-bottom:10px;
+
+}
+
+input{
+
+    width:100%;
+
+    padding:18px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:var(--color-card);
+
+    font-size:1rem;
+
+    outline:none;
+
+}
+
+input:focus{
+
+    box-shadow:0 0 0 3px rgba(47,94,46,.25);
+
+}
+
+.checkbox{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.register-link{
+
+    text-align:center;
+
+    margin-top:25px;
+
+}
+
+.register-link a{
+
+    color:var(--color-secondary);
+
+    font-weight:600;
+
+    text-decoration:none;
+
+}
+
+.register-link a:hover{
+
+    text-decoration:underline;
+
+}

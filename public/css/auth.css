@@ -1,0 +1,144 @@
+/* ============================
+   AUTHENTIFICATION
+============================ */
+
+.auth-container{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:flex-start;
+
+    margin-top:-90px;
+
+    margin-bottom:80px;
+
+    position:relative;
+
+    z-index:10;
+
+}
+
+.auth-card{
+
+    width:min(90%,560px);
+
+    padding:40px;
+
+    border-radius:30px;
+
+    background:rgba(255,255,255,.70);
+
+    backdrop-filter:blur(15px);
+
+    -webkit-backdrop-filter:blur(15px);
+
+    border:1px solid rgba(255,255,255,.40);
+
+    box-shadow:0 20px 45px rgba(0,0,0,.12);
+
+}
+
+.auth-card h1{
+
+    text-align:center;
+
+    margin-bottom:10px;
+
+}
+
+.auth-card .subtitle{
+
+    text-align:center;
+
+    margin-bottom:30px;
+
+}
+
+.auth-footer{
+
+    text-align:center;
+
+    margin-top:25px;
+
+
+    color:var(--color-text);
+
+}
+
+.auth-footer a{
+
+    color:var(--color-secondary);
+
+    font-weight:600;
+
+    text-decoration:none;
+
+    transition:0.3s;
+
+}
+
+.auth-footer a:hover{
+
+    text-decoration:underline;
+
+}
+
+.forgot-password {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 12px;
+    margin-bottom: 25px;
+}
+
+.forgot-password a {
+    color: var(--color-secondary);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}
+
+.auth-description {
+    text-align: center;
+    color: var(--color-text);
+    margin-bottom: 30px;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+.rgpd-checkbox{
+    display:grid;
+    grid-template-columns:22px 1fr;
+    column-gap:10px;
+    align-items:start;
+    width:100%;
+    margin-bottom:15px;
+}
+
+.rgpd-checkbox input{
+    margin-top:35px;
+}
+
+.rgpd-checkbox label{
+    margin:5;
+    font-size:.90rem;
+    font-weight:400;
+    line-height:1.5;
+    color:var(--color-text);
+}
+
+.rgpd-checkbox a{
+    color:var(--color-secondary);
+    font-weight:600;
+    text-decoration:none;
+}
+
+.rgpd-checkbox a:hover{
+    text-decoration:underline;
+}
+
