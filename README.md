@@ -177,7 +177,7 @@ APP_ENV=dev
 
 APP_SECRET=change_moi
 
-DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
+DATABASE_URL="mysql://symfony:symfony@database:3306/aufildessaisons?serverVersion=8.4&charset=utf8mb4"
 
 OPENWEATHER_API_KEY=VotreCleAPI
 ```
