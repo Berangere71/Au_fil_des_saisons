@@ -2,11 +2,11 @@
 
 > **Découvrez les produits de saison et cuisinez des recettes adaptées à votre région et à la météo.**
 
-**Au fil des saisons** est une application web développée avec **Symfony 8** permettant de découvrir les produits alimentaires de saison en France, de créer et partager des recettes, tout en proposant des suggestions culinaires adaptées à la météo locale grâce à l'intégration de l'API **OpenWeather**.
+**Au fil des saisons** est une application web développée avec **Symfony 7** permettant de découvrir les produits alimentaires de saison en France, de créer et partager des recettes, tout en proposant des suggestions culinaires adaptées à la météo locale grâce à l'intégration de l'API **OpenWeather**.
 
 L'objectif du projet est de promouvoir une alimentation locale, responsable et respectueuse des saisons.
 
-![Symfony](https://img.shields.io/badge/Symfony-8-000000?logo=symfony)
+![Symfony](https://img.shields.io/badge/Symfony-7-000000?logo=symfony)
 ![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?logo=php)
 ![Doctrine](https://img.shields.io/badge/Doctrine-ORM-red)
 ![Twig](https://img.shields.io/badge/Twig-Template-green?logo=twig)
