@@ -110,7 +110,7 @@ admin.png
 
 | Domaine | Technologie |
 |----------|-------------|
-| Backend | Symfony 8 |
+| Backend | Symfony 7.4 |
 | Langage | PHP 8.2 |
 | Templating | Twig |
 | Base de données | SQLite (développement) / MySQL (production) |
