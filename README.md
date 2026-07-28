@@ -182,11 +182,6 @@ DATABASE_URL="mysql://symfony:symfony@database:3306/aufildessaisons?serverVersio
 OPENWEATHER_API_KEY=VotreCleAPI
 ```
 
-Production :
-
-```env
-DATABASE_URL="mysql://user:password@127.0.0.1:3306/au_fil_des_saisons?serverVersion=8.0"
-```
 
 ---
 
