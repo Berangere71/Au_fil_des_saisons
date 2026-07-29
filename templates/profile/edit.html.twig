@@ -1,39 +1,44 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier mon profil{% endblock %}
+{% block title %}Modifier mon profil
+{% endblock %}
 
 {% block body %}
 
-<section class="profile">
+	<section class="profile">
 
-    <h1>Modifier mon profil</h1>
+		<h1>Modifier mon profil</h1>
 
-    {% for message in app.flashes('success') %}
-        <div class="alert-success">
-            {{ message }}
-        </div>
-    {% endfor %}
+		{% for message in app.flashes('success') %}
+			<div class="alert-success">
+				{{ message }}
+			</div>
+		{% endfor %}
 
-    {{ form_start(profileForm) }}
+		{{ form_start(profileForm) }}
 
-        {{ form_row(profileForm.prenom) }}
+		{{ form_row(profileForm.prenom) }}
 
-        {{ form_row(profileForm.nom) }}
+		{{ form_row(profileForm.nom) }}
 
-        {{ form_row(profileForm.email) }}
+		{{ form_row(profileForm.email) }}
 
-        <button class="btn">
-            Enregistrer
-        </button>
+		{{ form_row(profileForm.photoFile) }}
 
-    {{ form_end(profileForm) }}
+		<div class="profile-actions">
 
-    <br>
+			<button class="btn">
+				Enregistrer
+			</button>
 
-    <a href="{{ path('app_profile') }}" class="btn">
-        Retour au profil
-    </a>
+			{{ form_end(profileForm) }}
 
-</section>
+			<br>
 
-{% endblock %}
+			<a href="{{ path('app_profile') }}" class="btn">
+				Retour au profil
+			</a>
+
+		</section>
+
+	{% endblock %}

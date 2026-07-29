@@ -1,35 +1,39 @@
-
-
-
 <header class="site-header">
 
-    <a href="{{ path('app_home') }}">
-        <img
-            src="{{ asset('images/logo/logo.png') }}"
-            alt="Au fil des saisons"
-            class="logo">
-    </a>
+	<a href="{{ path('app_home') }}" class="logo-link">
+		<img src="{{ asset('images/logo/logo.png') }}" class="logo" alt="Au fil des saisons">
+	</a>
 
-    <div class="header-icons">
+	<div class="header-actions">
 
-        <button class="icon-button" aria-label="Menu">
-            <i class="fa-solid fa-bars"></i>
-        </button>
+		<button class="header-button" type="button">
+			<img src="{{ asset('images/icons/Menu.svg') }}" alt="Menu">
+		</button>
 
-        {% if app.user %}
+		{% if app.user %}
 
-            <a href="{{ path('app_logout') }}" class="icon-button">
-                <i class="fa-solid fa-right-from-bracket"></i>
-            </a>
+			{% if app.request.attributes.get('_route') == 'app_profile' %}
 
-        {% else %}
+				<a href="{{ path('app_logout') }}" class="header-button">
+					<img src="{{ asset('images/icons/Deconnected.svg') }}" alt="Déconnexion">
+				</a>
 
-            <a href="{{ path('app_login') }}" class="icon-button">
-                <i class="fa-solid fa-user"></i>
-            </a>
+			{% else %}
 
-        {% endif %}
+				<a href="{{ path('app_profile') }}" class="header-button">
+					<img src="{{ asset('images/icons/profile.svg') }}" alt="Mon profil">
+				</a>
 
-    </div>
+			{% endif %}
+
+		{% else %}
+
+			<a href="{{ path('app_login') }}" class="header-button">
+				<img src="{{ asset('images/icons/profile.svg') }}" alt="Connexion">
+			</a>
+
+		{% endif %}
+
+	</div>
 
 </header>

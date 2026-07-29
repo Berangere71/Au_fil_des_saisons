@@ -1,5 +1,29 @@
-<footer class="footer w-screen">
-    <img src="{{asset('/images/icons/home.svg')}}" alt="Retour à l'accueil">
-    <img src="{{asset('/images/icons/profile.svg')}}" alt="Retour au profil">
-    <img src="{{asset('/images/icons/search.svg')}}" alt="Rechercher">
+<footer class="footer">
+
+    <a href="{{ path('app_home') }}" class="footer-icon">
+        <img
+            src="{{ asset('images/icons/home.svg') }}"
+            alt="Accueil">
+    </a>
+
+    <a href="#" class="footer-icon">
+        <img
+            src="{{ asset('images/icons/search.svg') }}"
+            alt="Recherche">
+    </a>
+
+    {% if app.user %}
+        <a href="{{ path('app_profile') }}" class="footer-icon">
+            <img
+                src="{{ asset('images/icons/profile.svg') }}"
+                alt="Mon profil">
+        </a>
+    {% else %}
+        <a href="{{ path('app_login') }}" class="footer-icon">
+            <img
+                src="{{ asset('images/icons/profile.svg') }}"
+                alt="Connexion">
+        </a>
+    {% endif %}
+
 </footer>
