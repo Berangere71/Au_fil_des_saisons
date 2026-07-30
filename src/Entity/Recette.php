@@ -60,7 +60,7 @@ class Recette
     #[ORM\Column(type: 'string', enumType: RecetteStatut::class)]
     private RecetteStatut $statut = RecetteStatut::ATTENTE;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeInterface $createdAt;
 
     #[ORM\OneToMany(mappedBy: 'recette', targetEntity: Favoris::class, cascade: ['persist', 'remove'])]
@@ -86,40 +86,175 @@ class Recette
         $this->seasons = new ArrayCollection();
     }
 
-    public function getId(): ?int { return $this->id; }
-    public function getTitre(): string { return $this->titre; }
-    public function setTitre(string $titre): self { $this->titre = $titre; return $this; }
-    public function getPhoto(): ?string { return $this->photo; }
-    public function setPhoto(?string $photo): self { $this->photo = $photo; return $this; }
-    public function getTypePlat(): RecetteTypePlat { return $this->typePlat; }
-    public function setTypePlat(RecetteTypePlat $typePlat): self { $this->typePlat = $typePlat; return $this; }
-    public function getUser(): ?User { return $this->user; }
-    public function setUser(?User $user): self { $this->user = $user; return $this; }
-    public function getNbrPerson(): float { return $this->nbrPerson; }
-    public function setNbrPerson(float $nbrPerson): self { $this->nbrPerson = $nbrPerson; return $this; }
-    public function getTimePrepa(): ?int { return $this->timePrepa; }
-    public function setTimePrepa(?int $timePrepa): self { $this->timePrepa = $timePrepa; return $this; }
-    public function getIngredient(): string { return $this->ingredient; }
-    public function setIngredient(string $ingredient): self { $this->ingredient = $ingredient; return $this; }
-    public function getPreparation(): string { return $this->preparation; }
-    public function setPreparation(string $preparation): self { $this->preparation = $preparation; return $this; }
-    public function isOven(): bool { return $this->isOven; }
-    public function setIsOven(bool $isOven): self { $this->isOven = $isOven; return $this; }
-    public function getTempOven(): ?float { return $this->tempOven; }
-    public function setTempOven(?float $tempOven): self { $this->tempOven = $tempOven; return $this; }
-    public function getTimeOven(): ?float { return $this->timeOven; }
-    public function setTimeOven(?float $timeOven): self { $this->timeOven = $timeOven; return $this; }
-    public function isPublic(): bool { return $this->isPublic; }
-    public function setIsPublic(bool $isPublic): self { $this->isPublic = $isPublic; return $this; }
-    public function getStatut(): RecetteStatut { return $this->statut; }
-    public function setStatut(RecetteStatut $statut): self { $this->statut = $statut; return $this; }
-    public function getCreatedAt(): \DateTimeInterface { return $this->createdAt; }
-    public function getFavoris(): Collection { return $this->favoris; }
-    public function getAvis(): Collection { return $this->avis; }
-    public function getProducts(): Collection { return $this->products; }
-    public function addProduct(Product $product): self { if (!$this->products->contains($product)) { $this->products->add($product); } return $this; }
-    public function removeProduct(Product $product): self { $this->products->removeElement($product); return $this; }
-    public function getSeasons(): Collection { return $this->seasons; }
-    public function addSeason(Season $season): self { if (!$this->seasons->contains($season)) { $this->seasons->add($season); } return $this; }
-    public function removeSeason(Season $season): self { $this->seasons->removeElement($season); return $this; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+    public function getTitre(): string
+    {
+        return $this->titre;
+    }
+    public function setTitre(string $titre): self
+    {
+        $this->titre = $titre;
+        return $this;
+    }
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+    public function setPhoto(?string $photo): self
+    {
+        $this->photo = $photo;
+        return $this;
+    }
+    public function getTypePlat(): RecetteTypePlat
+    {
+        return $this->typePlat;
+    }
+    public function setTypePlat(RecetteTypePlat $typePlat): self
+    {
+        $this->typePlat = $typePlat;
+        return $this;
+    }
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
+    public function getNbrPerson(): float
+    {
+        return $this->nbrPerson;
+    }
+    public function setNbrPerson(float $nbrPerson): self
+    {
+        $this->nbrPerson = $nbrPerson;
+        return $this;
+    }
+    public function getTimePrepa(): ?int
+    {
+        return $this->timePrepa;
+    }
+    public function setTimePrepa(?int $timePrepa): self
+    {
+        $this->timePrepa = $timePrepa;
+        return $this;
+    }
+    public function getIngredient(): string
+    {
+        return $this->ingredient;
+    }
+    public function setIngredient(string $ingredient): self
+    {
+        $this->ingredient = $ingredient;
+        return $this;
+    }
+    public function getPreparation(): string
+    {
+        return $this->preparation;
+    }
+    public function setPreparation(string $preparation): self
+    {
+        $this->preparation = $preparation;
+        return $this;
+    }
+    public function isOven(): bool
+    {
+        return $this->isOven;
+    }
+    public function setIsOven(bool $isOven): self
+    {
+        $this->isOven = $isOven;
+        return $this;
+    }
+    public function getTempOven(): ?float
+    {
+        return $this->tempOven;
+    }
+    public function setTempOven(?float $tempOven): self
+    {
+        $this->tempOven = $tempOven;
+        return $this;
+    }
+    public function getTimeOven(): ?float
+    {
+        return $this->timeOven;
+    }
+    public function setTimeOven(?float $timeOven): self
+    {
+        $this->timeOven = $timeOven;
+        return $this;
+    }
+    public function isPublic(): bool
+    {
+        return $this->isPublic;
+    }
+    public function setIsPublic(bool $isPublic): self
+    {
+        $this->isPublic = $isPublic;
+        return $this;
+    }
+    public function getStatut(): RecetteStatut
+    {
+        return $this->statut;
+    }
+    public function setStatut(RecetteStatut $statut): self
+    {
+        $this->statut = $statut;
+        return $this;
+    }
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+    public function getFavoris(): Collection
+    {
+        return $this->favoris;
+    }
+    public function getAvis(): Collection
+    {
+        return $this->avis;
+    }
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+    public function addProduct(Product $product): self
+    {
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+        }
+        return $this;
+    }
+    public function removeProduct(Product $product): self
+    {
+        $this->products->removeElement($product);
+        return $this;
+    }
+    public function getSeasons(): Collection
+    {
+        return $this->seasons;
+    }
+    public function addSeason(Season $season): self
+    {
+        if (!$this->seasons->contains($season)) {
+            $this->seasons->add($season);
+        }
+        return $this;
+    }
+    public function removeSeason(Season $season): self
+    {
+        $this->seasons->removeElement($season);
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->titre;
+    }
+
 }

@@ -1,0 +1,59 @@
+{{ form_start(form, {'attr': {'class': 'product-form'}}) }}
+
+<div class="product-card">
+
+    <div class="product-header">
+
+        <h1>Gestion des produits</h1>
+
+        <p>{{ title }}</p>
+
+    </div>
+
+    <div class="product-body">
+
+        <div class="product-image">
+
+            {{ form_widget(form.photoFile) }}
+
+        </div>
+
+        <div class="product-fields">
+
+            {{ form_row(form.nom) }}
+
+            {{ form_row(form.category) }}
+
+            {{ form_row(form.debutRecolteMois) }}
+
+            {{ form_row(form.finRecolteMois) }}
+
+            {{ form_row(form.description) }}
+
+            {{ form_row(form.conservation) }}
+
+        </div>
+
+    </div>
+
+    <div class="product-seasons">
+
+        {{ form_row(form.seasons) }}
+
+    </div>
+
+    <div class="product-buttons">
+
+        <a href="{{ path('app_product_index') }}" class="btn-cancel">
+            Annuler
+        </a>
+
+        <button class="btn-save">
+            Enregistrer
+        </button>
+
+    </div>
+
+</div>
+
+{{ form_end(form) }}

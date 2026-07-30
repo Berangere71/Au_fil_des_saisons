@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Produits
+{% endblock %}
+
+{% block body %}
+
+	<section class="card">
+
+		<h1 class="section-title">
+			Fiche produit
+		</h1>
+
+		<div class="products-grid">
+
+			{% for product in products %}
+
+				<article class="product-card">
+
+					{% if product.photo %}
+						<img src="{{ asset('uploads/products/' ~ product.photo) }}" alt="{{ product.nom }}" class="product-image">
+					{% else %}
+						<img src="{{ asset('images/products/default.png') }}" alt="Produit" class="product-image">
+					{% endif %}
+
+					<h3>{{ product.nom }}</h3>
+
+					<p class="category">
+						{{ product.category.value|capitalize }}
+					</p>
+
+					<div class="product-actions">
+
+						<a href="{{ path('app_product_edit', {id: product.id}) }}" class="btn-primary">
+							Modifier
+						</a>
+
+						<a href="#" class="btn-secondary">
+							Supprimer
+						</a>
+
+						<p>
+							<strong>Description :</strong><br>
+							{{ product.description }}
+						</p>
+
+						<p>
+							<strong>Conservation :</strong><br>
+							{{ product.conservation }}
+						</p>
+
+						<p>
+							<strong>Récolte :</strong><br>
+							{{ product.debutRecolteMois }}
+							→
+							{{ product.finRecolteMois }}
+						</p>
+
+						<p>
+							<strong>Saisons :</strong>
+
+							{% for season in product.seasons %}
+								{{ season }}
+							{% else %}
+								—
+							{% endfor %}
+						</p>
+
+						<p>
+							<strong>Recettes :</strong>
+
+							{% for recette in product.recettes %}
+								{{ recette }}
+							{% else %}
+								—
+							{% endfor %}
+						</p>
+
+					</div>
+
+				</article>
+
+			{% else %}
+
+				<p>Aucun produit enregistré.</p>
+
+			{% endfor %}
+
+		</div>
+
+	</section>
+
+{% endblock %}

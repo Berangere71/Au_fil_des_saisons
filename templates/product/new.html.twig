@@ -1,0 +1,12 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Ajouter un produit{% endblock %}
+
+{% block admin_content %}
+
+{% include 'components/_product_form.html.twig' with {
+    form: form,
+    title: 'Ajouter un produit'
+} %}
+
+{% endblock %}
