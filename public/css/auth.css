@@ -111,6 +111,27 @@
     line-height: 1.6;
     font-size: 0.95rem;
 }
+
+.password-field {
+    position: relative;
+}
+
+.password-field input {
+    box-sizing: border-box;
+    padding-right: 52px;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: var(--color-primary);
+    font-size: 1.1rem;
+    cursor: pointer;
+}
 .rgpd-checkbox{
     display:grid;
     grid-template-columns:22px 1fr;
@@ -142,3 +163,20 @@
     text-decoration:underline;
 }
 
+@media (min-width: 769px) {
+    .auth-container {
+        margin-bottom: 105px;
+    }
+
+    .auth-card {
+        width: min(88%, 680px);
+        padding: 54px 64px;
+    }
+
+    .auth-card .subtitle,
+    .auth-description,
+    .forgot-password a,
+    .rgpd-checkbox label {
+        font-size: 1rem;
+    }
+}

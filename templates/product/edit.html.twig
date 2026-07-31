@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier un produit{% endblock %}
+
+{% block header %}{% endblock %}
+{% block page_hero %}{% endblock %}
+{% block footer %}{% endblock %}
+{% block main_class %}product-standalone-main{% endblock %}
+
+{% block body %}
+
+<section class="admin-product">
+
+    <div class="product-card">
+
+        <div class="product-card-header">
+            <h1>Modifier un produit</h1>
+            <p>Mettre à jour les informations de {{ product.nom }}</p>
+        </div>
+
+        {% include 'components/_product_form.html.twig' %}
+
+    </div>
+
+</section>
+
+{% endblock %}

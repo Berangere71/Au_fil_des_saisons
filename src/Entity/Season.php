@@ -21,7 +21,7 @@ class Season
     #[ORM\Column(type: 'string', enumType: SeasonName::class, unique: true)]
     private SeasonName $nameSeason;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeInterface $createdAt;
 
     #[ORM\ManyToMany(targetEntity: Recette::class, mappedBy: 'seasons')]
@@ -37,10 +37,35 @@ class Season
         $this->products = new ArrayCollection();
     }
 
-    public function getId(): ?int { return $this->id; }
-    public function getNameSeason(): SeasonName { return $this->nameSeason; }
-    public function setNameSeason(SeasonName $nameSeason): self { $this->nameSeason = $nameSeason; return $this; }
-    public function getCreatedAt(): \DateTimeInterface { return $this->createdAt; }
-    public function getRecettes(): Collection { return $this->recettes; }
-    public function getProducts(): Collection { return $this->products; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+    public function getNameSeason(): SeasonName
+    {
+        return $this->nameSeason;
+    }
+    public function setNameSeason(SeasonName $nameSeason): self
+    {
+        $this->nameSeason = $nameSeason;
+        return $this;
+    }
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+    public function getRecettes(): Collection
+    {
+        return $this->recettes;
+    }
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function __toString(): string
+    {
+        return ucfirst($this->nameSeason->value);
+    }
+
 }

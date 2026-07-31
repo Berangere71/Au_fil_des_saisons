@@ -1,102 +1,125 @@
 <!DOCTYPE html>
 <html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<head>
+        <title>
+            {% block title %}Au fil des saisons{% endblock %}
+        </title>
 
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="{{ asset('images/logo/favicon.png') }}">
 
-		<title>
-			{% block title %}Au fil des saisons
-			{% endblock %}
-		</title>
+        {# =========================
+            FEUILLES DE STYLE
+        ========================== #}
 
-		<link
-		rel="icon" href="{{ asset('images/logo/favicon.png') }}">
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/components.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/product.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/product-form.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 
-		{# =========================
-			FEUILLES DE STYLE
-		========================== #}
+            <style>
+                body {
+                    min-height: 100vh;
+                    display: flex;
+                    flex-direction: column;
+                    margin: 0;
+                }
 
-			{% block stylesheets %}
+                main.page-content {
+                    flex: 1 0 auto;
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: flex-start;
+                    padding: 0.75rem 1.25rem 1.5rem;
+                    box-sizing: border-box;
+                }
 
-   			 	<link rel="stylesheet" href="{{ asset('css/style.css') }}">
+                main.page-content > * {
+                    width: 100%;
+                    max-width: 980px;
+                    margin: 0 auto;
+                }
 
-   			 	<link rel="stylesheet" href="{{ asset('css/components.css') }}">
+                main.page-content form {
+                    margin-top: 0 !important;
+                    padding-top: 0 !important;
+                }
 
-    			<link rel="stylesheet" href="{{ asset('css/profile.css') }}">
+                @media (max-width: 768px) {
+                    main.page-content {
+                        padding: 0.5rem 1rem 1rem;
+                    }
+                }
+            </style>
+        {% endblock %}
 
-			{% endblock %}
+        {# =========================
+            IMPORTMAP SYMFONY
+        ========================== #}
 
-		{# =========================
-			IMPORTMAP SYMFONY
-		========================== #}
+        {% block javascripts %}
+            {% block importmap %}
+                {{ importmap('app') }}
+            {% endblock %}
+        {% endblock %}
 
-		{% block javascripts %}
-			{% block importmap %}
-				{{ importmap('app') }}
-			{% endblock %}
-		{% endblock %}
+        {# =========================
+            FRANKENPHP HOT RELOAD
+        ========================== #}
 
-		{# =========================
-			FRANKENPHP HOT RELOAD
-		========================== #}
+        {% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
 
-		{% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
+        {% if frankenphpHotReload %}
+            <meta name="frankenphp-hot-reload:url" content="{{ frankenphpHotReload }}">
+            <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
+            <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
+        {% endif %}
 
-		{% if frankenphpHotReload %}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    </head>
 
-			<meta name="frankenphp-hot-reload:url" content="{{ frankenphpHotReload }}">
+    <body>
+        {# =========================
+                HEADER
+        ========================== #}
 
-			<script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
+        {% block header %}
+            {% include 'components/_header.html.twig' %}
+        {% endblock %}
 
-			<script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
+        {% block page_hero %}
+            {% include 'components/_hero.html.twig' with {hero_title: block('hero_title')} %}
+        {% endblock %}
 
-			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+        {# =========================
+                MESSAGES FLASH
+        ========================== #}
 
-		{% endif %}
+        {% include 'components/_flash.html.twig' %}
 
-	</head>
+        {# =========================
+                CONTENU DES PAGES
+        ========================== #}
 
-	<body>
+        <main class="page-content {% block main_class %}{% endblock %}">
+            {% block body %}{% endblock %}
+        </main>
 
-		{# =========================
-				HEADER
-		========================== #}
+        {# =========================
+                FOOTER
+        ========================== #}
 
-		{% include 'components/_header.html.twig' %}
+        {% block footer %}
+            {% include 'components/_footer.html.twig' %}
+        {% endblock %}
 
-		{% include 'components/_hero.html.twig' %}
-
-		{# =========================
-				MESSAGES FLASH
-		========================== #}
-
-		{% include 'components/_flash.html.twig' %}
-
-	
-
-		{# =========================
-				CONTENU DES PAGES
-		========================== #}
-
-		<main>
-
-			{% block body %}{% endblock %}
-
-		</main>
-
-		{# =========================
-				FOOTER
-		========================== #}
-
-		{% include 'components/_footer.html.twig' %}
-
-		<script src="{{ asset('js/flash.js') }}"></script>
-
-		
-
-
-	</body>
-
+        <script src="{{ asset('js/flash.js') }}"></script>
+    </body>
 </html>

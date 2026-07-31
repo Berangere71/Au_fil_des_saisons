@@ -24,6 +24,16 @@ class SecurityController extends AbstractController
         ]);
     }
 
+    #[Route(path: '/login/redirect', name: 'app_login_redirect')]
+    public function loginRedirect(): Response
+    {
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return $this->redirectToRoute('app_admin_dashboard');
+        }
+
+        return $this->redirectToRoute('app_profile');
+    }
+
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
     {

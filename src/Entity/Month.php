@@ -22,9 +22,32 @@ class Month
     #[ORM\Column(type: Types::INTEGER, unique: true)]
     private int $monthOrder;
 
-    public function getId(): ?int { return $this->id; }
-    public function getNameMonth(): string { return $this->nameMonth; }
-    public function setNameMonth(string $nameMonth): self { $this->nameMonth = $nameMonth; return $this; }
-    public function getMonthOrder(): int { return $this->monthOrder; }
-    public function setMonthOrder(int $monthOrder): self { $this->monthOrder = $monthOrder; return $this; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+    public function getNameMonth(): string
+    {
+        return $this->nameMonth;
+    }
+    public function setNameMonth(string $nameMonth): self
+    {
+        $this->nameMonth = $nameMonth;
+        return $this;
+    }
+    public function getMonthOrder(): int
+    {
+        return $this->monthOrder;
+    }
+    public function setMonthOrder(int $monthOrder): self
+    {
+        $this->monthOrder = $monthOrder;
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->nameMonth;
+    }
+
 }

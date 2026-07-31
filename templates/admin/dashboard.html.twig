@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord administrateur{% endblock %}
+
+{% block hero_title %}Mon profil administrateur{% endblock %}
+
+{% block body %}
+<section class="admin-dashboard">
+    <div class="admin-dashboard-links">
+        <a href="{{ path('app_product_index') }}"><i class="fa-solid fa-basket-shopping"></i> Gestion des produits</a>
+        <div class="admin-dashboard-disabled"><i class="fa-solid fa-user"></i> Gestion des utilisateurs <span>À venir</span></div>
+        <div class="admin-dashboard-disabled"><i class="fa-solid fa-utensils"></i> Gestion des recettes <span>À venir</span></div>
+    </div>
+
+    <div class="admin-dashboard-counts">
+        <div><strong>Produits</strong><span>{{ productCount }}</span></div>
+        <div><strong>Utilisateurs</strong><span>{{ userCount }}</span></div>
+        <div><strong>Recettes</strong><span>{{ recipeCount }}</span></div>
+    </div>
+</section>
+{% endblock %}
