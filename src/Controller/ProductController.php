@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/products')]
@@ -25,7 +26,16 @@ final class ProductController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}', name: 'app_product_show', methods: ['GET'], priority: -1)]
+    public function show(Product $product): Response
+    {
+        return $this->render('product/show.html.twig', [
+            'product' => $product,
+        ]);
+    }
+
     #[Route('/new', name: 'app_product_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $product = new Product();
@@ -82,6 +92,7 @@ final class ProductController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function edit(
         Request $request,
         Product $product,
@@ -106,12 +117,20 @@ final class ProductController extends AbstractController
 
                 $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
 
-                $imageFile->move(
-                    $this->getParameter('product_images_directory'),
-                    $newFilename
-                );
+                try {
+                    $imageFile->move(
+                        $this->getParameter('product_images_directory'),
+                        $newFilename
+                    );
 
-                $product->setPhoto($newFilename);
+                    $product->setPhoto($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('danger', "Impossible d'envoyer l'image.");
+
+                    return $this->redirectToRoute('app_product_edit', [
+                        'id' => $product->getId(),
+                    ]);
+                }
             }
 
             $entityManager->flush();
@@ -125,6 +144,43 @@ final class ProductController extends AbstractController
             'form' => $form,
             'product' => $product,
         ]);
+    }
+
+    #[Route('/{id}', name: 'app_product_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function delete(
+        Request $request,
+        Product $product,
+        EntityManagerInterface $entityManager
+    ): Response {
+        if (!$this->isCsrfTokenValid('delete_product_' . $product->getId(), (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton de sécurité invalide.');
+        }
+
+        foreach ($product->getRecettes() as $recette) {
+            $recette->removeProduct($product);
+        }
+
+        foreach ($product->getSeasons() as $season) {
+            $product->removeSeason($season);
+        }
+
+        $photo = $product->getPhoto();
+
+        $entityManager->remove($product);
+        $entityManager->flush();
+
+        if ($photo) {
+            $photoPath = $this->getParameter('product_images_directory') . '/' . $photo;
+
+            if (is_file($photoPath)) {
+                unlink($photoPath);
+            }
+        }
+
+        $this->addFlash('success', 'Le produit a été supprimé avec succès.');
+
+        return $this->redirectToRoute('app_product_index');
     }
 
 }

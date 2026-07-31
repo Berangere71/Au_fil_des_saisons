@@ -2,11 +2,17 @@
 
 {% block title %}Modifier mon profil{% endblock %}
 
+{% block hero_title %}Modifier mon profil{% endblock %}
+
+{% block page_hero %}
+    {% include 'components/_hero.html.twig' with {hero_title: block('hero_title'), hero_class: 'hero--compact'} %}
+{% endblock %}
+
+{% block main_class %}profile-edit-main{% endblock %}
+
 {% block body %}
 
 <section class="profile">
-
-    <h1>Modifier mon profil</h1>
 
     {% for message in app.flashes('success') %}
         <div class="alert-success">
@@ -14,7 +20,9 @@
         </div>
     {% endfor %}
 
-    {{ form_start(profileForm) }}
+    {{ form_start(profileForm, {attr: {class: 'profile-edit-form'}}) }}
+
+        {{ form_row(profileForm.photoFile) }}
 
         {{ form_row(profileForm.prenom) }}
 
@@ -22,17 +30,15 @@
 
         {{ form_row(profileForm.email) }}
 
-        <button class="btn">
-            Enregistrer
-        </button>
+        <div class="profile-form-actions">
+            <button class="btn" type="submit">Enregistrer</button>
+
+            <a href="{{ path('app_profile') }}" class="btn">
+                Retour au profil
+            </a>
+        </div>
 
     {{ form_end(profileForm) }}
-
-    <br>
-
-    <a href="{{ path('app_profile') }}" class="btn">
-        Retour au profil
-    </a>
 
 </section>
 

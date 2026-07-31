@@ -3,91 +3,52 @@
 {% block title %}Produits
 {% endblock %}
 
+{% block hero_title %}<i class="fa-solid fa-basket-shopping"></i> Gestion des produits{% endblock %}
+
 {% block body %}
 
-	<section class="card">
+<section class="product-catalogue">
+    <header class="catalogue-header">
+        <p>{{ products|length }} produits enregistrés</p>
+    </header>
 
-		<h1 class="section-title">
-			Fiche produit
-		</h1>
+    <div class="catalogue-toolbar">
+        <label class="catalogue-search">
+            <span class="visually-hidden">Rechercher un produit</span>
+            <input type="search" placeholder="Rechercher un produit…" disabled>
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </label>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('app_product_new') }}" class="catalogue-add"><i class="fa-solid fa-circle-plus"></i> Ajouter</a>
+        {% endif %}
+    </div>
 
-		<div class="products-grid">
-
-			{% for product in products %}
-
-				<article class="product-card">
-
-					{% if product.photo %}
-						<img src="{{ asset('uploads/products/' ~ product.photo) }}" alt="{{ product.nom }}" class="product-image">
-					{% else %}
-						<img src="{{ asset('images/products/default.png') }}" alt="Produit" class="product-image">
-					{% endif %}
-
-					<h3>{{ product.nom }}</h3>
-
-					<p class="category">
-						{{ product.category.value|capitalize }}
-					</p>
-
-					<div class="product-actions">
-
-						<a href="{{ path('app_product_edit', {id: product.id}) }}" class="btn-primary">
-							Modifier
-						</a>
-
-						<a href="#" class="btn-secondary">
-							Supprimer
-						</a>
-
-						<p>
-							<strong>Description :</strong><br>
-							{{ product.description }}
-						</p>
-
-						<p>
-							<strong>Conservation :</strong><br>
-							{{ product.conservation }}
-						</p>
-
-						<p>
-							<strong>Récolte :</strong><br>
-							{{ product.debutRecolteMois }}
-							→
-							{{ product.finRecolteMois }}
-						</p>
-
-						<p>
-							<strong>Saisons :</strong>
-
-							{% for season in product.seasons %}
-								{{ season }}
-							{% else %}
-								—
-							{% endfor %}
-						</p>
-
-						<p>
-							<strong>Recettes :</strong>
-
-							{% for recette in product.recettes %}
-								{{ recette }}
-							{% else %}
-								—
-							{% endfor %}
-						</p>
-
-					</div>
-
-				</article>
-
-			{% else %}
-
-				<p>Aucun produit enregistré.</p>
-
-			{% endfor %}
-
-		</div>
-
-	</section>
+    <div class="product-table-wrap">
+        <table class="product-table">
+            <thead><tr><th>Nom</th><th>Saison</th><th>Récolte début</th><th>Récolte fin</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
+            <tbody>
+            {% for product in products %}
+                <tr>
+                    <td><a href="{{ path('app_product_show', {id: product.id}) }}">{{ product.nom }}</a></td>
+                    <td>{% for season in product.seasons %}{{ season }}{{ not loop.last ? ', ' }}{% else %}—{% endfor %}</td>
+                    <td>{{ product.debutRecolteMois }}</td>
+                    <td>{{ product.finRecolteMois }}</td>
+                    <td class="product-row-actions">
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('app_product_edit', {id: product.id}) }}" aria-label="Modifier {{ product.nom }}"><i class="fa-solid fa-pen"></i></a>
+                            <form method="post" action="{{ path('app_product_delete', {id: product.id}) }}" onsubmit="return confirm('Supprimer définitivement ce produit ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_product_' ~ product.id) }}">
+                                <button type="submit" aria-label="Supprimer {{ product.nom }}"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5" class="product-table-empty">Aucun produit enregistré.{% if is_granted('ROLE_ADMIN') %} <a href="{{ path('app_product_new') }}">Ajouter le premier produit</a>.{% endif %}</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
 
 {% endblock %}

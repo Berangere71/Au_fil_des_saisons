@@ -1,12 +1,11 @@
-<section class="hero">
+<section class="hero {{ hero_class|default('') }}">
 
     <div class="hero-overlay">
 
         <div class="hero-content">
-
-            {% block hero %}
-
-            {% endblock %}
+            {% if hero_title|trim %}
+                <h1 class="hero-page-title">{{ hero_title|raw }}</h1>
+            {% endif %}
 
         </div>
 

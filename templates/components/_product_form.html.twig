@@ -1,58 +1,115 @@
-{{ form_start(form, {'attr': {'class': 'product-form'}}) }}
+{{ form_start(form, {
+    attr: {
+        class: 'product-form',
+        enctype: 'multipart/form-data'
+    }
+}) }}
 
-<div class="product-card">
+<div class="product-form-content">
 
-    <div class="product-header">
+    <div class="product-left">
 
-        <h1>Gestion des produits</h1>
+        <div class="product-image-card">
 
-        <p>{{ title }}</p>
+            {% if form.vars.data.photo %}
+                <img
+                    src="{{ asset('uploads/products/' ~ form.vars.data.photo) }}"
+                    alt="{{ form.vars.data.nom }}"
+                    class="product-preview">
+            {% else %}
+                <div class="product-placeholder">
+                    <i class="fa-solid fa-image"></i>
+                    <span>Aucune image</span>
+                </div>
+            {% endif %}
 
-    </div>
+        </div>
 
-    <div class="product-body">
-
-        <div class="product-image">
-
+        <div class="upload-field">
+            {{ form_label(form.photoFile) }}
             {{ form_widget(form.photoFile) }}
-
-        </div>
-
-        <div class="product-fields">
-
-            {{ form_row(form.nom) }}
-
-            {{ form_row(form.category) }}
-
-            {{ form_row(form.debutRecolteMois) }}
-
-            {{ form_row(form.finRecolteMois) }}
-
-            {{ form_row(form.description) }}
-
-            {{ form_row(form.conservation) }}
-
+            {{ form_errors(form.photoFile) }}
         </div>
 
     </div>
 
-    <div class="product-seasons">
+    <div class="product-right">
 
-        {{ form_row(form.seasons) }}
+        <div class="form-group">
+            {{ form_label(form.nom) }}
+            {{ form_widget(form.nom) }}
+            {{ form_errors(form.nom) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.category) }}
+            {{ form_widget(form.category) }}
+            {{ form_errors(form.category) }}
+        </div>
+
+        <div class="row">
+
+            <div class="form-group half">
+                {{ form_label(form.debutRecolteMois) }}
+                {{ form_widget(form.debutRecolteMois) }}
+                {{ form_errors(form.debutRecolteMois) }}
+            </div>
+
+            <div class="form-group half">
+                {{ form_label(form.finRecolteMois) }}
+                {{ form_widget(form.finRecolteMois) }}
+                {{ form_errors(form.finRecolteMois) }}
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description) }}
+            {{ form_errors(form.description) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.conservation) }}
+            {{ form_widget(form.conservation) }}
+            {{ form_errors(form.conservation) }}
+        </div>
 
     </div>
 
-    <div class="product-buttons">
+</div>
 
-        <a href="{{ path('app_product_index') }}" class="btn-cancel">
-            Annuler
-        </a>
+<div class="season-block">
 
-        <button class="btn-save">
-            Enregistrer
-        </button>
+    <h3>Saisons</h3>
 
+    <div class="season-list">
+        {{ form_widget(form.seasons) }}
+        {{ form_errors(form.seasons) }}
     </div>
+
+</div>
+
+<div class="recipe-block">
+
+    <h3>Recettes associées</h3>
+
+    <div class="recipe-list">
+        {{ form_widget(form.recettes) }}
+        {{ form_errors(form.recettes) }}
+    </div>
+
+</div>
+
+<div class="form-buttons">
+
+    <a href="{{ path('app_product_index') }}" class="btn-cancel">
+        Annuler
+    </a>
+
+    <button type="submit" class="btn-save">
+        Enregistrer
+    </button>
 
 </div>
 

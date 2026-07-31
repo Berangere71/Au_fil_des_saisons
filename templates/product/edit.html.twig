@@ -2,21 +2,25 @@
 
 {% block title %}Modifier un produit{% endblock %}
 
+{% block header %}{% endblock %}
+{% block page_hero %}{% endblock %}
+{% block footer %}{% endblock %}
+{% block main_class %}product-standalone-main{% endblock %}
+
 {% block body %}
 
-<section class="card">
+<section class="admin-product">
 
-    <h1 class="section-title">
-        Modifier {{ product.nom }}
-    </h1>
+    <div class="product-card">
 
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
+        <div class="product-card-header">
+            <h1>Modifier un produit</h1>
+            <p>Mettre à jour les informations de {{ product.nom }}</p>
+        </div>
 
-        <button class="btn-primary">
-            Enregistrer
-        </button>
-    {{ form_end(form) }}
+        {% include 'components/_product_form.html.twig' %}
+
+    </div>
 
 </section>
 
