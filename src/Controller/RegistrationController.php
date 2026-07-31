@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Enum\UserRole;
 use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,6 +22,7 @@ class RegistrationController extends AbstractController
     ): Response
     {
         $user = new User();
+        $user->setRole(UserRole::UTILISATEUR);
 
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);

@@ -3,13 +3,13 @@
 {% block title %}Créer un compte
 {% endblock %}
 
+{% block hero_title %}Créer un compte{% endblock %}
+
 {% block body %}
 
 	<div class="auth-container">
 
 		<div class="auth-card">
-
-			<h1>Créer un compte</h1>
 
 			<p class="subtitle">
 				Rejoignez la communauté Au fil des saisons
@@ -28,9 +28,21 @@
 			{{ form_row(registrationForm.email) }}
 			{{ form_errors(registrationForm.email) }}
 
-			{{ form_row(registrationForm.plainPassword, {
-                label: 'Mot de passe'
-            }) }}
+			{{ form_label(registrationForm.plainPassword.first) }}
+			<div class="password-field">
+				{{ form_widget(registrationForm.plainPassword.first) }}
+				<button type="button" class="password-toggle" aria-label="Afficher le mot de passe" aria-pressed="false" onclick="const input = this.parentElement.querySelector('input'); const visible = input.type === 'password'; input.type = visible ? 'text' : 'password'; this.setAttribute('aria-pressed', String(visible)); this.setAttribute('aria-label', visible ? 'Masquer le mot de passe' : 'Afficher le mot de passe'); this.querySelector('i').className = visible ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';">
+					<i class="fa-solid fa-eye" aria-hidden="true"></i>
+				</button>
+			</div>
+
+			{{ form_label(registrationForm.plainPassword.second) }}
+			<div class="password-field">
+				{{ form_widget(registrationForm.plainPassword.second) }}
+				<button type="button" class="password-toggle" aria-label="Afficher le mot de passe" aria-pressed="false" onclick="const input = this.parentElement.querySelector('input'); const visible = input.type === 'password'; input.type = visible ? 'text' : 'password'; this.setAttribute('aria-pressed', String(visible)); this.setAttribute('aria-label', visible ? 'Masquer le mot de passe' : 'Afficher le mot de passe'); this.querySelector('i').className = visible ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';">
+					<i class="fa-solid fa-eye" aria-hidden="true"></i>
+				</button>
+			</div>
 			{{ form_errors(registrationForm.plainPassword) }}
 
 			<div class="rgpd-container">

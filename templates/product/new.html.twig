@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un produit{% endblock %}
+
+{% block header %}{% endblock %}
+{% block page_hero %}{% endblock %}
+{% block footer %}{% endblock %}
+{% block main_class %}product-standalone-main{% endblock %}
+
+{% block body %}
+
+<section class="admin-product">
+
+    <div class="product-card">
+
+        <div class="product-card-header">
+
+            <h1>Gestion des produits</h1>
+
+            <p>Formulaire d'ajout d'un produit</p>
+
+        </div>
+
+        {% include 'components/_product_form.html.twig' %}
+
+    </div>
+
+</section>
+
+{% endblock %}

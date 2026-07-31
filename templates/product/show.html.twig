@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ product.nom }}{% endblock %}
+
+{% block header %}{% endblock %}
+{% block page_hero %}{% endblock %}
+{% block footer %}{% endblock %}
+{% block main_class %}product-standalone-main{% endblock %}
+
+{% block body %}
+<div class="product-detail-shell">
+    <section class="product-detail-page">
+        <a href="{{ path('app_product_index') }}" class="product-close" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></a>
+        <h1>{{ product.nom }}</h1>
+
+        <div class="product-detail-summary">
+            {% if product.photo %}
+                <img src="{{ asset('uploads/products/' ~ product.photo) }}" alt="{{ product.nom }}">
+            {% else %}
+                <div class="product-detail-placeholder"><i class="fa-solid fa-image"></i></div>
+            {% endif %}
+            <dl>
+                <div><dt>catégorie</dt><dd>{{ product.category.value|capitalize }}</dd></div>
+                <div><dt>production</dt><dd>{{ product.debutRecolteMois }} à {{ product.finRecolteMois }}</dd></div>
+                <div><dt>conservation</dt><dd>{{ product.conservation }}</dd></div>
+            </dl>
+        </div>
+
+        <h2>Liste des recettes :</h2>
+        <ul class="product-recipe-list">
+            {% for recette in product.recettes %}<li><span aria-hidden="true"></span>{{ recette }}</li>{% else %}<li class="product-no-recipe">Aucune recette associée pour le moment.</li>{% endfor %}
+        </ul>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a class="product-detail-edit" href="{{ path('app_product_edit', {id: product.id}) }}">Modifier la fiche</a>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}
