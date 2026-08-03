@@ -6,6 +6,7 @@
 {% block hero_title %}Créer un compte{% endblock %}
 
 {% block body %}
+	{% include 'components/_page_close.html.twig' with {return_route: 'app_home'} %}
 
 	<div class="auth-container">
 

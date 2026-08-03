@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Recette;
+use App\Entity\Avis;
 use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,6 +26,15 @@ final class AdminController extends AbstractController
             'productCount' => $productRepository->count(),
             'userCount' => $userRepository->count(),
             'recipeCount' => $entityManager->getRepository(Recette::class)->count(),
+        ]);
+    }
+
+    #[Route('/signalements', name: 'app_admin_reports', methods: ['GET'])]
+    public function reports(EntityManagerInterface $entityManager): Response
+    {
+        return $this->render('admin/reports.html.twig', [
+            'recettes' => $entityManager->getRepository(Recette::class)->findBy(['signale' => true]),
+            'avis' => $entityManager->getRepository(Avis::class)->findBy(['signale' => true]),
         ]);
     }
 }

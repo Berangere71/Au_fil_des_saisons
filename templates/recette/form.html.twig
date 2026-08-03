@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ isNew ? 'Ajouter une recette' : 'Modifier une recette' }}{% endblock %}
+{% block hero_title %}<i class="fa-solid fa-utensils"></i> Gestion des recettes{% endblock %}
+
+{% block body %}
+<section class="recette-form-page">
+    {% include 'components/_page_close.html.twig' %}
+    <h1>{{ isNew ? 'Ajouter une recette' : 'Modifier la recette' }}</h1>
+    <p class="recette-form-page__intro">Choisissez les produits auxquels cette recette doit être associée.</p>
+    {{ form_start(recetteForm, {attr: {class: 'recette-form'}}) }}
+    {{ form_errors(recetteForm) }}
+    <section class="recette-form__section recette-form__main">
+        <div class="recette-form__grid">
+            {{ form_row(recetteForm.titre) }} {{ form_row(recetteForm.typePlat) }}
+            {{ form_row(recetteForm.photoFile) }} {{ form_row(recetteForm.nbrPerson) }}
+            {{ form_row(recetteForm.timePrepa) }}
+        </div>
+    </section>
+    <section class="recette-form__section">
+        <h2>Ingrédients</h2>
+        {{ form_widget(recetteForm.ingredient) }}
+        {{ form_errors(recetteForm.ingredient) }}
+        <div class="recipe-builder js-ingredient-builder">
+            <div class="recipe-builder__head" aria-hidden="true"><span>Ingrédient</span><span></span><span>Quantité</span><span>Unité</span><span></span></div>
+            <div class="recipe-builder__rows"></div>
+            <button class="recipe-builder__add" type="button"><i class="fa-solid fa-plus"></i> Ajouter un ingrédient</button>
+        </div>
+    </section>
+    <section class="recette-form__section">
+        <h2>Préparation</h2>
+        {{ form_widget(recetteForm.preparation) }}
+        {{ form_errors(recetteForm.preparation) }}
+        <div class="recipe-builder js-preparation-builder">
+            <div class="recipe-builder__rows"></div>
+            <button class="recipe-builder__add" type="button"><i class="fa-solid fa-plus"></i> Ajouter une étape</button>
+        </div>
+    </section>
+    <section class="recette-form__section recette-form__oven-section">
+        <h2>Cuisson</h2>
+        <div class="recette-form__oven">{{ form_row(recetteForm.isOven) }} {{ form_row(recetteForm.tempOven) }} {{ form_row(recetteForm.timeOven) }}</div>
+    </section>
+    <section class="recette-form__section recette-form__products">
+        <h2>Choisir le ou les produits associés à votre recette</h2>
+        {{ form_row(recetteForm.productCategory) }}
+        {{ form_widget(recetteForm.products) }}
+        {{ form_errors(recetteForm.products) }}
+        <p class="recette-form__help">Sélectionnez au moins un produit pour enregistrer la recette.</p>
+        <div class="recette-form__publication">{{ form_row(recetteForm.isPublic) }}</div>
+    </section>
+    <div class="recette-form__actions"><a href="{{ path(is_granted('ROLE_ADMIN') ? 'app_admin_dashboard' : 'app_profile') }}">Annuler</a><button class="btn-save" type="submit">Enregistrer</button></div>
+    {{ form_end(recetteForm) }}
+</section>
+{% endblock %}

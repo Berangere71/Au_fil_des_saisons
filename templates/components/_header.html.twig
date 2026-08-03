@@ -18,6 +18,10 @@
 
         {% if app.user %}
 
+            <a href="{{ path('app_recette_index') }}" class="icon-button" aria-label="Catalogue des recettes">
+                <i class="fa-solid fa-utensils"></i>
+            </a>
+
             <a href="{{ path('app_logout') }}" class="icon-button">
                 <i class="fa-solid fa-right-from-bracket"></i>
             </a>

@@ -20,7 +20,7 @@ class Favoris
     #[ORM\JoinColumn(nullable: false)]
     private ?Recette $recette = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeInterface $dateAjout;
 
     public function __construct()

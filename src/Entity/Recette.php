@@ -21,29 +21,31 @@ class Recette
 
     #[ORM\Column(length: 150)]
     #[Assert\NotBlank]
-    private string $titre;
+    private string $titre = '';
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
 
     #[ORM\Column(type: 'string', enumType: RecetteTypePlat::class)]
-    private RecetteTypePlat $typePlat;
+    private RecetteTypePlat $typePlat = RecetteTypePlat::PLAT;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'recettes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
     #[ORM\Column(type: Types::FLOAT)]
-    private float $nbrPerson;
+    private float $nbrPerson = 1.0;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $timePrepa = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    private string $ingredient;
+    #[Assert\NotBlank(message: 'Ajoutez au moins un ingrédient.')]
+    private string $ingredient = '';
 
     #[ORM\Column(type: Types::TEXT)]
-    private string $preparation;
+    #[Assert\NotBlank(message: 'Ajoutez au moins une étape de préparation.')]
+    private string $preparation = '';
 
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $isOven = false;
@@ -59,6 +61,12 @@ class Recette
 
     #[ORM\Column(type: 'string', enumType: RecetteStatut::class)]
     private RecetteStatut $statut = RecetteStatut::ATTENTE;
+
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private bool $signale = false;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $motifSignalement = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeInterface $createdAt;
@@ -76,6 +84,10 @@ class Recette
     #[ORM\ManyToMany(targetEntity: Season::class, inversedBy: 'recettes')]
     #[ORM\JoinTable(name: 'recette_season')]
     private Collection $seasons;
+
+    #[ORM\ManyToOne(targetEntity: Season::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Season $primarySeason = null;
 
     public function __construct()
     {
@@ -162,6 +174,19 @@ class Recette
         $this->preparation = $preparation;
         return $this;
     }
+
+    /**
+     * @return list<string>
+     */
+    public function getPreparationSteps(): array
+    {
+        $steps = preg_split('/\R/', $this->preparation) ?: [];
+
+        return array_values(array_filter(array_map(
+            static fn (string $step): string => trim((string) preg_replace('/^\s*\d+[.)]\s*/', '', $step)),
+            $steps,
+        )));
+    }
     public function isOven(): bool
     {
         return $this->isOven;
@@ -207,6 +232,10 @@ class Recette
         $this->statut = $statut;
         return $this;
     }
+    public function isSignale(): bool { return $this->signale; }
+    public function setSignale(bool $signale): self { $this->signale = $signale; return $this; }
+    public function getMotifSignalement(): ?string { return $this->motifSignalement; }
+    public function setMotifSignalement(?string $motifSignalement): self { $this->motifSignalement = $motifSignalement; return $this; }
     public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
@@ -250,6 +279,29 @@ class Recette
     {
         $this->seasons->removeElement($season);
         return $this;
+    }
+
+    public function getPrimarySeason(): ?Season
+    {
+        return $this->primarySeason;
+    }
+
+    public function setPrimarySeason(?Season $primarySeason): self
+    {
+        $this->primarySeason = $primarySeason;
+
+        return $this;
+    }
+
+    /**
+     * @return list<Season>
+     */
+    public function getOtherSeasons(): array
+    {
+        return array_values(array_filter(
+            $this->seasons->toArray(),
+            fn (Season $season): bool => $season !== $this->primarySeason,
+        ));
     }
 
     public function __toString(): string

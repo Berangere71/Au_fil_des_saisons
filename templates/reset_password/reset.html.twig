@@ -3,6 +3,7 @@
 {% block title %}Reset your password{% endblock %}
 
 {% block body %}
+    {% include 'components/_page_close.html.twig' with {return_route: 'app_login'} %}
     <h1>Reset your password</h1>
 
     {{ form_start(resetForm) }}

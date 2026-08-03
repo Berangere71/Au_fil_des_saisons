@@ -9,7 +9,8 @@
     <div class="admin-dashboard-links">
         <a href="{{ path('app_product_index') }}"><i class="fa-solid fa-basket-shopping"></i> Gestion des produits</a>
         <div class="admin-dashboard-disabled"><i class="fa-solid fa-user"></i> Gestion des utilisateurs <span>À venir</span></div>
-        <div class="admin-dashboard-disabled"><i class="fa-solid fa-utensils"></i> Gestion des recettes <span>À venir</span></div>
+        <a href="{{ path('app_recette_index') }}"><i class="fa-solid fa-utensils"></i> Gestion des recettes</a>
+        <a href="{{ path('app_admin_reports') }}"><i class="fa-solid fa-flag"></i> Signalements</a>
     </div>
 
     <div class="admin-dashboard-counts">

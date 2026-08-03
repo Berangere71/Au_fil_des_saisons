@@ -1,0 +1,27 @@
+/* Sur ordinateur, la navigation ne doit jamais recouvrir le formulaire. */
+@media (min-width: 769px) {
+    .site-header { position: relative; }
+    .hero { margin-top: 0; }
+    main { padding-top: 0; padding-bottom: 42px; }
+    .footer { position: relative; }
+}
+
+.recette-form .form-check { display: flex; align-items: center; gap: 7px; margin: 7px 0; }
+.recette-form .form-check input[type="checkbox"] { width: 16px; height: 16px; margin: 0; padding: 0; flex: 0 0 auto; }
+.recette-form .form-check label { display: inline; margin: 0; font-weight: 700; }
+.recette-form #recette_products > div { display: flex; align-items: center; gap: 7px; margin: 7px 0; }
+.recette-form #recette_products input[type="checkbox"], .recette-form #recette_isOven, .recette-form #recette_isPublic { width: 16px; height: 16px; margin: 0; padding: 0; flex: 0 0 auto; }
+.recette-form #recette_products input[type="checkbox"] + label, .recette-form #recette_isOven + label, .recette-form #recette_isPublic + label { display: inline; margin: 0; }
+.recette-form__products > div > label { display: none; }
+.recette-form__products > div:first-of-type > label { display: block; }
+.recette-form__products > div:first-of-type { max-width: 330px; margin-bottom: 16px; }
+.recette-form__products fieldset { margin: 0; padding: 0; border: 0; }
+.recette-form__products fieldset > legend { margin: 0 0 10px; color: #286129; font-weight: 800; }
+.recette-form__help { margin: 12px 0 0; color: #66884b; font-size: .9rem; font-weight: 700; }
+.recette-form ul { color: #b42318; font-weight: 700; }
+.recette-form small { display: block; margin-top: 6px; color: #66884b; font-weight: 700; }
+
+@media (min-width: 769px) {
+    .recette-form-page { width: min(760px, calc(100% - 48px)); }
+    .recette-form__section { padding: 22px 26px; }
+}

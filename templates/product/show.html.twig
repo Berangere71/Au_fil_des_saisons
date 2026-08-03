@@ -10,7 +10,7 @@
 {% block body %}
 <div class="product-detail-shell">
     <section class="product-detail-page">
-        <a href="{{ path('app_product_index') }}" class="product-close" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></a>
+        <a href="{{ path(is_granted('ROLE_ADMIN') ? 'app_admin_dashboard' : (app.user ? 'app_profile' : 'app_product_index')) }}" class="product-close page-close-button" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></a>
         <h1>{{ product.nom }}</h1>
 
         <div class="product-detail-summary">
@@ -28,7 +28,7 @@
 
         <h2>Liste des recettes :</h2>
         <ul class="product-recipe-list">
-            {% for recette in product.recettes %}<li><span aria-hidden="true"></span>{{ recette }}</li>{% else %}<li class="product-no-recipe">Aucune recette associée pour le moment.</li>{% endfor %}
+            {% for recette in publishedRecipes %}<li><span aria-hidden="true"></span><a href="{{ path('app_recette_show', {id: recette.id}) }}">{{ recette }}</a></li>{% else %}<li class="product-no-recipe">Aucune recette publiée pour le moment.</li>{% endfor %}
         </ul>
         {% if is_granted('ROLE_ADMIN') %}
             <a class="product-detail-edit" href="{{ path('app_product_edit', {id: product.id}) }}">Modifier la fiche</a>

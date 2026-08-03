@@ -8,6 +8,7 @@
 {% block body %}
 
 <section class="product-catalogue">
+    {% include 'components/_page_close.html.twig' %}
     <header class="catalogue-header">
         <p>{{ products|length }} produits enregistrés</p>
     </header>
@@ -22,6 +23,13 @@
             <a href="{{ path('app_product_new') }}" class="catalogue-add"><i class="fa-solid fa-circle-plus"></i> Ajouter</a>
         {% endif %}
     </div>
+
+    <nav class="catalogue-categories" aria-label="Filtrer les produits par catégorie">
+        <a href="{{ path('app_product_index') }}" class="{{ selectedCategory is null ? 'is-active' }}">Tous</a>
+        {% for category in categories %}
+            <a href="{{ path('app_product_index', {categorie: category.value}) }}" class="{{ selectedCategory == category ? 'is-active' }}">{{ {fruit: 'Fruits', legume: 'Légumes', viande: 'Viandes', poisson: 'Poissons'}[category.value] }}</a>
+        {% endfor %}
+    </nav>
 
     <div class="product-table-wrap">
         <table class="product-table">
