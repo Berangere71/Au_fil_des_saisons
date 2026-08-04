@@ -55,6 +55,44 @@
 
 		</div>
 
+		<section class="profile-recettes">
+			<h2>Liste des recettes publiées</h2>
+			{% for season in seasons %}
+				{% set recettesDeSaison = publicRecettes|filter(recette => recette.primarySeason == season) %}
+				{% if recettesDeSaison is not empty %}
+					<div class="profile-recettes__season">
+						<h3>{{ season }}</h3>
+						{% for recette in recettesDeSaison %}
+							<a href="{{ path('app_recette_show', {id: recette.id}) }}">{{ recette.titre }}</a>{% if recette.id in favoriteRecipeIds %}<i class="fa-solid fa-heart profile-recettes__favorite" aria-label="Recette favorite" title="Recette favorite"></i>{% endif %}
+						{% endfor %}
+					</div>
+				{% endif %}
+			{% endfor %}
+		</section>
+
+		<section class="profile-recettes">
+			<h2>Liste de mes recettes</h2>
+			{% for season in seasons %}
+				{% set recettesDeSaison = myRecettes|filter(recette => recette.primarySeason == season) %}
+				{% if recettesDeSaison is not empty %}
+					<div class="profile-recettes__season">
+						<h3>{{ season }}</h3>
+						{% for recette in recettesDeSaison %}
+							<div class="profile-recettes__item{{ recette.statut.value != 'publiee' ? ' profile-recettes__item--draft' }}">
+								<div><a href="{{ path('app_recette_show', {id: recette.id}) }}">{{ recette.titre }}</a><a class="profile-recettes__edit" href="{{ path('app_recette_edit', {id: recette.id}) }}" aria-label="Modifier {{ recette.titre }}"><i class="fa-solid fa-pen"></i></a></div>
+								{% if recette.statut.value == 'publiee' %}<span class="profile-recettes__status profile-recettes__status--published">Publiée</span>
+								{% elseif recette.statut.value == 'attente' %}<form method="post" action="{{ path('app_recette_share', {id: recette.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('share-recette-' ~ recette.id) }}"><button class="profile-recettes__share" type="submit"><i class="fa-solid fa-share-nodes"></i> Publier pour tous</button></form>
+								{% else %}<span class="profile-recettes__status">Non publiée</span>{% endif %}
+							</div>
+						{% endfor %}
+					</div>
+				{% endif %}
+			{% else %}
+				<p>Vous n’avez pas encore créé de recette.</p>
+			{% endfor %}
+			<a href="{{ path('app_recette_new') }}" class="btn profile-recettes__add">Ajouter une recette</a>
+		</section>
+
 	</section>
 
 {% endblock %}

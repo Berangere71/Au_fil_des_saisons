@@ -1,0 +1,12 @@
+.profile-recettes { margin-top: 60px; }.profile-recettes h2 { color: #286129; font-size: 1.25rem; }.profile-recettes__season { margin: 12px 0; padding: 14px 18px; border-radius: 14px; background: #f2d29b; }.profile-recettes__season h3 { margin: 0 0 9px; color: #286129; font-size: 1rem; }.profile-recettes__season a { display: inline-block; margin: 5px 14px 5px 0; color: #286129; font-weight: 800; text-decoration: none; }.profile-recettes__season a:hover { text-decoration: underline; }.profile-recettes__edit { color: #7d9d5c !important; }.profile-recettes__add { display: block; width: max-content; margin: 35px auto 0; }
+
+.profile-recettes__item { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 56px; margin: 7px 0; padding: 8px 10px; border-radius: 9px; box-sizing: border-box; }
+.profile-recettes__item--draft { padding-right: 160px; background: #d8d8d3; color: #686868; }
+.profile-recettes__item--draft a { color: #686868; }
+.profile-recettes__item form { position: absolute; top: 50%; right: 12px; display: flex; align-items: center; margin: 0 !important; padding: 0 !important; transform: translateY(-50%); }
+.profile-recettes__share { border: 0; border-radius: 18px; padding: 8px 13px; background: #286129; color: #fff; font-weight: 800; cursor: pointer; }
+.profile-recettes__status { color: #686868; font-size: .85rem; font-weight: 800; }
+.profile-recettes__status--published { color: #286129; }
+.profile-recettes__favorite { margin-left: -7px; color: #d62828; font-size: 1rem; }
+
+@media (max-width: 600px) { .profile-recettes__item { align-items: flex-start; flex-direction: column; padding-right: 10px; }.profile-recettes__item form { position: static; transform: none; } }

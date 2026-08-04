@@ -1,21 +1,99 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil{% endblock %}
+{% block title %}Au fil des saisons - Fruits, légumes et recettes de saison{% endblock %}
 
-{% block hero_title %}Au fil des saisons{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+{% endblock %}
+
+{% block page_hero %}
+    <section class="hero home-hero">
+        <div class="home-hero__content">
+            <p class="home-hero__eyebrow">Mieux choisir, mieux cuisiner</p>
+            <h1>Au fil des saisons</h1>
+            <p class="home-hero__intro">
+                Retrouvez les produits du moment et cuisinez au rythme des récoltes françaises.
+            </p>
+            <a class="home-button home-button--primary" href="{{ path('app_product_index') }}">
+                <i class="fa-solid fa-seedling" aria-hidden="true"></i>
+                Voir les produits de saison
+            </a>
+        </div>
+    </section>
+{% endblock %}
+
+{% block main_class %}home-main{% endblock %}
 
 {% block body %}
+    <section class="home-section home-discover" aria-labelledby="home-discover-title">
+        <div class="home-section__heading">
+            <p class="home-kicker">Dans votre panier</p>
+            <h2 id="home-discover-title">Des idées fraîches pour la saison</h2>
+            <p>Identifiez ce qui se récolte maintenant, puis trouvez simplement comment le préparer.</p>
+        </div>
 
-<section class="home">
+        <div class="home-paths">
+            <a class="home-path home-path--products" href="{{ path('app_product_index') }}">
+                <span class="home-path__media">
+                    <img src="{{ asset('uploads/products/fraise-6a6a057f293ab.png') }}" alt="Fraises fraiches">
+                </span>
+                <span class="home-path__body">
+                    <span class="home-path__label">Le calendrier des récoltes</span>
+                    <strong>Explorer les produits</strong>
+                    <span>Fruits, légumes, aromates et conseils de conservation.</span>
+                    <span class="home-path__action">Consulter le catalogue <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+                </span>
+            </a>
 
-    <div class="container">
+            <a class="home-path home-path--recipes" href="{{ app.user ? path('app_recette_index') : path('app_login') }}">
+                <span class="home-path__media">
+                    <img src="{{ asset('uploads/recettes/tarte-aux-myrtilles-6a70687cbfb1d.jpg') }}" alt="Tarte aux myrtilles">
+                </span>
+                <span class="home-path__body">
+                    <span class="home-path__label">A table</span>
+                    <strong>Choisir une recette</strong>
+                    <span>Des inspirations partagées par une communauté de gourmands.</span>
+                    <span class="home-path__action">
+                        {{ app.user ? 'Voir les recettes' : 'Se connecter pour les voir' }}
+                        <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                    </span>
+                </span>
+            </a>
+        </div>
+    </section>
 
-        <p>
-            Découvrez les meilleurs produits de saison et cuisinez selon les récoltes françaises.
-        </p>
+    <section class="home-season" aria-labelledby="home-season-title">
+        <div class="home-season__content">
+            <p class="home-kicker">Pourquoi suivre les saisons ?</p>
+            <h2 id="home-season-title">Du goût, du bon sens et moins de distance</h2>
+            <p>
+                Choisir un produit à sa période naturelle, c'est profiter de meilleures saveurs et varier
+                son assiette tout au long de l'année.
+            </p>
+            <a class="home-button home-button--light" href="{{ path('app_product_index') }}">
+                Trouver un produit
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            </a>
+        </div>
 
-    </div>
+        <div class="home-season__list" aria-label="Les quatre saisons">
+            <span><i class="fa-solid fa-seedling" aria-hidden="true"></i> Printemps</span>
+            <span><i class="fa-solid fa-sun" aria-hidden="true"></i> Été</span>
+            <span><i class="fa-solid fa-leaf" aria-hidden="true"></i> Automne</span>
+            <span><i class="fa-solid fa-snowflake" aria-hidden="true"></i> Hiver</span>
+        </div>
+    </section>
 
-</section>
+    {% if not app.user %}
+        <section class="home-community" aria-labelledby="home-community-title">
+            <div>
+                <p class="home-kicker">Votre carnet de cuisine</p>
+                <h2 id="home-community-title">Gardez vos recettes préférées à portée de main</h2>
+                <p>Créez votre espace pour publier vos recettes, enregistrer vos favoris et échanger vos astuces.</p>
+            </div>
+            <a class="home-button home-button--primary" href="{{ path('app_register') }}">Creer mon compte</a>
+        </section>
+    {% endif %}
 
 {% endblock %}

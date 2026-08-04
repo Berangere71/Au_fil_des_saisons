@@ -7,11 +7,13 @@
 
 
 {% block body %}
+	{% include 'components/_page_close.html.twig' with {return_route: 'app_home'} %}
 
 
-	<section class="card">
+	<div class="auth-container">
+	<section class="auth-card auth-card--login">
 
-		<p class="page-subtitle">
+		<p class="subtitle">
 			Connectez-vous pour continuer
 		</p>
 
@@ -52,7 +54,7 @@
 
 		</form>
 
-		<p class="register-link">
+		<p class="auth-footer">
 
 			Pas encore de compte ?
 
@@ -65,5 +67,6 @@
 		</p>
 
 	</section>
+	</div>
 
 {% endblock %}

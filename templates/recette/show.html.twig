@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ recette.titre }}{% endblock %}
+{% block hero_title %}<i class="fa-solid fa-utensils"></i> Recette{% endblock %}
+
+{% block body %}
+<div class="recette-page">
+    {% include 'components/_page_close.html.twig' %}
+    <article class="recette-detail">
+        {% if recette.statut.value != 'publiee' %}
+            <div class="recette-pending recette-pending--top"><p><i class="fa-solid fa-lock"></i> Cette recette est un brouillon privé, visible uniquement par vous.</p>{% if recette.statut.value == 'attente' and recette.user == app.user %}<form method="post" action="{{ path('app_recette_share', {id: recette.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('share-recette-' ~ recette.id) }}"><button type="submit"><i class="fa-solid fa-share-nodes"></i> Publier la recette pour tous</button></form>{% endif %}</div>
+        {% endif %}
+
+        <header class="recette-detail__header">
+            <h1>{{ recette.titre }}</h1>
+            {% if recette.photo %}<img src="{{ asset('uploads/recettes/' ~ recette.photo) }}" alt="{{ recette.titre }}">{% endif %}
+
+            <dl>
+                <div><dt>Catégorie</dt><dd>{{ recette.typePlat.value|capitalize }}</dd></div>
+                <div><dt>Pour</dt><dd>{{ recette.nbrPerson }} personne(s)</dd></div>
+                <div><dt>Préparation</dt><dd>{{ recette.timePrepa ?? '—' }} minutes</dd></div>
+                <div><dt>Produits</dt><dd>{% for product in recette.products %}<a href="{{ path('app_product_show', {id: product.id}) }}">{{ product.nom }}</a>{{ not loop.last ? ', ' }}{% endfor %}</dd></div>
+                <div><dt>Saison principale</dt><dd>{{ recette.primarySeason ?? '—' }}</dd></div>
+                <div><dt>Autres saisons</dt><dd>{% for season in recette.otherSeasons %}{{ season }}{{ not loop.last ? ', ' }}{% else %}—{% endfor %}</dd></div>
+            </dl>
+
+            {% if recette.statut.value == 'publiee' %}
+                <div class="recette-social">
+                    <div class="recette-rating" aria-label="{{ averageRating is null ? 'Aucune note' : 'Note de ' ~ averageRating|number_format(1, ',', ' ') ~ ' sur 5' }}">
+                        <span class="recette-rating__stars" aria-hidden="true">{% for i in 1..5 %}<i class="{{ averageRating is not null and i <= averageRating|round ? 'fa-solid' : 'fa-regular' }} fa-star"></i>{% endfor %}</span>
+                        <span>{{ averageRating is null ? 'Pas encore de note' : averageRating|number_format(1, ',', ' ') ~ '/5' }}</span>
+                    </div>
+                    {% if not is_granted('ROLE_ADMIN') %}<form method="post" action="{{ path('app_recette_favorite', {id: recette.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('favorite-' ~ recette.id) }}"><button class="recette-favorite-button{{ isFavorite ? ' is-active' }}" type="submit" aria-label="{{ isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris' }}" title="{{ isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris' }}"><i class="{{ isFavorite ? 'fa-solid' : 'fa-regular' }} fa-heart"></i></button></form>{% endif %}
+                </div>
+            {% endif %}
+        </header>
+
+        <section class="recette-detail__section">
+            <h2>Ingrédients</h2>
+            <div class="recette-detail__content">{{ recette.ingredient|nl2br }}</div>
+        </section>
+
+        <section class="recette-detail__section">
+            <h2>Préparation</h2>
+            <div class="recette-detail__content"><ul class="recette-steps">{% for step in recette.preparationSteps %}<li>{{ step }}</li>{% endfor %}</ul></div>
+        </section>
+
+        {% if recette.isOven %}
+            <section class="recette-detail__section recette-detail__oven">
+                <h2><i class="fa-solid fa-temperature-high"></i> Cuisson au four</h2>
+                <div class="recette-detail__content"><strong>{{ recette.tempOven }} °C</strong> pendant <strong>{{ recette.timeOven }} min</strong>.</div>
+            </section>
+        {% endif %}
+
+    </article>
+
+    {% if recette.statut.value == 'publiee' %}
+        <section class="recette-comments">
+            <h2>Commentaires</h2>
+            <form class="recette-review-form" method="post" action="{{ path('app_recette_review', {id: recette.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('review-' ~ recette.id) }}">
+                <fieldset class="recette-star-input"><legend>Votre note</legend><div>{% for note in 5..1 %}<input id="recipe-note-{{ note }}" type="radio" name="note" value="{{ note }}" required><label for="recipe-note-{{ note }}" aria-label="{{ note }} étoile{{ note > 1 ? 's' }}"><i class="fa-solid fa-star"></i></label>{% endfor %}</div></fieldset>
+                <textarea name="commentaire" required placeholder="Partagez votre commentaire"></textarea>
+                <button type="submit">Publier mon commentaire</button>
+            </form>
+            {% for avisItem in avis %}
+                <article class="recette-comment{{ 'ROLE_ADMIN' in avisItem.user.roles ? ' recette-comment--admin' }}"><header><strong>{{ 'ROLE_ADMIN' in avisItem.user.roles ? 'Avis de l’administrateur' : avisItem.user.prenom }}</strong>{% if avisItem.note %}<span class="recette-rating__stars">{% for i in 1..5 %}<i class="{{ i <= avisItem.note ? 'fa-solid' : 'fa-regular' }} fa-star"></i>{% endfor %}</span>{% endif %}</header><p>{{ avisItem.commentaire }}</p>
+                    {% if not is_granted('ROLE_ADMIN') %}<details><summary>Répondre</summary><form method="post" action="{{ path('app_recette_reply', {id: recette.id, avis: avisItem.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('reply-' ~ avisItem.id) }}"><textarea name="commentaire" required placeholder="Votre réponse"></textarea><button type="submit">Répondre</button></form></details>
+                    <details><summary>Signaler ce commentaire</summary><form method="post" action="{{ path('app_recette_review_report', {id: recette.id, avis: avisItem.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('report-review-' ~ avisItem.id) }}"><input name="motif" required placeholder="Motif"><button type="submit">Signaler</button></form></details>{% endif %}
+                    {% for reponse in avisItem.reponses %}<div class="recette-reply"><strong>{{ reponse.user.prenom }}</strong><p>{{ reponse.commentaire }}</p></div>{% endfor %}
+                </article>
+            {% else %}<p>Aucun commentaire pour le moment.</p>{% endfor %}
+        </section>
+
+        {% if not is_granted('ROLE_ADMIN') %}<aside class="recette-report-panel">
+            <details class="recette-report"><summary><i class="fa-solid fa-triangle-exclamation"></i> Signaler cette recette</summary><form method="post" action="{{ path('app_recette_report', {id: recette.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('report-' ~ recette.id) }}"><textarea name="motif" required placeholder="Motif du signalement"></textarea><button type="submit">Envoyer le signalement</button></form></details>
+        </aside>{% endif %}
+    {% endif %}
+</div>
+{% endblock %}

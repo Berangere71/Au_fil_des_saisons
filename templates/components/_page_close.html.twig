@@ -1,0 +1,6 @@
+{% set destination = return_route|default(is_granted('ROLE_ADMIN') ? 'app_admin_dashboard' : (app.user ? 'app_profile' : 'app_home')) %}
+<nav class="page-close-bar" aria-label="Navigation de retour">
+    <a class="page-close-button" href="{{ path(destination) }}" aria-label="Fermer et revenir en arrière" title="Fermer">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+    </a>
+</nav>

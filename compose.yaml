@@ -1,21 +1,27 @@
 services:
 
+  # Application PHP/Symfony construite depuis le Dockerfile du projet.
   php:
     build:
+      # Le contexte permet au Dockerfile d'accéder aux fichiers du projet.
       context: .
       dockerfile: Dockerfile
 
     container_name: aufildessaisons_php
 
     volumes:
+      # Monte le code local dans le conteneur pour refléter les modifications.
       - .:/var/www/html
 
     ports:
+      # Rend l'application accessible sur http://localhost:8000.
       - "8000:8000"
 
     depends_on:
+      # Démarre le service MySQL avant le service PHP.
       - database
 
+  # Base de données MySQL utilisée par l'application.
   database:
     image: mysql:8.4
 
@@ -24,17 +30,21 @@ services:
     restart: always
 
     environment:
+      # Identifiants destinés à l'environnement local de développement.
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: aufildessaisons
       MYSQL_USER: symfony
       MYSQL_PASSWORD: symfony
 
     ports:
+      # Expose MySQL sur le port standard de la machine hôte.
       - "3306:3306"
 
     volumes:
+      # Conserve les données MySQL lorsque le conteneur est recréé.
       - mysql_data:/var/lib/mysql
 
+  # Interface web d'administration de la base de données.
   adminer:
     image: adminer
 
@@ -46,7 +56,9 @@ services:
       - database
 
     ports:
+      # Rend Adminer accessible sur http://localhost:8080.
       - "8080:8080"
 
+# Volume nommé géré par Docker pour la persistance de MySQL.
 volumes:
   mysql_data:

@@ -3,6 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Recette;
+use App\Entity\Season;
+use App\Entity\Favoris;
+use App\Enum\RecetteStatut;
 use App\Form\ChangePasswordType;
 use App\Form\ProfileType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,10 +23,21 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 final class ProfileController extends AbstractController
 {
     #[Route('/profile', name: 'app_profile')]
-    public function index(): Response
+    public function index(EntityManagerInterface $entityManager): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+        $favoriteRecipeIds = array_map(
+            static fn (Favoris $favori): ?int => $favori->getRecette()?->getId(),
+            $entityManager->getRepository(Favoris::class)->findBy(['user' => $user]),
+        );
+
         return $this->render('profile/index.html.twig', [
-            'user' => $this->getUser(),
+            'user' => $user,
+            'publicRecettes' => $entityManager->getRepository(Recette::class)->findBy(['statut' => RecetteStatut::PUBLIEE], ['createdAt' => 'DESC']),
+            'myRecettes' => $entityManager->getRepository(Recette::class)->findBy(['user' => $user], ['createdAt' => 'DESC']),
+            'seasons' => $entityManager->getRepository(Season::class)->findAll(),
+            'favoriteRecipeIds' => $favoriteRecipeIds,
         ]);
     }
 

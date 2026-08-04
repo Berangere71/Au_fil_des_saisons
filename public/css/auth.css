@@ -56,6 +56,9 @@
 
 }
 
+.auth-card--login form { padding-right: 30px; padding-left: 30px; }
+.auth-card--login .btn-primary { display: block; min-width: 190px; margin-right: auto; margin-left: auto; }
+
 .auth-footer{
 
     text-align:center;
