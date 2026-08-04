@@ -1,0 +1,326 @@
+.home-main.page-content {
+    max-width: none;
+    padding: 0 0 3.5rem;
+}
+
+.home-main.page-content > * {
+    max-width: 1080px;
+}
+
+.home-hero {
+    min-height: 430px;
+    height: auto;
+    padding: 54px 24px 72px;
+    box-sizing: border-box;
+    background-position: center;
+}
+
+.home-hero::after {
+    height: 100%;
+    background: linear-gradient(90deg, rgba(247, 243, 233, .96) 0%, rgba(247, 243, 233, .82) 48%, rgba(247, 243, 233, .2) 100%);
+}
+
+.home-hero__content {
+    position: relative;
+    z-index: 1;
+    width: min(1080px, 100%);
+    margin: 0 auto;
+    text-align: left;
+}
+
+.home-hero h1 {
+    max-width: 620px;
+    margin: 8px 0 14px;
+    color: var(--color-primary-dark);
+    font-size: clamp(2.6rem, 6vw, 4.7rem);
+    line-height: 1.02;
+    text-align: left;
+    letter-spacing: 0;
+}
+
+.home-hero__eyebrow,
+.home-kicker {
+    margin: 0;
+    color: #a85f00;
+    font-size: .8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0;
+}
+
+.home-hero__intro {
+    max-width: 570px;
+    margin: 0 0 26px;
+    color: #3d463d;
+    font-size: 1.12rem;
+    line-height: 1.65;
+}
+
+.home-button {
+    display: inline-flex;
+    min-height: 46px;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform .2s ease, background-color .2s ease;
+}
+
+.home-button:hover {
+    transform: translateY(-2px);
+}
+
+.home-button--primary {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+.home-button--primary:hover {
+    background: var(--color-primary-dark);
+}
+
+.home-section {
+    box-sizing: border-box;
+    padding: 68px 24px;
+}
+
+.home-section__heading {
+    max-width: 660px;
+    margin-bottom: 30px;
+}
+
+.home-section h2,
+.home-season h2,
+.home-community h2 {
+    margin: 7px 0 12px;
+    color: var(--color-primary-dark);
+    font-size: clamp(1.75rem, 4vw, 2.45rem);
+    line-height: 1.15;
+    letter-spacing: 0;
+}
+
+.home-section__heading > p:last-child,
+.home-season__content > p:last-of-type,
+.home-community p {
+    color: var(--color-text-light);
+    line-height: 1.7;
+}
+
+.home-paths {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.home-path {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: 42% 58%;
+    overflow: hidden;
+    border: 1px solid rgba(47, 94, 46, .18);
+    border-radius: 8px;
+    background: #fffdf8;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.home-path:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 26px rgba(35, 71, 35, .12);
+}
+
+.home-path__media {
+    min-height: 265px;
+    background: #f0c86f;
+}
+
+.home-path--recipes .home-path__media {
+    background: #dce8d5;
+}
+
+.home-path__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.home-path--products .home-path__media img {
+    object-fit: contain;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.home-path__body {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    justify-content: center;
+    padding: 26px 22px;
+}
+
+.home-path__label {
+    margin-bottom: 7px;
+    color: #a85f00;
+    font-size: .74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.home-path__body strong {
+    margin-bottom: 10px;
+    color: var(--color-primary-dark);
+    font-size: 1.35rem;
+    line-height: 1.2;
+}
+
+.home-path__body > span:not(.home-path__label):not(.home-path__action) {
+    color: var(--color-text-light);
+    font-size: .92rem;
+    line-height: 1.5;
+}
+
+.home-path__action {
+    margin-top: 22px;
+    color: var(--color-primary);
+    font-size: .88rem;
+    font-weight: 700;
+}
+
+.home-path__action i {
+    margin-left: 6px;
+}
+
+.home-season {
+    display: grid;
+    box-sizing: border-box;
+    grid-template-columns: minmax(0, 1.3fr) minmax(260px, .7fr);
+    gap: 48px;
+    align-items: center;
+    padding: 54px;
+    border-radius: 8px;
+    background: var(--color-primary-dark);
+    color: var(--color-white);
+}
+
+.home-season h2,
+.home-season__content > p:last-of-type {
+    color: var(--color-white);
+}
+
+.home-button--light {
+    margin-top: 12px;
+    background: #f2d39b;
+    color: var(--color-primary-dark);
+}
+
+.home-button--light:hover {
+    background: #f7e3be;
+}
+
+.home-season__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.home-season__list span {
+    display: flex;
+    min-height: 76px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid rgba(255, 255, 255, .25);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, .08);
+    font-size: .86rem;
+}
+
+.home-season__list i {
+    color: #f2d39b;
+    font-size: 1.25rem;
+}
+
+.home-community {
+    display: flex;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    padding: 68px 24px 24px;
+}
+
+.home-community > div {
+    max-width: 680px;
+}
+
+.home-community .home-button {
+    flex: 0 0 auto;
+}
+
+@media (max-width: 900px) {
+    .home-path {
+        grid-template-columns: 1fr;
+    }
+
+    .home-path__media {
+        min-height: 220px;
+    }
+}
+
+@media (max-width: 700px) {
+    .home-hero {
+        min-height: 410px;
+        padding: 48px 20px 62px;
+    }
+
+    .home-hero::after {
+        background: rgba(247, 243, 233, .83);
+    }
+
+    .home-paths,
+    .home-season {
+        grid-template-columns: 1fr;
+    }
+
+    .home-season {
+        gap: 32px;
+        margin-right: 16px !important;
+        margin-left: 16px !important;
+        padding: 36px 24px;
+    }
+
+    .home-community {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 420px) {
+    .home-hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .home-button {
+        width: 100%;
+    }
+
+    .home-section {
+        padding: 52px 16px;
+    }
+
+    .home-season__list {
+        grid-template-columns: 1fr;
+    }
+
+    .home-season__list span {
+        min-height: 60px;
+        flex-direction: row;
+    }
+}
