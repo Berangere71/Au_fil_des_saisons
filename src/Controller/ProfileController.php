@@ -31,11 +31,29 @@ final class ProfileController extends AbstractController
             static fn (Favoris $favori): ?int => $favori->getRecette()?->getId(),
             $entityManager->getRepository(Favoris::class)->findBy(['user' => $user]),
         );
+        $favoriteRecipes = [] === $favoriteRecipeIds
+            ? []
+            : $entityManager->getRepository(Recette::class)->findBy(
+                ['id' => $favoriteRecipeIds, 'statut' => RecetteStatut::PUBLIEE],
+                ['createdAt' => 'DESC'],
+            );
+        $allMyRecipes = $entityManager->getRepository(Recette::class)->findBy(['user' => $user], ['createdAt' => 'DESC']);
+        $myRecipesByTitle = [];
+        foreach ($allMyRecipes as $recipe) {
+            $normalizedTitle = mb_strtolower(trim($recipe->getTitre()));
+            $existingRecipe = $myRecipesByTitle[$normalizedTitle] ?? null;
+
+            if (null === $existingRecipe
+                || ($recipe->getStatut() === RecetteStatut::PUBLIEE && $existingRecipe->getStatut() !== RecetteStatut::PUBLIEE)
+            ) {
+                $myRecipesByTitle[$normalizedTitle] = $recipe;
+            }
+        }
 
         return $this->render('profile/index.html.twig', [
             'user' => $user,
-            'publicRecettes' => $entityManager->getRepository(Recette::class)->findBy(['statut' => RecetteStatut::PUBLIEE], ['createdAt' => 'DESC']),
-            'myRecettes' => $entityManager->getRepository(Recette::class)->findBy(['user' => $user], ['createdAt' => 'DESC']),
+            'publicRecettes' => $favoriteRecipes,
+            'myRecettes' => array_values($myRecipesByTitle),
             'seasons' => $entityManager->getRepository(Season::class)->findAll(),
             'favoriteRecipeIds' => $favoriteRecipeIds,
         ]);

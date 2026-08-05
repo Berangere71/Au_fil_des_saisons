@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Enum\ProductCategory;
 use App\Enum\RecetteStatut;
+use App\Enum\SeasonName;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,11 +25,23 @@ final class ProductController extends AbstractController
     public function index(Request $request, ProductRepository $productRepository): Response
     {
         $category = ProductCategory::tryFrom((string) $request->query->get('categorie'));
+        $season = SeasonName::tryFrom((string) $request->query->get('saison'));
+        $search = mb_substr(trim((string) $request->query->get('q')), 0, 100);
+        $products = $productRepository->findByFilters($category, $season, $search);
+        $productsByCategory = array_fill_keys(['fruit', 'legume', 'viande', 'poisson'], []);
+
+        foreach ($products as $product) {
+            $productsByCategory[$product->getCategory()->value][] = $product;
+        }
 
         return $this->render('product/index.html.twig', [
-            'products' => $productRepository->findBy($category ? ['category' => $category] : [], ['nom' => 'ASC']),
+            'products' => $products,
+            'productsByCategory' => $productsByCategory,
             'selectedCategory' => $category,
+            'selectedSeason' => $season,
+            'search' => $search,
             'categories' => ProductCategory::cases(),
+            'seasons' => SeasonName::cases(),
         ]);
     }
 

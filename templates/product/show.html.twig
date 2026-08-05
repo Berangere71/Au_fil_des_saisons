@@ -26,6 +26,15 @@
             </dl>
         </div>
 
+        <section class="product-detail-description" aria-labelledby="product-description-title">
+            <h2 id="product-description-title"><i class="fa-solid fa-seedling" aria-hidden="true"></i> À propos de ce produit</h2>
+            {% if product.description %}
+                <p>{{ product.description|nl2br }}</p>
+            {% else %}
+                <p class="product-detail-description__empty">La description de ce produit sera bientôt disponible.</p>
+            {% endif %}
+        </section>
+
         <h2>Liste des recettes :</h2>
         <ul class="product-recipe-list">
             {% for recette in publishedRecipes %}<li><span aria-hidden="true"></span><a href="{{ path('app_recette_show', {id: recette.id}) }}">{{ recette }}</a></li>{% else %}<li class="product-no-recipe">Aucune recette publiée pour le moment.</li>{% endfor %}

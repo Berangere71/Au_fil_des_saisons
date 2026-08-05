@@ -12,7 +12,7 @@
 
     <div class="header-icons">
 
-        <button class="icon-button" aria-label="Menu">
+        <button class="icon-button js-menu-open" type="button" aria-label="Ouvrir le menu" aria-controls="site-menu" aria-expanded="false">
             <i class="fa-solid fa-bars"></i>
         </button>
 
@@ -37,3 +37,61 @@
     </div>
 
 </header>
+
+<div class="site-menu-overlay" data-menu-overlay hidden>
+    <aside id="site-menu" class="site-menu" aria-label="Menu principal" aria-modal="true" role="dialog" tabindex="-1">
+        <button class="site-menu__close js-menu-close" type="button" aria-label="Fermer le menu">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+
+        <nav class="site-menu__nav" aria-label="Navigation principale">
+            <form class="site-menu__search" action="{{ path('app_search') }}" method="get" role="search">
+                <label class="visually-hidden" for="site-search">Rechercher un produit ou une recette</label>
+                <input id="site-search" name="q" type="search" placeholder="Produit ou recette…" minlength="2" maxlength="100" required>
+                <select name="type" aria-label="Type de résultat">
+                    <option value="all">Tout</option>
+                    <option value="products">Produits</option>
+                    <option value="recipes">Recettes</option>
+                </select>
+                <button type="submit" aria-label="Rechercher"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></button>
+            </form>
+
+            <a href="{{ path('app_home') }}" {{ app.request.attributes.get('_route') == 'app_home' ? 'aria-current="page"' }}>
+                <i class="fa-solid fa-house" aria-hidden="true"></i><span>Accueil</span>
+            </a>
+
+            <details class="site-menu__group" {{ app.request.attributes.get('_route') starts with 'app_product_' ? 'open' }}>
+                <summary {{ app.request.attributes.get('_route') starts with 'app_product_' ? 'aria-current="page"' }}>
+                    <i class="fa-solid fa-basket-shopping" aria-hidden="true"></i><span>Produits</span><i class="fa-solid fa-chevron-down site-menu__chevron" aria-hidden="true"></i>
+                </summary>
+                <div class="site-menu__submenu">
+                    <a href="{{ path('app_product_index') }}"><i class="fa-solid fa-border-all" aria-hidden="true"></i><span>Tous les produits</span></a>
+                    <a href="{{ path('app_product_index', {categorie: 'fruit'}) }}"><i class="fa-solid fa-apple-whole" aria-hidden="true"></i><span>Fruits</span></a>
+                    <a href="{{ path('app_product_index', {categorie: 'legume'}) }}"><i class="fa-solid fa-carrot" aria-hidden="true"></i><span>Légumes</span></a>
+                    <a href="{{ path('app_product_index', {categorie: 'viande'}) }}"><i class="fa-solid fa-drumstick-bite" aria-hidden="true"></i><span>Viandes</span></a>
+                    <a href="{{ path('app_product_index', {categorie: 'poisson'}) }}"><i class="fa-solid fa-fish" aria-hidden="true"></i><span>Poissons</span></a>
+                </div>
+            </details>
+
+            {% if app.user %}
+                <span class="site-menu__separator" aria-hidden="true"></span>
+                <a href="{{ path('app_product_index', {saison: 'printemps'}) }}"><i class="fa-solid fa-seedling" aria-hidden="true"></i><span>Printemps</span></a>
+                <a href="{{ path('app_product_index', {saison: 'ete'}) }}"><i class="fa-solid fa-sun" aria-hidden="true"></i><span>Été</span></a>
+                <a href="{{ path('app_product_index', {saison: 'automne'}) }}"><i class="fa-solid fa-leaf" aria-hidden="true"></i><span>Automne</span></a>
+                <a href="{{ path('app_product_index', {saison: 'hiver'}) }}"><i class="fa-solid fa-snowflake" aria-hidden="true"></i><span>Hiver</span></a>
+                <span class="site-menu__separator" aria-hidden="true"></span>
+                <a href="{{ path('app_profile') }}" {{ app.request.attributes.get('_route') starts with 'app_profile' ? 'aria-current="page"' }}>
+                    <i class="fa-solid fa-circle-user" aria-hidden="true"></i><span>Profil</span>
+                </a>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_admin_dashboard') }}"><i class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i><span>Administration</span></a>
+                {% endif %}
+                <a href="{{ path('app_logout') }}"><i class="fa-solid fa-power-off" aria-hidden="true"></i><span>Déconnexion</span></a>
+            {% else %}
+                <a href="{{ path('app_login') }}" {{ app.request.attributes.get('_route') == 'app_login' ? 'aria-current="page"' }}>
+                    <i class="fa-solid fa-circle-user" aria-hidden="true"></i><span>Connexion / Profil</span>
+                </a>
+            {% endif %}
+        </nav>
+    </aside>
+</div>
