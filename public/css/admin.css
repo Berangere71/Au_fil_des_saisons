@@ -22,6 +22,16 @@
 .admin-dashboard-disabled span { display: block; margin-top: 5px; font-size: .72rem; }
 .admin-dashboard-counts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 30px; }
 .admin-dashboard-counts div { padding: 17px 7px; border-radius: 25px; background: var(--color-card); text-align: center; }
+
+.admin-rating-summary { margin-top: 32px; padding: 22px; border: 1px solid rgba(47,94,46,.15); border-radius: 14px; background: #fffdf8; }
+.admin-rating-summary h2 { margin-top: 0; color: var(--color-primary); }
+.admin-rating-summary h2 i { color: var(--color-secondary); }
+.admin-rating-summary > p { color: var(--color-text-light); }
+.admin-rating-table-wrap { overflow-x: auto; }
+.admin-rating-table { width: 100%; border-collapse: collapse; }
+.admin-rating-table th, .admin-rating-table td { padding: 11px 13px; border-bottom: 1px solid rgba(47,94,46,.14); text-align: left; }
+.admin-rating-table th { color: var(--color-primary); }
+.admin-rating-table a { color: var(--color-primary); font-weight: 700; }
 .admin-dashboard-counts strong, .admin-dashboard-counts span { display: block; }
 .admin-dashboard-counts span { margin-top: 10px; font-size: 1.2rem; font-weight: 800; }
 

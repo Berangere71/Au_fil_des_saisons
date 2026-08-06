@@ -62,13 +62,26 @@ final class RecetteController extends AbstractController
 
             return ($bIsAdmin <=> $aIsAdmin) ?: ($b->getCreatedAt() <=> $a->getCreatedAt());
         });
-        $notes = array_filter(array_map(static fn (Avis $avis) => $avis->getNote(), $avis));
+        $notesByUser = [];
+        foreach (array_reverse($avis) as $avisItem) {
+            if (null !== $avisItem->getNote()) {
+                $notesByUser[$avisItem->getUser()?->getId()] = $avisItem->getNote();
+            }
+        }
+        $notes = array_values($notesByUser);
+        $currentUserReview = $entityManager->getRepository(Avis::class)->findOneBy([
+            'user' => $user,
+            'recette' => $recette,
+            'parentAvis' => null,
+        ], ['createdAt' => 'DESC']);
 
         return $this->render('recette/show.html.twig', [
             'recette' => $recette,
             'avis' => $avis,
             'isFavorite' => $entityManager->getRepository(Favoris::class)->findOneBy(['user' => $user, 'recette' => $recette]) !== null,
             'averageRating' => $notes === [] ? null : array_sum($notes) / count($notes),
+            'ratingCount' => count($notes),
+            'currentUserRating' => $currentUserReview?->getNote(),
         ]);
     }
 
@@ -103,12 +116,24 @@ final class RecetteController extends AbstractController
         if ($this->isCsrfTokenValid('review-'.$recette->getId(), (string) $request->request->get('_token'))) {
             $note = $request->request->getInt('note');
             $commentaire = trim((string) $request->request->get('commentaire'));
-            if ($note >= 1 && $note <= 5 && $commentaire !== '') {
+            if ($note >= 1 && $note <= 5) {
                 /** @var User $user */ $user = $this->getUser();
-                $entityManager->persist((new Avis())->setUser($user)->setRecette($recette)->setNote($note)->setCommentaire($commentaire));
+                $avis = $entityManager->getRepository(Avis::class)->findOneBy([
+                    'user' => $user,
+                    'recette' => $recette,
+                    'parentAvis' => null,
+                ], ['createdAt' => 'DESC']);
+                if (!$avis instanceof Avis) {
+                    $avis = (new Avis())->setUser($user)->setRecette($recette);
+                    $entityManager->persist($avis);
+                }
+                $avis->setNote($note);
+                if ('' !== $commentaire) {
+                    $avis->setCommentaire($commentaire);
+                }
                 $entityManager->flush();
-                $this->addFlash('success', 'Votre avis a été publié.');
-            } else { $this->addFlash('danger', 'Saisissez une note de 1 à 5 et un commentaire.'); }
+                $this->addFlash('success', 'Votre note a été enregistrée indépendamment de vos favoris.');
+            } else { $this->addFlash('danger', 'Choisissez une note comprise entre 1 et 5 étoiles.'); }
         }
         return $this->redirectToRoute('app_recette_show', ['id' => $recette->getId()]);
     }

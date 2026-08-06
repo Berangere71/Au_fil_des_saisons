@@ -43,9 +43,19 @@
     <section class="recette-form__section recette-form__products">
         <h2>Choisir le ou les produits associés à votre recette</h2>
         {{ form_row(recetteForm.productCategory) }}
-        {{ form_widget(recetteForm.products) }}
+        <div class="recette-product-search" hidden>
+            <label for="recette-product-query">Rechercher dans les produits affichés</label>
+            <div>
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input id="recette-product-query" type="search" placeholder="Ex. pêche, carotte…" autocomplete="off">
+            </div>
+        </div>
+        <p class="recette-product-message" aria-live="polite">Choisissez une catégorie pour afficher les produits.</p>
+        <div class="recette-product-list" hidden>
+            {{ form_widget(recetteForm.products) }}
+        </div>
         {{ form_errors(recetteForm.products) }}
-        <p class="recette-form__help">Sélectionnez au moins un produit pour enregistrer la recette.</p>
+        <p class="recette-form__help"><span class="js-selected-product-count">0 produit sélectionné</span>. Vous pouvez changer de catégorie sans perdre les produits déjà cochés.</p>
         <div class="recette-form__publication">{{ form_row(recetteForm.isPublic) }}</div>
     </section>
     <div class="recette-form__actions"><a href="{{ path(is_granted('ROLE_ADMIN') ? 'app_admin_dashboard' : 'app_profile') }}">Annuler</a><button class="btn-save" type="submit">Enregistrer</button></div>

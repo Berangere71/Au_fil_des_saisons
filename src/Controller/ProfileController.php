@@ -6,6 +6,8 @@ use App\Entity\User;
 use App\Entity\Recette;
 use App\Entity\Season;
 use App\Entity\Favoris;
+use App\Entity\Avis;
+use App\Entity\ResetPasswordRequest;
 use App\Enum\RecetteStatut;
 use App\Form\ChangePasswordType;
 use App\Form\ProfileType;
@@ -18,6 +20,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 #[IsGranted('ROLE_USER')]
 final class ProfileController extends AbstractController
@@ -167,6 +170,90 @@ final class ProfileController extends AbstractController
         return $this->render('profile/password.html.twig', [
             'passwordForm' => $form->createView(),
         ]);
+    }
+
+    #[Route('/profile/delete', name: 'app_profile_delete', methods: ['POST'])]
+    public function deleteAccount(
+        Request $request,
+        UserPasswordHasherInterface $passwordHasher,
+        EntityManagerInterface $entityManager,
+        TokenStorageInterface $tokenStorage,
+    ): Response {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if ($this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Le compte administrateur ne peut pas être supprimé depuis cette page.');
+        }
+
+        if (!$this->isCsrfTokenValid('delete-account-'.$user->getId(), (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton de sécurité invalide.');
+        }
+
+        if ('1' !== $request->request->get('confirm_delete')) {
+            $this->addFlash('danger', 'Vous devez confirmer la suppression définitive du compte.');
+
+            return $this->redirectToRoute('app_profile');
+        }
+
+        $password = (string) $request->request->get('current_password');
+        if (!$passwordHasher->isPasswordValid($user, $password)) {
+            $this->addFlash('danger', 'Le mot de passe actuel est incorrect. Le compte n’a pas été supprimé.');
+
+            return $this->redirectToRoute('app_profile');
+        }
+
+        $userPhoto = $user->getPhoto();
+        $recipePhotos = [];
+        $userRecipes = $entityManager->getRepository(Recette::class)->findBy(['user' => $user]);
+        foreach ($userRecipes as $recipe) {
+            if (null !== $recipe->getPhoto()) {
+                $recipePhotos[] = $recipe->getPhoto();
+            }
+            $entityManager->remove($recipe);
+        }
+
+        // Données créées par l'utilisateur sur les recettes des autres membres.
+        foreach ($entityManager->getRepository(Favoris::class)->findBy(['user' => $user]) as $favorite) {
+            if ($favorite->getRecette()?->getUser() !== $user) {
+                $entityManager->remove($favorite);
+            }
+        }
+        foreach ($entityManager->getRepository(Avis::class)->findBy(['user' => $user]) as $review) {
+            if ($review->getRecette()?->getUser() !== $user) {
+                $entityManager->remove($review);
+            }
+        }
+        foreach ($entityManager->getRepository(ResetPasswordRequest::class)->findBy(['user' => $user]) as $resetRequest) {
+            $entityManager->remove($resetRequest);
+        }
+
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+        $this->deleteUploadedFile($this->getParameter('users_directory'), $userPhoto);
+        foreach ($recipePhotos as $recipePhoto) {
+            $this->deleteUploadedFile($this->getParameter('recette_images_directory'), $recipePhoto);
+        }
+
+        $tokenStorage->setToken(null);
+        if ($request->hasSession()) {
+            $request->getSession()->invalidate();
+        }
+
+        return $this->redirectToRoute('app_home');
+    }
+
+    private function deleteUploadedFile(string $directory, ?string $filename): void
+    {
+        if (null === $filename || '' === $filename) {
+            return;
+        }
+
+        $path = $directory.'/'.$filename;
+        if (is_file($path)) {
+            unlink($path);
+        }
     }
 
 }

@@ -53,7 +53,7 @@ final class HomeController extends AbstractController
         $calendarCategoryCounts = array_fill_keys(array_keys($categoryOrder), 0);
         foreach ($currentProducts as $product) {
             $category = $product->getCategory()->value;
-            if ($calendarCategoryCounts[$category] >= 5) {
+            if ($calendarCategoryCounts[$category] >= 1) {
                 continue;
             }
 

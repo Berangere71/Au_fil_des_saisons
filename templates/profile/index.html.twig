@@ -109,5 +109,28 @@
                 <p class="profile-empty-state"><i class="fa-solid fa-book-open"></i> Vous n’avez pas encore créé de recette.</p>
             {% endif %}
         </section>
+
+        {% if not is_granted('ROLE_ADMIN') %}
+            <section class="profile-danger-zone" aria-labelledby="delete-account-title">
+                <div>
+                    <p class="profile-eyebrow">Zone sensible</p>
+                    <h2 id="delete-account-title">Supprimer mon compte</h2>
+                    <p>Cette action supprime définitivement votre profil, vos recettes, vos favoris et vos avis. Elle ne peut pas être annulée.</p>
+                </div>
+                <details>
+                    <summary><i class="fa-solid fa-user-xmark" aria-hidden="true"></i> Demander la suppression</summary>
+                    <form method="post" action="{{ path('app_profile_delete') }}" onsubmit="return confirm('Confirmez-vous la suppression définitive de votre compte et de toutes vos recettes ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete-account-' ~ user.id) }}">
+                        <label for="delete-account-password">Mot de passe actuel</label>
+                        <input id="delete-account-password" name="current_password" type="password" autocomplete="current-password" required>
+                        <label class="profile-delete-confirmation">
+                            <input name="confirm_delete" type="checkbox" value="1" required>
+                            Je comprends que cette suppression est définitive.
+                        </label>
+                        <button type="submit"><i class="fa-solid fa-trash" aria-hidden="true"></i> Supprimer définitivement mon compte</button>
+                    </form>
+                </details>
+            </section>
+        {% endif %}
     </section>
 {% endblock %}

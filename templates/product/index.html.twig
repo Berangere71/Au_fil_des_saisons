@@ -20,7 +20,7 @@
         <i class="fa-solid {{ seasonMeta[selectedSeason.value].icon }}" aria-hidden="true"></i>
         {{ seasonMeta[selectedSeason.value].label }}
     {% else %}
-        <i class="fa-solid fa-basket-shopping" aria-hidden="true"></i> Gestion des produits
+        <i class="fa-solid fa-basket-shopping" aria-hidden="true"></i> Catalogue des produits
     {% endif %}
 {% endblock %}
 
@@ -30,6 +30,9 @@
     {% if selectedSeason %}
         <section class="season-catalogue" aria-label="Catalogue des produits de {{ seasonMeta[selectedSeason.value].label }}">
             <nav class="season-catalogue__switcher" aria-label="Changer de saison">
+                <a href="{{ path('app_product_index') }}">
+                    <i class="fa-solid fa-border-all" aria-hidden="true"></i> Tous les produits
+                </a>
                 {% for season in seasons %}
                     <a href="{{ path('app_product_index', {saison: season.value}) }}" class="{{ selectedSeason == season ? 'is-active' }}">
                         {{ seasonMeta[season.value].label }}
@@ -84,6 +87,11 @@
                     <h1 id="catalogue-season-title">Choisir une saison</h1>
                 </header>
                 <nav aria-label="Choisir une saison">
+                    <a href="{{ path('app_product_index') }}#catalogue-list-title" class="catalogue-season-card catalogue-season-card--all">
+                        <i class="fa-solid fa-border-all" aria-hidden="true"></i>
+                        <strong>Tous les produits</strong>
+                        <span>Afficher le catalogue complet</span>
+                    </a>
                     {% for season in seasons %}
                         <a href="{{ path('app_product_index', {saison: season.value}) }}" class="catalogue-season-card catalogue-season-card--{{ season.value }}">
                             <i class="fa-solid {{ seasonMeta[season.value].icon }}" aria-hidden="true"></i>

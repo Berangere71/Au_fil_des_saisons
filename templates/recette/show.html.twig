@@ -28,7 +28,7 @@
                 <div class="recette-social">
                     <div class="recette-rating" aria-label="{{ averageRating is null ? 'Aucune note' : 'Note de ' ~ averageRating|number_format(1, ',', ' ') ~ ' sur 5' }}">
                         <span class="recette-rating__stars" aria-hidden="true">{% for i in 1..5 %}<i class="{{ averageRating is not null and i <= averageRating|round ? 'fa-solid' : 'fa-regular' }} fa-star"></i>{% endfor %}</span>
-                        <span>{{ averageRating is null ? 'Pas encore de note' : averageRating|number_format(1, ',', ' ') ~ '/5' }}</span>
+                        <span>{{ averageRating is null ? 'Pas encore de note' : averageRating|number_format(1, ',', ' ') ~ '/5 · ' ~ ratingCount ~ ' vote' ~ (ratingCount > 1 ? 's' : '') }}</span>
                     </div>
                     {% if not is_granted('ROLE_ADMIN') %}<form method="post" action="{{ path('app_recette_favorite', {id: recette.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('favorite-' ~ recette.id) }}"><button class="recette-favorite-button{{ isFavorite ? ' is-active' }}" type="submit" aria-label="{{ isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris' }}" title="{{ isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris' }}"><i class="{{ isFavorite ? 'fa-solid' : 'fa-regular' }} fa-heart"></i></button></form>{% endif %}
                 </div>
@@ -56,15 +56,16 @@
 
     {% if recette.statut.value == 'publiee' %}
         <section class="recette-comments">
-            <h2>Commentaires</h2>
+            <h2>Notes et commentaires</h2>
+            <p class="recette-review-help"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> La note est enregistrée même si la recette n’est pas ajoutée à vos favoris. Le commentaire est facultatif.</p>
             <form class="recette-review-form" method="post" action="{{ path('app_recette_review', {id: recette.id}) }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('review-' ~ recette.id) }}">
-                <fieldset class="recette-star-input"><legend>Votre note</legend><div>{% for note in 5..1 %}<input id="recipe-note-{{ note }}" type="radio" name="note" value="{{ note }}" required><label for="recipe-note-{{ note }}" aria-label="{{ note }} étoile{{ note > 1 ? 's' }}"><i class="fa-solid fa-star"></i></label>{% endfor %}</div></fieldset>
-                <textarea name="commentaire" required placeholder="Partagez votre commentaire"></textarea>
-                <button type="submit">Publier mon commentaire</button>
+                <fieldset class="recette-star-input"><legend>Votre note</legend><div>{% for note in 5..1 %}<input id="recipe-note-{{ note }}" type="radio" name="note" value="{{ note }}"{{ currentUserRating == note ? ' checked' }} required><label for="recipe-note-{{ note }}" aria-label="{{ note }} étoile{{ note > 1 ? 's' }}"><i class="fa-solid fa-star"></i></label>{% endfor %}</div></fieldset>
+                <textarea name="commentaire" placeholder="Ajouter un commentaire (facultatif)"></textarea>
+                <button type="submit">{{ currentUserRating ? 'Mettre à jour ma note' : 'Enregistrer ma note' }}</button>
             </form>
             {% for avisItem in avis %}
-                <article class="recette-comment{{ 'ROLE_ADMIN' in avisItem.user.roles ? ' recette-comment--admin' }}"><header><strong>{{ 'ROLE_ADMIN' in avisItem.user.roles ? 'Avis de l’administrateur' : avisItem.user.prenom }}</strong>{% if avisItem.note %}<span class="recette-rating__stars">{% for i in 1..5 %}<i class="{{ i <= avisItem.note ? 'fa-solid' : 'fa-regular' }} fa-star"></i>{% endfor %}</span>{% endif %}</header><p>{{ avisItem.commentaire }}</p>
+                <article class="recette-comment{{ 'ROLE_ADMIN' in avisItem.user.roles ? ' recette-comment--admin' }}"><header><strong>{{ 'ROLE_ADMIN' in avisItem.user.roles ? 'Avis de l’administrateur' : avisItem.user.prenom }}</strong>{% if avisItem.note %}<span class="recette-rating__stars">{% for i in 1..5 %}<i class="{{ i <= avisItem.note ? 'fa-solid' : 'fa-regular' }} fa-star"></i>{% endfor %}</span>{% endif %}</header>{% if avisItem.commentaire %}<p>{{ avisItem.commentaire }}</p>{% endif %}
                     {% if not is_granted('ROLE_ADMIN') %}<details><summary>Répondre</summary><form method="post" action="{{ path('app_recette_reply', {id: recette.id, avis: avisItem.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('reply-' ~ avisItem.id) }}"><textarea name="commentaire" required placeholder="Votre réponse"></textarea><button type="submit">Répondre</button></form></details>
                     <details><summary>Signaler ce commentaire</summary><form method="post" action="{{ path('app_recette_review_report', {id: recette.id, avis: avisItem.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('report-review-' ~ avisItem.id) }}"><input name="motif" required placeholder="Motif"><button type="submit">Signaler</button></form></details>{% endif %}
                     {% for reponse in avisItem.reponses %}<div class="recette-reply"><strong>{{ reponse.user.prenom }}</strong><p>{{ reponse.commentaire }}</p></div>{% endfor %}

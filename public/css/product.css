@@ -62,7 +62,7 @@ main.product-standalone-main { min-height: 0; padding: 0; }
 .catalogue-season-choice h1 { font-size: clamp(1.55rem, 3vw, 2.2rem); }
 .catalogue-product-filters h2, .catalogue-product-list h2 { font-size: clamp(1.2rem, 2.4vw, 1.65rem); }
 .catalogue-season-choice > header, .catalogue-product-filters > header { margin-bottom: 15px; }
-.catalogue-season-choice nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; }
+.catalogue-season-choice nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 13px; }
 .catalogue-season-card { position: relative; display: grid; min-height: 118px; box-sizing: border-box; align-content: center; justify-items: start; overflow: hidden; padding: 17px; border: 1px solid rgba(47,94,46,.16); border-radius: 12px; color: var(--color-primary); text-decoration: none; transition: transform .2s ease, box-shadow .2s ease; }
 .catalogue-season-card::after { position: absolute; right: -10px; bottom: -20px; color: currentColor; font: var(--fa-font-solid); font-size: 5.2rem; opacity: .1; content: '\f06c'; transform: rotate(-12deg); }
 .catalogue-season-card:hover { transform: translateY(-3px); box-shadow: 0 9px 18px rgba(35,71,35,.12); }
@@ -70,6 +70,7 @@ main.product-standalone-main { min-height: 0; padding: 0; }
 .catalogue-season-card strong { position: relative; z-index: 1; font-size: 1.05rem; }
 .catalogue-season-card span { position: relative; z-index: 1; margin-top: 3px; font-size: .67rem; font-weight: 600; }
 .catalogue-season-card--printemps { background: #e4f0d7; }.catalogue-season-card--ete { background: #fff0bd; }.catalogue-season-card--automne { background: #f6d2ad; }.catalogue-season-card--hiver { background: #dcecf2; }
+.catalogue-season-card--all { background: #edf3e7; }
 .catalogue-product-filters { padding: 20px; border-radius: 12px; background: #fffaf0; }
 .catalogue-product-filters .catalogue-categories { margin: 0; }
 .catalogue-product-filters .catalogue-categories a { display: inline-flex; align-items: center; gap: 7px; }
