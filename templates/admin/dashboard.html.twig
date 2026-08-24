@@ -18,5 +18,26 @@
         <div><strong>Utilisateurs</strong><span>{{ userCount }}</span></div>
         <div><strong>Recettes</strong><span>{{ recipeCount }}</span></div>
     </div>
+
+    <section class="admin-rating-summary" aria-labelledby="admin-rating-title">
+        <h2 id="admin-rating-title"><i class="fa-solid fa-star"></i> Notes cumulées des recettes</h2>
+        <p>Chaque utilisateur compte une seule fois par recette. Une nouvelle note remplace sa note précédente.</p>
+        <div class="admin-rating-table-wrap">
+            <table class="admin-rating-table">
+                <thead><tr><th>Recette</th><th>Note moyenne</th><th>Nombre de votes</th></tr></thead>
+                <tbody>
+                {% for rating in recipeRatings %}
+                    <tr>
+                        <td><a href="{{ path('app_recette_show', {id: rating.recette.id}) }}">{{ rating.recette.titre }}</a></td>
+                        <td>{{ rating.average is null ? 'Pas encore notée' : rating.average|number_format(1, ',', ' ') ~ '/5' }}</td>
+                        <td>{{ rating.count }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="3">Aucune recette disponible.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
 </section>
 {% endblock %}

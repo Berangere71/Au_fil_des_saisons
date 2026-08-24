@@ -1,62 +1,170 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Produits
+{% set seasonMeta = {
+    printemps: {label: 'Printemps', icon: 'fa-seedling'},
+    ete: {label: 'Été', icon: 'fa-sun'},
+    automne: {label: 'Automne', icon: 'fa-leaf'},
+    hiver: {label: 'Hiver', icon: 'fa-snowflake'}
+} %}
+{% set categoryMeta = {
+    fruit: {label: 'Fruits', icon: 'fa-apple-whole'},
+    legume: {label: 'Légumes', icon: 'fa-carrot'},
+    viande: {label: 'Viandes', icon: 'fa-drumstick-bite'},
+    poisson: {label: 'Poissons', icon: 'fa-fish'}
+} %}
+
+{% block title %}{{ selectedSeason ? 'Produits de saison – ' ~ seasonMeta[selectedSeason.value].label : 'Produits' }}{% endblock %}
+
+{% block hero_title %}
+    {% if selectedSeason %}
+        <i class="fa-solid {{ seasonMeta[selectedSeason.value].icon }}" aria-hidden="true"></i>
+        {{ seasonMeta[selectedSeason.value].label }}
+    {% else %}
+        <i class="fa-solid fa-basket-shopping" aria-hidden="true"></i> Catalogue des produits
+    {% endif %}
 {% endblock %}
 
-{% block hero_title %}<i class="fa-solid fa-basket-shopping"></i> Gestion des produits{% endblock %}
-
 {% block body %}
-
-<section class="product-catalogue">
     {% include 'components/_page_close.html.twig' %}
-    <header class="catalogue-header">
-        <p>{{ products|length }} produits enregistrés</p>
-    </header>
 
-    <div class="catalogue-toolbar">
-        <label class="catalogue-search">
-            <span class="visually-hidden">Rechercher un produit</span>
-            <input type="search" placeholder="Rechercher un produit…" disabled>
-            <i class="fa-solid fa-magnifying-glass"></i>
-        </label>
-        {% if is_granted('ROLE_ADMIN') %}
-            <a href="{{ path('app_product_new') }}" class="catalogue-add"><i class="fa-solid fa-circle-plus"></i> Ajouter</a>
-        {% endif %}
-    </div>
+    {% if selectedSeason %}
+        <section class="season-catalogue" aria-label="Catalogue des produits de {{ seasonMeta[selectedSeason.value].label }}">
+            <nav class="season-catalogue__switcher" aria-label="Changer de saison">
+                <a href="{{ path('app_product_index') }}">
+                    <i class="fa-solid fa-border-all" aria-hidden="true"></i> Tous les produits
+                </a>
+                {% for season in seasons %}
+                    <a href="{{ path('app_product_index', {saison: season.value}) }}" class="{{ selectedSeason == season ? 'is-active' }}">
+                        {{ seasonMeta[season.value].label }}
+                    </a>
+                {% endfor %}
+            </nav>
 
-    <nav class="catalogue-categories" aria-label="Filtrer les produits par catégorie">
-        <a href="{{ path('app_product_index') }}" class="{{ selectedCategory is null ? 'is-active' }}">Tous</a>
-        {% for category in categories %}
-            <a href="{{ path('app_product_index', {categorie: category.value}) }}" class="{{ selectedCategory == category ? 'is-active' }}">{{ {fruit: 'Fruits', legume: 'Légumes', viande: 'Viandes', poisson: 'Poissons'}[category.value] }}</a>
-        {% endfor %}
-    </nav>
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_product_new') }}" class="season-catalogue__add"><i class="fa-solid fa-circle-plus"></i> Ajouter un produit</a>
+            {% endif %}
 
-    <div class="product-table-wrap">
-        <table class="product-table">
-            <thead><tr><th>Nom</th><th>Saison</th><th>Récolte début</th><th>Récolte fin</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
-            <tbody>
-            {% for product in products %}
-                <tr>
-                    <td><a href="{{ path('app_product_show', {id: product.id}) }}">{{ product.nom }}</a></td>
-                    <td>{% for season in product.seasons %}{{ season }}{{ not loop.last ? ', ' }}{% else %}—{% endfor %}</td>
-                    <td>{{ product.debutRecolteMois }}</td>
-                    <td>{{ product.finRecolteMois }}</td>
-                    <td class="product-row-actions">
-                        {% if is_granted('ROLE_ADMIN') %}
-                            <a href="{{ path('app_product_edit', {id: product.id}) }}" aria-label="Modifier {{ product.nom }}"><i class="fa-solid fa-pen"></i></a>
-                            <form method="post" action="{{ path('app_product_delete', {id: product.id}) }}" onsubmit="return confirm('Supprimer définitivement ce produit ?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete_product_' ~ product.id) }}">
-                                <button type="submit" aria-label="Supprimer {{ product.nom }}"><i class="fa-solid fa-trash"></i></button>
-                            </form>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% else %}
-                <tr><td colspan="5" class="product-table-empty">Aucun produit enregistré.{% if is_granted('ROLE_ADMIN') %} <a href="{{ path('app_product_new') }}">Ajouter le premier produit</a>.{% endif %}</td></tr>
+            {% for key, meta in categoryMeta %}
+                <section class="season-category" aria-labelledby="season-category-{{ key }}">
+                    <header class="season-category__header">
+                        <h2 id="season-category-{{ key }}"><i class="fa-solid {{ meta.icon }}" aria-hidden="true"></i> {{ meta.label }} :</h2>
+                        <div class="season-carousel__controls" aria-label="Faire défiler les {{ meta.label|lower }}">
+                            <button type="button" data-carousel-previous aria-label="Produits précédents"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+                            <button type="button" data-carousel-next aria-label="Produits suivants"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+                        </div>
+                    </header>
+                    <div class="season-category__products" data-product-carousel tabindex="0" aria-label="Liste défilable des {{ meta.label|lower }} de {{ seasonMeta[selectedSeason.value].label }}">
+                        {% for product in productsByCategory[key] %}
+                            <article class="season-product-card">
+                                <a href="{{ path('app_product_show', {id: product.id}) }}">
+                                    <span class="season-product-card__image">
+                                        {% if product.photo %}
+                                            <img src="{{ asset('uploads/products/' ~ product.photo) }}" alt="{{ product.nom }}">
+                                        {% else %}
+                                            <i class="fa-regular fa-image" aria-hidden="true"></i>
+                                        {% endif %}
+                                    </span>
+                                    <strong>{{ product.nom }}</strong>
+                                    {% if product.availableAllYear %}
+                                        <span class="product-year-badge"><i class="fa-solid fa-infinity" aria-hidden="true"></i> Toute l’année</span>
+                                    {% endif %}
+                                    <small>{{ product.debutRecolteMois }} – {{ product.finRecolteMois }}</small>
+                                </a>
+                            </article>
+                        {% else %}
+                            <article class="season-product-card season-product-card--empty">
+                                <span class="season-product-card__image"><i class="fa-solid {{ meta.icon }}" aria-hidden="true"></i></span>
+                                <strong>Aucun produit</strong>
+                                <small>pour cette saison</small>
+                            </article>
+                        {% endfor %}
+                    </div>
+                </section>
             {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</section>
+        </section>
+    {% else %}
+        <section class="product-catalogue">
+            <section class="catalogue-season-choice" aria-labelledby="catalogue-season-title">
+                <header>
+                    <p>Explorer au fil de l’année</p>
+                    <h1 id="catalogue-season-title">Choisir une saison</h1>
+                </header>
+                <nav aria-label="Choisir une saison">
+                    <a href="{{ path('app_product_index') }}#catalogue-list-title" class="catalogue-season-card catalogue-season-card--all">
+                        <i class="fa-solid fa-border-all" aria-hidden="true"></i>
+                        <strong>Tous les produits</strong>
+                        <span>Afficher le catalogue complet</span>
+                    </a>
+                    {% for season in seasons %}
+                        <a href="{{ path('app_product_index', {saison: season.value}) }}" class="catalogue-season-card catalogue-season-card--{{ season.value }}">
+                            <i class="fa-solid {{ seasonMeta[season.value].icon }}" aria-hidden="true"></i>
+                            <strong>{{ seasonMeta[season.value].label }}</strong>
+                            <span>Voir les produits</span>
+                        </a>
+                    {% endfor %}
+                </nav>
+            </section>
 
+            <section class="catalogue-product-filters" aria-labelledby="catalogue-filter-title">
+                <header>
+                    <p>Affiner le catalogue</p>
+                    <h2 id="catalogue-filter-title">Filtrer les produits</h2>
+                </header>
+                <nav class="catalogue-categories" aria-label="Filtrer les produits par catégorie">
+                    <a href="{{ path('app_product_index', {q: search ?: null}) }}" class="{{ selectedCategory is null ? 'is-active' }}"><i class="fa-solid fa-border-all"></i> Tous</a>
+                    {% for category in categories %}
+                        <a href="{{ path('app_product_index', {categorie: category.value, q: search ?: null}) }}" class="{{ selectedCategory == category ? 'is-active' }}"><i class="fa-solid {{ categoryMeta[category.value].icon }}"></i> {{ categoryMeta[category.value].label }}</a>
+                    {% endfor %}
+                </nav>
+            </section>
+
+            <section class="catalogue-product-list" aria-labelledby="catalogue-list-title">
+                <header class="catalogue-header">
+                    <div><p>Votre sélection</p><h2 id="catalogue-list-title">Liste des produits</h2></div>
+                    <span>{{ products|length }} produit{{ products|length > 1 ? 's' }} trouvé{{ products|length > 1 ? 's' }}</span>
+                </header>
+
+                <div class="catalogue-toolbar">
+                    <form class="catalogue-search" action="{{ path('app_product_index') }}" method="get" role="search">
+                        {% if selectedCategory %}<input type="hidden" name="categorie" value="{{ selectedCategory.value }}">{% endif %}
+                        <label class="visually-hidden" for="catalogue-query">Rechercher un produit</label>
+                        <input id="catalogue-query" name="q" type="search" value="{{ search }}" placeholder="Rechercher un produit…" maxlength="100">
+                        <button type="submit" aria-label="Rechercher"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </form>
+                    {% if is_granted('ROLE_ADMIN') %}<a href="{{ path('app_product_new') }}" class="catalogue-add"><i class="fa-solid fa-circle-plus"></i> Ajouter</a>{% endif %}
+                </div>
+
+                <div class="product-table-wrap">
+                <table class="product-table">
+                    <thead><tr><th>Nom</th><th>Saison</th><th>Récolte début</th><th>Récolte fin</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
+                    <tbody>
+                    {% for product in products %}
+                        <tr>
+                            <td><a href="{{ path('app_product_show', {id: product.id}) }}">{{ product.nom }}</a></td>
+                            <td>
+                                {% if product.availableAllYear %}
+                                    <span class="product-year-badge product-year-badge--inline"><i class="fa-solid fa-infinity" aria-hidden="true"></i> Toute l’année</span>
+                                {% endif %}
+                                {% for season in product.seasons %}{{ season }}{{ not loop.last ? ', ' }}{% else %}—{% endfor %}
+                            </td>
+                            <td>{{ product.debutRecolteMois }}</td><td>{{ product.finRecolteMois }}</td>
+                            <td class="product-row-actions">
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <a href="{{ path('app_product_edit', {id: product.id}) }}" aria-label="Modifier {{ product.nom }}"><i class="fa-solid fa-pen"></i></a>
+                                    <form method="post" action="{{ path('app_product_delete', {id: product.id}) }}" onsubmit="return confirm('Supprimer définitivement ce produit ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_product_' ~ product.id) }}">
+                                        <button type="submit" aria-label="Supprimer {{ product.nom }}"><i class="fa-solid fa-trash"></i></button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="5" class="product-table-empty">Aucun produit ne correspond à ces critères.{% if search or selectedCategory %} <a href="{{ path('app_product_index') }}">Réinitialiser les filtres</a>.{% elseif is_granted('ROLE_ADMIN') %} <a href="{{ path('app_product_new') }}">Ajouter le premier produit</a>.{% endif %}</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+            </section>
+        </section>
+    {% endif %}
 {% endblock %}

@@ -49,7 +49,13 @@ final class RecetteType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'placeholder' => 'Choisir une catégorie',
-                'choices' => ['Fruits' => 'fruit', 'Légumes' => 'legume', 'Viandes' => 'viande', 'Poissons' => 'poisson'],
+                'choices' => [
+                    'Tous les produits' => 'all',
+                    'Fruits' => 'fruit',
+                    'Légumes' => 'legume',
+                    'Viandes' => 'viande',
+                    'Poissons' => 'poisson',
+                ],
                 'attr' => ['class' => 'js-product-category'],
             ])
             ->add('products', EntityType::class, [

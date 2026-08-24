@@ -1,98 +1,168 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mon profil
-{% endblock %}
-
-{% block hero_title %}Mon profil{% endblock %}
+{% block title %}Mon profil{% endblock %}
+{% block hero_title %}<i class="fa-solid fa-circle-user" aria-hidden="true"></i> Mon profil{% endblock %}
 
 {% block body %}
+    {% set displayLastName = user.nom starts with user.prenom ? user.nom|slice(user.prenom|length)|trim : user.nom %}
+    <section class="profile profile-dashboard">
+        <article class="profile-identity">
+            <div class="profile-identity__visual">
+                <div class="profile-identity__photo">
+                    <img src="{{ user.photo ? asset('uploads/users/' ~ user.photo) : asset('images/default-user.png') }}" alt="Photo de profil de {{ user.prenom }}">
+                    <span title="Compte actif"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+                </div>
+                <p><i class="fa-regular fa-calendar" aria-hidden="true"></i> Membre depuis {{ user.createdAt|date('d/m/Y') }}</p>
+            </div>
 
-	<section class="profile">
+            <div class="profile-identity__content">
+                <p class="profile-eyebrow">Mon espace gourmand</p>
+                <h1>{{ user.prenom }} {{ displayLastName }}</h1>
+                <p class="profile-identity__intro">Retrouvez vos informations, vos recettes et les inspirations de la communauté.</p>
 
-		<div class="profile-card">
+                <dl class="profile-details">
+                    <div><dt><i class="fa-solid fa-user" aria-hidden="true"></i> Prénom</dt><dd>{{ user.prenom }}</dd></div>
+                    <div><dt><i class="fa-solid fa-signature" aria-hidden="true"></i> Nom</dt><dd>{{ displayLastName }}</dd></div>
+                    <div class="profile-details__email"><dt><i class="fa-solid fa-envelope" aria-hidden="true"></i> Adresse e-mail</dt><dd>{{ user.email }}</dd></div>
+                </dl>
 
-			<div class="profile-photo">
+                <div class="profile-identity__actions">
+                    <a href="{{ path('app_profile_edit') }}" class="btn"><i class="fa-solid fa-pen" aria-hidden="true"></i> Modifier mon profil</a>
+                    <a href="{{ path('app_profile_password') }}" class="btn btn--outline"><i class="fa-solid fa-lock" aria-hidden="true"></i> Mot de passe</a>
+                </div>
+            </div>
+        </article>
 
-				{% if user.photo %}
-					<img src="{{ asset('uploads/users/' ~ user.photo) }}" alt="Photo de profil">
-				{% else %}
-					<img src="{{ asset('images/default-user.png') }}" alt="Photo par défaut">
-				{% endif %}
+        <div class="profile-stats" aria-label="Résumé du profil">
+            <div><i class="fa-solid fa-book-open" aria-hidden="true"></i><strong>{{ myRecettes|length }}</strong><span>recette{{ myRecettes|length > 1 ? 's' }} créée{{ myRecettes|length > 1 ? 's' }}</span></div>
+            <div><i class="fa-solid fa-globe" aria-hidden="true"></i><strong>{{ myRecettes|filter(recette => recette.statut.value == 'publiee')|length }}</strong><span>publiée{{ myRecettes|filter(recette => recette.statut.value == 'publiee')|length > 1 ? 's' }}</span></div>
+            <div><i class="fa-solid fa-heart" aria-hidden="true"></i><strong>{{ favoriteRecipeIds|length }}</strong><span>recette{{ favoriteRecipeIds|length > 1 ? 's' }} favorite{{ favoriteRecipeIds|length > 1 ? 's' }}</span></div>
+        </div>
 
-				<div class="profile-actions">
+        <section class="profile-recettes profile-recettes--community" aria-labelledby="community-recipes-title">
+            <header class="profile-section-heading">
+                <div><p class="profile-eyebrow">Mon carnet d’inspirations</p><h2 id="community-recipes-title">Mes recettes favorites</h2></div>
+                <a href="{{ path('app_recette_index') }}">Découvrir des recettes <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+            </header>
 
-					<a href="{{ path('app_profile_edit') }}" class="btn">
-						Modifier mon profil
-					</a>
+            {% if favoriteRecipesBySeason is not empty or favoriteRecipesWithoutSeason is not empty %}
+                {% for seasonGroup in favoriteRecipesBySeason %}
+                    <section class="profile-recipe-season">
+                        <details class="profile-season-panel"{{ loop.first ? ' open' }}>
+                            <summary>
+                                <span><i class="fa-solid fa-leaf" aria-hidden="true"></i> {{ seasonGroup.season }}</span>
+                                <span class="profile-season-panel__count">{{ seasonGroup.recipes|length }} recette{{ seasonGroup.recipes|length > 1 ? 's' }}</span>
+                            </summary>
+                            <div class="profile-recipe-grid">
+                                {% for recette in seasonGroup.recipes %}
+                                    <article class="profile-my-recipe profile-favorite-recipe">
+                                        <a class="profile-my-recipe__image" href="{{ path('app_recette_show', {id: recette.id}) }}">
+                                            {% if recette.photo %}<img src="{{ asset('uploads/recettes/' ~ recette.photo) }}" alt="">{% else %}<i class="fa-solid fa-utensils" aria-hidden="true"></i>{% endif %}
+                                        </a>
+                                        <div class="profile-my-recipe__content">
+                                            <span>{{ seasonGroup.season }} · {{ recette.typePlat.value|capitalize }}</span>
+                                            <h3><a href="{{ path('app_recette_show', {id: recette.id}) }}">{{ recette.titre }}</a></h3>
+                                            <p>{% for product in recette.products|slice(0, 3) %}{{ product.nom }}{{ not loop.last ? ' · ' }}{% else %}Recette de saison{% endfor %}</p>
+                                        </div>
+                                        <div class="profile-my-recipe__actions">
+                                            <span class="profile-recettes__status profile-recettes__status--favorite"><i class="fa-solid fa-heart"></i> Favorite</span>
+                                            <a class="profile-recettes__view" href="{{ path('app_recette_show', {id: recette.id}) }}" aria-label="Voir {{ recette.titre }}"><i class="fa-solid fa-arrow-right"></i></a>
+                                        </div>
+                                    </article>
+                                {% endfor %}
+                            </div>
+                        </details>
+                    </section>
+                {% endfor %}
 
-					<a href="{{ path('app_profile_password') }}" class="btn">
-						Changer mon mot de passe
-					</a>
+                {% if favoriteRecipesWithoutSeason is not empty %}
+                    <section class="profile-recipe-season">
+                        <details class="profile-season-panel"{{ favoriteRecipesBySeason is empty ? ' open' }}>
+                            <summary>
+                                <span><i class="fa-solid fa-leaf" aria-hidden="true"></i> Saison non renseignée</span>
+                                <span class="profile-season-panel__count">{{ favoriteRecipesWithoutSeason|length }} recette{{ favoriteRecipesWithoutSeason|length > 1 ? 's' }}</span>
+                            </summary>
+                            <div class="profile-recipe-grid">
+                                {% for recette in favoriteRecipesWithoutSeason %}
+                                    <article class="profile-my-recipe profile-favorite-recipe">
+                                        <a class="profile-my-recipe__image" href="{{ path('app_recette_show', {id: recette.id}) }}">
+                                            {% if recette.photo %}<img src="{{ asset('uploads/recettes/' ~ recette.photo) }}" alt="">{% else %}<i class="fa-solid fa-utensils" aria-hidden="true"></i>{% endif %}
+                                        </a>
+                                        <div class="profile-my-recipe__content">
+                                            <span>{{ recette.typePlat.value|capitalize }}</span>
+                                            <h3><a href="{{ path('app_recette_show', {id: recette.id}) }}">{{ recette.titre }}</a></h3>
+                                            <p>{% for product in recette.products|slice(0, 3) %}{{ product.nom }}{{ not loop.last ? ' · ' }}{% else %}Recette de saison{% endfor %}</p>
+                                        </div>
+                                        <div class="profile-my-recipe__actions">
+                                            <span class="profile-recettes__status profile-recettes__status--favorite"><i class="fa-solid fa-heart"></i> Favorite</span>
+                                            <a class="profile-recettes__view" href="{{ path('app_recette_show', {id: recette.id}) }}" aria-label="Voir {{ recette.titre }}"><i class="fa-solid fa-arrow-right"></i></a>
+                                        </div>
+                                    </article>
+                                {% endfor %}
+                            </div>
+                        </details>
+                    </section>
+                {% endif %}
+            {% else %}
+                <p class="profile-empty-state"><i class="fa-regular fa-heart"></i> Vous n’avez pas encore ajouté de recette à vos favoris. <a href="{{ path('app_recette_index') }}">Découvrir les recettes</a>.</p>
+            {% endif %}
+        </section>
 
-				</div>
+        <section class="profile-recettes profile-recettes--mine" aria-labelledby="my-recipes-title">
+            <header class="profile-section-heading">
+                <div><p class="profile-eyebrow">Mon carnet personnel</p><h2 id="my-recipes-title">Mes recettes</h2></div>
+                <a class="profile-recettes__add" href="{{ path('app_recette_new') }}"><i class="fa-solid fa-plus" aria-hidden="true"></i> Nouvelle recette</a>
+            </header>
 
-			</div>
+            {% if myRecettes %}
+                <div class="profile-my-recipes">
+                    {% for recette in myRecettes %}
+                        <article class="profile-my-recipe {{ recette.statut.value != 'publiee' ? 'is-draft' }}">
+                            <div class="profile-my-recipe__image">
+                                {% if recette.photo %}<img src="{{ asset('uploads/recettes/' ~ recette.photo) }}" alt="">{% else %}<i class="fa-solid fa-utensils"></i>{% endif %}
+                            </div>
+                            <div class="profile-my-recipe__content">
+                                <span>{{ recette.primarySeason ? recette.primarySeason : 'Toutes saisons' }}</span>
+                                <h3><a href="{{ path('app_recette_show', {id: recette.id}) }}">{{ recette.titre }}</a></h3>
+                                <p>{% for product in recette.products|slice(0, 3) %}{{ product.nom }}{{ not loop.last ? ' · ' }}{% else %}Aucun produit associé{% endfor %}</p>
+                            </div>
+                            <div class="profile-my-recipe__actions">
+                                {% if recette.statut.value == 'publiee' %}<span class="profile-recettes__status profile-recettes__status--published"><i class="fa-solid fa-circle-check"></i> Publiée</span>
+                                {% elseif recette.statut.value == 'attente' %}
+                                    <span class="profile-recettes__status"><i class="fa-solid fa-lock"></i> Privée</span>
+                                    <form method="post" action="{{ path('app_recette_share', {id: recette.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('share-recette-' ~ recette.id) }}"><button class="profile-recettes__share" type="submit"><i class="fa-solid fa-share-nodes"></i> Publier</button></form>
+                                {% else %}<span class="profile-recettes__status">Non publiée</span>{% endif %}
+                                <a class="profile-recettes__edit" href="{{ path('app_recette_edit', {id: recette.id}) }}" aria-label="Modifier {{ recette.titre }}"><i class="fa-solid fa-pen"></i></a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="profile-empty-state"><i class="fa-solid fa-book-open"></i> Vous n’avez pas encore créé de recette.</p>
+            {% endif %}
+        </section>
 
-			<div class="profile-infos">
-
-				<p>
-					<strong>Prénom :</strong>
-					{{ user.prenom }}</p>
-
-				<p>
-					<strong>Nom :</strong>
-					{{ user.nom }}</p>
-
-				<p>
-					<strong>Email :</strong>
-					{{ user.email }}</p>
-
-				<p>
-					<strong>Membre depuis :</strong>
-					{{ user.createdAt|date('d/m/Y') }}</p>
-
-			</div>
-
-		</div>
-
-		<section class="profile-recettes">
-			<h2>Liste des recettes publiées</h2>
-			{% for season in seasons %}
-				{% set recettesDeSaison = publicRecettes|filter(recette => recette.primarySeason == season) %}
-				{% if recettesDeSaison is not empty %}
-					<div class="profile-recettes__season">
-						<h3>{{ season }}</h3>
-						{% for recette in recettesDeSaison %}
-							<a href="{{ path('app_recette_show', {id: recette.id}) }}">{{ recette.titre }}</a>{% if recette.id in favoriteRecipeIds %}<i class="fa-solid fa-heart profile-recettes__favorite" aria-label="Recette favorite" title="Recette favorite"></i>{% endif %}
-						{% endfor %}
-					</div>
-				{% endif %}
-			{% endfor %}
-		</section>
-
-		<section class="profile-recettes">
-			<h2>Liste de mes recettes</h2>
-			{% for season in seasons %}
-				{% set recettesDeSaison = myRecettes|filter(recette => recette.primarySeason == season) %}
-				{% if recettesDeSaison is not empty %}
-					<div class="profile-recettes__season">
-						<h3>{{ season }}</h3>
-						{% for recette in recettesDeSaison %}
-							<div class="profile-recettes__item{{ recette.statut.value != 'publiee' ? ' profile-recettes__item--draft' }}">
-								<div><a href="{{ path('app_recette_show', {id: recette.id}) }}">{{ recette.titre }}</a><a class="profile-recettes__edit" href="{{ path('app_recette_edit', {id: recette.id}) }}" aria-label="Modifier {{ recette.titre }}"><i class="fa-solid fa-pen"></i></a></div>
-								{% if recette.statut.value == 'publiee' %}<span class="profile-recettes__status profile-recettes__status--published">Publiée</span>
-								{% elseif recette.statut.value == 'attente' %}<form method="post" action="{{ path('app_recette_share', {id: recette.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('share-recette-' ~ recette.id) }}"><button class="profile-recettes__share" type="submit"><i class="fa-solid fa-share-nodes"></i> Publier pour tous</button></form>
-								{% else %}<span class="profile-recettes__status">Non publiée</span>{% endif %}
-							</div>
-						{% endfor %}
-					</div>
-				{% endif %}
-			{% else %}
-				<p>Vous n’avez pas encore créé de recette.</p>
-			{% endfor %}
-			<a href="{{ path('app_recette_new') }}" class="btn profile-recettes__add">Ajouter une recette</a>
-		</section>
-
-	</section>
-
+        {% if not is_granted('ROLE_ADMIN') %}
+            <section class="profile-danger-zone" aria-labelledby="delete-account-title">
+                <div>
+                    <p class="profile-eyebrow">Zone sensible</p>
+                    <h2 id="delete-account-title">Supprimer mon compte</h2>
+                    <p>Cette action supprime définitivement votre profil, vos recettes, vos favoris et vos avis. Elle ne peut pas être annulée.</p>
+                </div>
+                <details>
+                    <summary><i class="fa-solid fa-user-xmark" aria-hidden="true"></i> Demander la suppression</summary>
+                    <form method="post" action="{{ path('app_profile_delete') }}" onsubmit="return confirm('Confirmez-vous la suppression définitive de votre compte et de toutes vos recettes ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete-account-' ~ user.id) }}">
+                        <label for="delete-account-password">Mot de passe actuel</label>
+                        <input id="delete-account-password" name="current_password" type="password" autocomplete="current-password" required>
+                        <label class="profile-delete-confirmation">
+                            <input name="confirm_delete" type="checkbox" value="1" required>
+                            Je comprends que cette suppression est définitive.
+                        </label>
+                        <button type="submit"><i class="fa-solid fa-trash" aria-hidden="true"></i> Supprimer définitivement mon compte</button>
+                    </form>
+                </details>
+            </section>
+        {% endif %}
+    </section>
 {% endblock %}

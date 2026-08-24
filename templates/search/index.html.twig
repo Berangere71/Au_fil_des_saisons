@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche{% endblock %}
+{% block hero_title %}<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Recherche{% endblock %}
+
+{% block body %}
+    {% include 'components/_page_close.html.twig' with {return_route: 'app_home'} %}
+    <section class="search-page">
+        <form class="search-page__form" action="{{ path('app_search') }}" method="get" role="search">
+            <label for="search-query">Rechercher un produit ou une recette</label>
+            <div>
+                <input id="search-query" name="q" type="search" value="{{ query }}" placeholder="Ex. fraise, tarte…" minlength="2" maxlength="100" required autofocus>
+                <select name="type" aria-label="Type de résultat">
+                    <option value="all" {{ type == 'all' ? 'selected' }}>Tout</option>
+                    <option value="products" {{ type == 'products' ? 'selected' }}>Produits</option>
+                    <option value="recipes" {{ type == 'recipes' ? 'selected' }}>Recettes</option>
+                </select>
+                <button type="submit"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span>Rechercher</span></button>
+            </div>
+        </form>
+
+        {% if query|length < 2 %}
+            <p class="search-page__notice">Saisissez au moins deux caractères pour commencer la recherche.</p>
+        {% else %}
+            <p class="search-page__summary">{{ products|length + recipes|length }} résultat(s) pour « {{ query }} »</p>
+
+            {% if type != 'recipes' %}
+                <section class="search-results" aria-labelledby="search-products-title">
+                    <h2 id="search-products-title"><i class="fa-solid fa-basket-shopping"></i> Produits <span>{{ products|length }}</span></h2>
+                    <div class="search-results__grid">
+                        {% for product in products %}
+                            <a class="search-result-card" href="{{ path('app_product_show', {id: product.id}) }}">
+                                {% if product.photo %}<img src="{{ asset('uploads/products/' ~ product.photo) }}" alt="">{% else %}<span class="search-result-card__placeholder"><i class="fa-regular fa-image"></i></span>{% endif %}
+                                <span><strong>{{ product.nom }}</strong><small>{{ product.category.value|capitalize }} · {{ product.debutRecolteMois }} à {{ product.finRecolteMois }}</small></span>
+                            </a>
+                        {% else %}<p class="search-results__empty">Aucun produit correspondant.</p>{% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+
+            {% if type != 'products' %}
+                <section class="search-results" aria-labelledby="search-recipes-title">
+                    <h2 id="search-recipes-title"><i class="fa-solid fa-utensils"></i> Recettes <span>{{ recipes|length }}</span></h2>
+                    <div class="search-results__grid">
+                        {% for recipe in recipes %}
+                            <a class="search-result-card" href="{{ app.user ? path('app_recette_show', {id: recipe.id}) : path('app_login') }}">
+                                {% if recipe.photo %}<img src="{{ asset('uploads/recettes/' ~ recipe.photo) }}" alt="">{% else %}<span class="search-result-card__placeholder"><i class="fa-solid fa-utensils"></i></span>{% endif %}
+                                <span><strong>{{ recipe.titre }}</strong><small>{{ recipe.typePlat.value|capitalize }}{{ app.user ? '' : ' · Connectez-vous pour voir la recette' }}</small></span>
+                            </a>
+                        {% else %}<p class="search-results__empty">Aucune recette correspondante.</p>{% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+        {% endif %}
+    </section>
+{% endblock %}
