@@ -4,6 +4,10 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Entity\Season;
+use App\Enum\ProductCategory;
+use App\Enum\RecetteStatut;
+use App\Enum\SeasonName;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,18 +23,40 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 final class ProductController extends AbstractController
 {
     #[Route('', name: 'app_product_index', methods: ['GET'])]
-    public function index(ProductRepository $productRepository): Response
+    public function index(Request $request, ProductRepository $productRepository): Response
     {
+        $category = ProductCategory::tryFrom((string) $request->query->get('categorie'));
+        $season = SeasonName::tryFrom((string) $request->query->get('saison'));
+        $search = mb_substr(trim((string) $request->query->get('q')), 0, 100);
+        $products = $productRepository->findByFilters($category, $season, $search);
+        $productsByCategory = array_fill_keys(['fruit', 'legume', 'viande', 'poisson'], []);
+
+        foreach ($products as $product) {
+            $productsByCategory[$product->getCategory()->value][] = $product;
+        }
+
         return $this->render('product/index.html.twig', [
-            'products' => $productRepository->findBy([], ['nom' => 'ASC']),
+            'products' => $products,
+            'productsByCategory' => $productsByCategory,
+            'selectedCategory' => $category,
+            'selectedSeason' => $season,
+            'search' => $search,
+            'categories' => ProductCategory::cases(),
+            'seasons' => SeasonName::cases(),
         ]);
     }
 
     #[Route('/{id}', name: 'app_product_show', methods: ['GET'], priority: -1)]
     public function show(Product $product): Response
     {
+        $publishedRecipes = array_values(array_filter(
+            $product->getRecettes()->toArray(),
+            static fn ($recette): bool => $recette->getStatut() === RecetteStatut::PUBLIEE,
+        ));
+
         return $this->render('product/show.html.twig', [
             'product' => $product,
+            'publishedRecipes' => $publishedRecipes,
         ]);
     }
 
@@ -77,6 +103,8 @@ final class ProductController extends AbstractController
                     return $this->redirectToRoute('app_product_new');
                 }
             }
+
+            $this->synchronizeSeasonsFromHarvestMonths($product, $entityManager);
 
             $entityManager->persist($product);
             $entityManager->flush();
@@ -133,6 +161,8 @@ final class ProductController extends AbstractController
                 }
             }
 
+            $this->synchronizeSeasonsFromHarvestMonths($product, $entityManager);
+
             $entityManager->flush();
 
             $this->addFlash('success', 'Produit modifié avec succès.');
@@ -181,6 +211,54 @@ final class ProductController extends AbstractController
         $this->addFlash('success', 'Le produit a été supprimé avec succès.');
 
         return $this->redirectToRoute('app_product_index');
+    }
+
+    private function synchronizeSeasonsFromHarvestMonths(Product $product, EntityManagerInterface $entityManager): void
+    {
+        foreach ($product->getSeasons()->toArray() as $season) {
+            $product->removeSeason($season);
+        }
+
+        $startMonth = $product->getDebutRecolteMois()?->getMonthOrder();
+        $endMonth = $product->getFinRecolteMois()?->getMonthOrder();
+
+        if (null === $startMonth || null === $endMonth) {
+            return;
+        }
+
+        $activeMonths = [];
+        $month = $startMonth;
+        while (true) {
+            $activeMonths[] = $month;
+            if ($month === $endMonth) {
+                break;
+            }
+            $month = 12 === $month ? 1 : $month + 1;
+        }
+
+        $seasonNames = [
+            SeasonName::PRINTEMPS,
+            SeasonName::ETE,
+            SeasonName::AUTOMNE,
+            SeasonName::HIVER,
+        ];
+        $seasonMonths = [
+            SeasonName::PRINTEMPS->value => [3, 4, 5],
+            SeasonName::ETE->value => [6, 7, 8],
+            SeasonName::AUTOMNE->value => [9, 10, 11],
+            SeasonName::HIVER->value => [12, 1, 2],
+        ];
+
+        foreach ($seasonNames as $seasonName) {
+            if ([] === array_intersect($activeMonths, $seasonMonths[$seasonName->value])) {
+                continue;
+            }
+
+            $season = $entityManager->getRepository(Season::class)->findOneBy(['nameSeason' => $seasonName]);
+            if ($season instanceof Season) {
+                $product->addSeason($season);
+            }
+        }
     }
 
 }

@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recettes{% endblock %}
+{% block hero_title %}<i class="fa-solid fa-utensils"></i> Recettes{% endblock %}
+
+{% block body %}
+<section class="recette-list">
+    {% include 'components/_page_close.html.twig' %}
+    <div class="recette-list__header">
+        <p>Découvrez les recettes publiées par la communauté.</p>
+        <a class="catalogue-add" href="{{ path('app_recette_new') }}"><i class="fa-solid fa-circle-plus"></i> Ajouter une recette</a>
+    </div>
+    <div class="recette-grid">
+        {% for recette in recettes %}
+            <article class="recette-card">
+                {% if not is_granted('ROLE_ADMIN') %}{% set isFavorite = recette.id in favoriteRecipeIds %}<form class="recette-card__favorite" method="post" action="{{ path('app_recette_favorite', {id: recette.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('favorite-' ~ recette.id) }}"><input type="hidden" name="_redirect" value="index"><button class="{{ isFavorite ? 'is-active' }}" type="submit" aria-label="{{ isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris' }}" title="{{ isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris' }}"><i class="{{ isFavorite ? 'fa-solid' : 'fa-regular' }} fa-heart"></i></button></form>{% endif %}
+                {% if recette.photo %}<img src="{{ asset('uploads/recettes/' ~ recette.photo) }}" alt="{{ recette.titre }}">{% endif %}
+                <div><span>{{ recette.typePlat.value|capitalize }}</span><h2>{{ recette.titre }}</h2><p>{% for product in recette.products %}{{ product.nom }}{{ not loop.last ? ', ' }}{% endfor %}</p><a href="{{ path('app_recette_show', {id: recette.id}) }}">Voir la fiche</a>{% if recette.user == app.user or is_granted('ROLE_ADMIN') %}<a href="{{ path('app_recette_edit', {id: recette.id}) }}">Modifier</a>{% endif %}</div>
+            </article>
+        {% else %}<p>Aucune recette pour le moment.</p>{% endfor %}
+    </div>
+</section>
+{% endblock %}

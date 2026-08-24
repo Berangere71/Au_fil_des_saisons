@@ -1,0 +1,6 @@
+{% extends 'base.html.twig' %}
+{% block title %}Signalements{% endblock %}
+{% block hero_title %}<i class="fa-solid fa-flag"></i> Signalements{% endblock %}
+{% block body %}
+<section class="recette-list">{% include 'components/_page_close.html.twig' with {return_route: 'app_admin_dashboard'} %}<h1>Signalements à traiter</h1><h2>Recettes</h2>{% for recette in recettes %}<article class="recette-card"><div><h2>{{ recette.titre }}</h2><p>{{ recette.motifSignalement ?: 'Aucun motif précisé.' }}</p><a href="{{ path('app_recette_show', {id: recette.id}) }}">Voir la recette</a></div></article>{% else %}<p>Aucune recette signalée.</p>{% endfor %}<h2>Commentaires</h2>{% for avisItem in avis %}<article class="recette-card"><div><h2>{{ avisItem.recette.titre }}</h2><p>{{ avisItem.commentaire }}</p><p>Motif : {{ avisItem.motifSignalement ?: 'Aucun motif précisé.' }}</p></div></article>{% else %}<p>Aucun commentaire signalé.</p>{% endfor %}</section>
+{% endblock %}

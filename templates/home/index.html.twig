@@ -1,21 +1,145 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil{% endblock %}
+{% block title %}Au fil des saisons - Accueil{% endblock %}
 
-{% block hero_title %}Au fil des saisons{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+{% endblock %}
+
+{% block page_hero %}
+    <nav class="home-seasons" aria-label="Découvrir les produits par saison">
+        {% for label, value in {'Printemps': 'printemps', 'Été': 'ete', 'Automne': 'automne', 'Hiver': 'hiver'} %}
+            <a href="{{ path('app_product_index', {saison: value}) }}" class="{{ current_season == value ? 'is-current' }}" {{ current_season == value ? 'aria-current="true"' }}>{{ label }}</a>
+        {% endfor %}
+    </nav>
+{% endblock %}
+
+{% block main_class %}home-main{% endblock %}
 
 {% block body %}
+    <div class="home-dashboard">
+        <div class="home-dashboard__left">
+            <section class="weather-panel" aria-labelledby="weather-title">
+                <header><h1 id="weather-title">{{ today_label }}</h1></header>
+                {% if weather %}
+                    <div class="weather-panel__content">
+                        <div>
+                            <strong>{{ weather.city }}</strong>
+                            <span class="weather-panel__temperature">{{ weather.temperature }}°</span>
+                            <span>{{ weather.temperatureMin }}° / {{ weather.temperatureMax }}°</span>
+                        </div>
+                        <img src="https://openweathermap.org/img/wn/{{ weather.icon }}@2x.png" alt="{{ weather.description }}" width="112" height="112">
+                    </div>
+                    <form class="weather-panel__search" method="get" action="{{ path('app_home') }}">
+                        <label for="weather-city"><i class="fa-solid fa-location-dot" aria-hidden="true"></i><span class="visually-hidden">Ville</span></label>
+                        <input id="weather-city" name="ville" value="{{ weather_city }}" maxlength="100" required>
+                        <button type="submit" aria-label="Rechercher cette ville"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </form>
+                {% else %}
+                    <div class="weather-panel__empty">
+                        <i class="fa-solid fa-cloud" aria-hidden="true"></i>
+                        <p>{{ weather_error }}</p>
+                        <form class="weather-panel__search" method="get" action="{{ path('app_home') }}">
+                            <input aria-label="Ville" name="ville" value="{{ weather_city }}" maxlength="100" required>
+                            <button type="submit" aria-label="Rechercher"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        </form>
+                    </div>
+                {% endif %}
+            </section>
 
-<section class="home">
+            <section class="daily-suggestions" aria-labelledby="suggestions-title">
+                <h2 id="suggestions-title">Suggestion du jour :</h2>
+                <ol>
+                    {% if weather and weather.temperature >= 25 %}
+                        <li>Salade fraîche de fruits et légumes de saison</li>
+                        <li>Tartine estivale aux herbes aromatiques</li>
+                        <li>Soupe froide et fruits frais</li>
+                    {% elseif weather and weather.temperature < 10 %}
+                        <li>Velouté de légumes de saison</li>
+                        <li>Plat mijoté aux produits du moment</li>
+                        <li>Tarte rustique encore tiède</li>
+                    {% else %}
+                        <li>Salade tiède aux légumes de saison</li>
+                        <li>Poisson en papillote et légumes fondants</li>
+                        <li>Tarte fine aux fruits du moment</li>
+                    {% endif %}
+                </ol>
+            </section>
+        </div>
 
-    <div class="container">
-
-        <p>
-            Découvrez les meilleurs produits de saison et cuisinez selon les récoltes françaises.
-        </p>
-
+        <section class="seasonal-products" aria-label="Produits de saison par catégorie">
+            {% for key, category in categories %}
+                {% set product = products_by_category[key] %}
+                <article class="seasonal-product {{ product ? '' : 'seasonal-product--empty' }}">
+                    <a href="{{ product ? path('app_product_show', {id: product.id}) : path('app_product_index', {categorie: key, saison: current_season}) }}" class="seasonal-product__media">
+                        {% if product and product.photo %}
+                            <img src="{{ asset('uploads/products/' ~ product.photo) }}" alt="{{ product.nom }}">
+                        {% else %}
+                            <i class="fa-solid {{ category.icon }}" aria-hidden="true"></i>
+                        {% endif %}
+                    </a>
+                    <div class="seasonal-product__body">
+                        <span>catégorie</span>
+                        <h2>{{ category.label }}</h2>
+                        {% if product %}
+                            <strong>{{ product.nom }}</strong>
+                            <small>Production<br>{{ product.debutRecolteMois }} à {{ product.finRecolteMois }}</small>
+                        {% else %}
+                            <strong>Aucun produit</strong>
+                            <small>disponible ce mois-ci</small>
+                        {% endif %}
+                    </div>
+                    <p class="seasonal-product__description">
+                        {{ product and product.description ? product.description : 'Découvrez prochainement les particularités et conseils de préparation de ce produit.' }}
+                    </p>
+                </article>
+            {% endfor %}
+        </section>
     </div>
 
-</section>
-
+    <section class="season-calendar" aria-labelledby="calendar-title">
+        <header class="season-calendar__header">
+            <div>
+                <p class="season-calendar__eyebrow">La sélection du mois · 1 produit par catégorie</p>
+                <h2 id="calendar-title">Produits de saison en {{ months[current_month - 1] }}</h2>
+            </div>
+            <a href="{{ path('app_product_index') }}">Voir tous les produits <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </header>
+        <div class="season-calendar__legend" aria-label="Légende des catégories">
+            <span><i class="is-fruit"></i> Fruits</span><span><i class="is-legume"></i> Légumes</span>
+            <span><i class="is-viande"></i> Viandes</span><span><i class="is-poisson"></i> Poissons</span>
+        </div>
+        {% if calendar_products %}
+            <div class="season-calendar__scroll" tabindex="0" aria-label="Calendrier défilable horizontalement">
+                <div class="season-calendar__grid" style="--calendar-rows: {{ calendar_products|length }}">
+                    <div class="season-calendar__corner">Produit</div>
+                    {% for month in months %}
+                        <div class="season-calendar__month {{ loop.index == current_month ? 'is-current' }}">
+                            {{ month }}
+                            {% if loop.index == current_month %}<span>Actuel</span>{% endif %}
+                        </div>
+                    {% endfor %}
+                    {% for product in calendar_products %}
+                        {% set key = product.category.value %}
+                        <a class="season-calendar__name" href="{{ path('app_product_show', {id: product.id}) }}">
+                            <i class="is-{{ key }}" aria-hidden="true"></i>{{ product.nom }}
+                        </a>
+                        {% for month in 1..12 %}
+                            {% set active = (product.debutRecolteMois.monthOrder <= product.finRecolteMois.monthOrder and month >= product.debutRecolteMois.monthOrder and month <= product.finRecolteMois.monthOrder) or (product.debutRecolteMois.monthOrder > product.finRecolteMois.monthOrder and (month >= product.debutRecolteMois.monthOrder or month <= product.finRecolteMois.monthOrder)) %}
+                            <div class="season-calendar__cell {{ month == current_month ? 'is-current' }} {{ active ? 'is-active is-' ~ key : '' }}" aria-label="{{ product.nom }}, {{ months[month - 1] }} : {{ active ? 'de saison' : 'hors saison' }}">
+                                {% if active %}<span class="visually-hidden">De saison</span>{% endif %}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div class="season-calendar__empty">
+                <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
+                <p>Aucun produit n’est disponible pendant le mois en cours.</p>
+                {% if is_granted('ROLE_ADMIN') %}<a href="{{ path('app_product_new') }}">Ajouter un produit</a>{% endif %}
+            </div>
+        {% endif %}
+    </section>
 {% endblock %}

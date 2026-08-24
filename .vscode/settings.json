@@ -1,0 +1,22 @@
+{
+    "php.validate.enable": false,
+    "php.validate.executablePath": "/usr/bin/php8.4",
+    "php.version": "8.4",
+    "intelephense.environment.phpVersion": "8.4.0",
+    "intelephense.files.exclude": [
+        "**/.git/**",
+        "**/.svn/**",
+        "**/.hg/**",
+        "**/CVS/**",
+        "**/.DS_Store/**",
+        "**/node_modules/**",
+        "**/bower_components/**",
+        "**/var/cache/**"
+    ],
+    "search.exclude": {
+        "**/var/cache": true
+    },
+    "files.watcherExclude": {
+        "**/var/cache/**": true
+    }
+}

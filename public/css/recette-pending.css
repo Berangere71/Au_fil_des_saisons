@@ -1,0 +1,8 @@
+.recette-pending { margin-top: 28px; padding: 14px 17px; border-radius: 10px; background: #fff3de; color: #66884b; font-weight: 800; }
+.recette-pending p { margin: 0; }
+.recette-pending form { margin: 12px 0 0 !important; }
+.recette-pending button { border: 0; border-radius: 18px; padding: 9px 14px; background: #286129; color: #fff; font-weight: 800; cursor: pointer; }
+.recette-pending--top { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin: 0 0 28px; }
+.recette-pending--top form { flex: 0 0 auto; margin: 0 !important; }
+
+@media (max-width: 600px) { .recette-pending--top { align-items: stretch; flex-direction: column; }.recette-pending--top button { width: 100%; } }

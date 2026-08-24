@@ -155,4 +155,16 @@ class Product
 
         return $this;
     }
+
+    public function isAvailableAllYear(): bool
+    {
+        $startMonth = $this->debutRecolteMois?->getMonthOrder();
+        $endMonth = $this->finRecolteMois?->getMonthOrder();
+
+        if (null === $startMonth || null === $endMonth) {
+            return false;
+        }
+
+        return ((($endMonth - $startMonth + 12) % 12) + 1) === 12;
+    }
 }

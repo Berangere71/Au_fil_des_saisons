@@ -1,0 +1,39 @@
+/* L'espace autour du formulaire est géré par le layout global fixe. */
+@media (min-width: 769px) {
+    .hero { margin-top: 0; }
+    main { padding-top: 0; padding-bottom: 42px; }
+}
+
+.recette-form .form-check { display: flex; align-items: center; gap: 7px; margin: 7px 0; }
+.recette-form .form-check input[type="checkbox"] { width: 16px; height: 16px; margin: 0; padding: 0; flex: 0 0 auto; }
+.recette-form .form-check label { display: inline; margin: 0; font-weight: 700; }
+.recette-form #recette_products > div { display: flex; align-items: center; gap: 7px; margin: 7px 0; }
+.recette-form #recette_products input[type="checkbox"], .recette-form #recette_isOven, .recette-form #recette_isPublic { width: 16px; height: 16px; margin: 0; padding: 0; flex: 0 0 auto; }
+.recette-form #recette_products input[type="checkbox"] + label, .recette-form #recette_isOven + label, .recette-form #recette_isPublic + label { display: inline; margin: 0; }
+.recette-form__products > div > label { display: none; }
+.recette-form__products > div:first-of-type > label { display: block; }
+.recette-form__products > div:first-of-type { max-width: 330px; margin-bottom: 16px; }
+.recette-form__products fieldset { margin: 0; padding: 0; border: 0; }
+.recette-form__products fieldset > legend { margin: 0 0 10px; color: #286129; font-weight: 800; }
+.recette-form__help { margin: 12px 0 0; color: #66884b; font-size: .9rem; font-weight: 700; }
+.recette-product-search { margin: 14px 0 10px; }
+.recette-product-search > label { display: block; margin-bottom: 6px; }
+.recette-product-search > div { position: relative; }
+.recette-product-search i { position: absolute; top: 50%; left: 12px; color: #66884b; transform: translateY(-50%); }
+.recette-product-search input { width: 100%; box-sizing: border-box; padding-left: 38px; }
+.recette-product-message { margin: 12px 0; color: #66884b; font-weight: 700; }
+.recette-product-list { max-height: 310px; margin-top: 10px; overflow-y: auto; border: 1px solid rgba(40,97,41,.2); border-radius: 10px; background: #fff3de; scrollbar-color: #7d9d5c #fff3de; scrollbar-width: thin; }
+.recette-form .recette-product-list #recette_products { display: grid; grid-template-columns: 1fr; gap: 0; padding: 5px 12px; }
+.recette-form .recette-product-list .recette-product-choice { display: grid; min-height: 40px; box-sizing: border-box; grid-template-columns: 20px minmax(0, 1fr); gap: 9px; align-items: center; margin: 0; padding: 9px 5px; border-bottom: 1px solid rgba(40,97,41,.12); background: transparent; }
+.recette-form .recette-product-list .recette-product-choice:last-child { border-bottom: 0; }
+.recette-form .recette-product-list .recette-product-choice:hover { background: rgba(125,157,92,.12); }
+.recette-form .recette-product-list .recette-product-choice[hidden] { display: none !important; }
+.recette-form .recette-product-list .recette-product-choice input[type="checkbox"] { position: static; width: 16px; height: 16px; align-self: center; margin: 0; }
+.recette-form .recette-product-list .recette-product-choice label { display: block; align-self: center; margin: 0; line-height: 1.3; cursor: pointer; }
+.recette-form ul { color: #b42318; font-weight: 700; }
+.recette-form small { display: block; margin-top: 6px; color: #66884b; font-weight: 700; }
+
+@media (min-width: 769px) {
+    .recette-form-page { width: min(760px, calc(100% - 48px)); }
+    .recette-form__section { padding: 22px 26px; }
+}

@@ -192,9 +192,57 @@ php bin/console doctrine:database:create
 
 php bin/console doctrine:migrations:migrate
 
+# Attention : cette commande purge les données existantes avant de charger
+# 12 mois, 4 saisons et 100 produits (25 par catégorie).
 php bin/console doctrine:fixtures:load
 
 symfony server:start
+```
+
+Avec Docker :
+
+```bash
+docker compose exec php php bin/console doctrine:fixtures:load
+```
+
+## Images des produits de fixture
+
+Déposer les images dans `src/DataFixtures/images/products/`, avec le nom du
+produit sous forme de slug. Formats acceptés : WebP, AVIF, JPG, JPEG et PNG.
+
+Exemples :
+
+```text
+src/DataFixtures/images/products/fraise.webp
+src/DataFixtures/images/products/celeri-rave.jpg
+src/DataFixtures/images/products/coquille-saint-jacques.png
+```
+
+Lors du chargement, les images disponibles sont copiées automatiquement dans
+`public/uploads/products/`. Une image manquante n’empêche pas la création du
+produit : l’interface affiche alors son visuel par défaut.
+
+Pour ajouter ou mettre à jour les produits sans supprimer les utilisateurs et
+les recettes existants :
+
+```bash
+docker compose exec php php bin/console doctrine:fixtures:load --append
+```
+
+## Recettes de fixture
+
+Le chargement ajoute également 24 recettes publiées : 6 par saison, utilisant
+entre 1 et 4 produits. Les saisons secondaires sont déduites des produits
+associés. Un auteur technique `cuisine.fixture@aufildessaisons.test` est créé
+automatiquement et réutilisé aux chargements suivants.
+
+Les images facultatives des recettes peuvent être déposées dans
+`src/DataFixtures/images/recipes/` avec un nom sous forme de slug, par exemple :
+
+```text
+ratatouille-provencale.webp
+tarte-aux-abricots.jpg
+boeuf-aux-carottes.png
 ```
 
 ou
@@ -451,4 +499,3 @@ Projet réalisé dans le cadre de la formation **Développeur Web et Web Mobile*
 Ce projet est distribué sous licence **MIT**.
 
 Voir le fichier **LICENSE** pour plus d'informations.
-
