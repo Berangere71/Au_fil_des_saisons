@@ -5,7 +5,6 @@ namespace App\Form;
 use App\Entity\Month;
 use App\Entity\Product;
 use App\Entity\Recette;
-use App\Entity\Season;
 use App\Enum\ProductCategory;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -59,13 +58,6 @@ class ProductType extends AbstractType
         ->add('finRecolteMois', EntityType::class, [
             'class' => Month::class,
             'label' => 'Fin de récolte'
-        ])
-
-        ->add('seasons', EntityType::class, [
-            'class' => Season::class,
-            'label' => 'Saisons',
-            'multiple' => true,
-            'expanded' => true,
         ])
 
         ->add('recettes', EntityType::class, [

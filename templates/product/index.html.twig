@@ -65,6 +65,9 @@
                                         {% endif %}
                                     </span>
                                     <strong>{{ product.nom }}</strong>
+                                    {% if product.availableAllYear %}
+                                        <span class="product-year-badge"><i class="fa-solid fa-infinity" aria-hidden="true"></i> Toute l’année</span>
+                                    {% endif %}
                                     <small>{{ product.debutRecolteMois }} – {{ product.finRecolteMois }}</small>
                                 </a>
                             </article>
@@ -138,7 +141,12 @@
                     {% for product in products %}
                         <tr>
                             <td><a href="{{ path('app_product_show', {id: product.id}) }}">{{ product.nom }}</a></td>
-                            <td>{% for season in product.seasons %}{{ season }}{{ not loop.last ? ', ' }}{% else %}—{% endfor %}</td>
+                            <td>
+                                {% if product.availableAllYear %}
+                                    <span class="product-year-badge product-year-badge--inline"><i class="fa-solid fa-infinity" aria-hidden="true"></i> Toute l’année</span>
+                                {% endif %}
+                                {% for season in product.seasons %}{{ season }}{{ not loop.last ? ', ' }}{% else %}—{% endfor %}
+                            </td>
                             <td>{{ product.debutRecolteMois }}</td><td>{{ product.finRecolteMois }}</td>
                             <td class="product-row-actions">
                                 {% if is_granted('ROLE_ADMIN') %}

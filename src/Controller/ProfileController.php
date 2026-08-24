@@ -4,11 +4,11 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Recette;
-use App\Entity\Season;
 use App\Entity\Favoris;
 use App\Entity\Avis;
 use App\Entity\ResetPasswordRequest;
 use App\Enum\RecetteStatut;
+use App\Enum\SeasonName;
 use App\Form\ChangePasswordType;
 use App\Form\ProfileType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,16 +30,59 @@ final class ProfileController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $favoriteRecipeIds = array_map(
+        $favoriteRecipeIds = array_values(array_filter(array_map(
             static fn (Favoris $favori): ?int => $favori->getRecette()?->getId(),
             $entityManager->getRepository(Favoris::class)->findBy(['user' => $user]),
-        );
+        )));
         $favoriteRecipes = [] === $favoriteRecipeIds
             ? []
             : $entityManager->getRepository(Recette::class)->findBy(
                 ['id' => $favoriteRecipeIds, 'statut' => RecetteStatut::PUBLIEE],
                 ['createdAt' => 'DESC'],
             );
+        $favoriteRecipesBySeason = [];
+        $favoriteRecipesWithoutSeason = [];
+        foreach ($favoriteRecipes as $favoriteRecipe) {
+            $primarySeason = $favoriteRecipe->getPrimarySeason();
+            if (null === $primarySeason) {
+                $favoriteRecipesWithoutSeason[] = $favoriteRecipe;
+
+                continue;
+            }
+
+            $seasonId = $primarySeason->getId();
+            if (null === $seasonId) {
+                $favoriteRecipesWithoutSeason[] = $favoriteRecipe;
+
+                continue;
+            }
+
+            if (!array_key_exists($seasonId, $favoriteRecipesBySeason)) {
+                $favoriteRecipesBySeason[$seasonId] = [
+                    'season' => $primarySeason,
+                    'recipes' => [],
+                ];
+            }
+
+            $favoriteRecipesBySeason[$seasonId]['recipes'][] = $favoriteRecipe;
+        }
+        $seasonOrder = [
+            SeasonName::PRINTEMPS->value => 1,
+            SeasonName::ETE->value => 2,
+            SeasonName::AUTOMNE->value => 3,
+            SeasonName::HIVER->value => 4,
+        ];
+        $favoriteRecipesBySeason = array_values($favoriteRecipesBySeason);
+        usort(
+            $favoriteRecipesBySeason,
+            static function (array $left, array $right) use ($seasonOrder): int {
+                $leftValue = $left['season']->getNameSeason()->value;
+                $rightValue = $right['season']->getNameSeason()->value;
+
+                return ($seasonOrder[$leftValue] ?? PHP_INT_MAX) <=> ($seasonOrder[$rightValue] ?? PHP_INT_MAX);
+            },
+        );
+
         $allMyRecipes = $entityManager->getRepository(Recette::class)->findBy(['user' => $user], ['createdAt' => 'DESC']);
         $myRecipesByTitle = [];
         foreach ($allMyRecipes as $recipe) {
@@ -55,10 +98,10 @@ final class ProfileController extends AbstractController
 
         return $this->render('profile/index.html.twig', [
             'user' => $user,
-            'publicRecettes' => $favoriteRecipes,
             'myRecettes' => array_values($myRecipesByTitle),
-            'seasons' => $entityManager->getRepository(Season::class)->findAll(),
             'favoriteRecipeIds' => $favoriteRecipeIds,
+            'favoriteRecipesBySeason' => $favoriteRecipesBySeason,
+            'favoriteRecipesWithoutSeason' => $favoriteRecipesWithoutSeason,
         ]);
     }
 

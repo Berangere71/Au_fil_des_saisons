@@ -20,6 +20,40 @@
 .profile-recipe-season { margin-top: 22px; }
 .profile-recipe-season > h3 { display: flex; align-items: center; gap: 7px; margin: 0 0 10px; color: #6a855e; font-size: .85rem; }
 .profile-recipe-season > h3 i { color: #d18812; }
+.profile-season-panel { border: 1px solid rgba(47,94,46,.15); border-radius: 12px; background: #fffdf8; }
+.profile-season-panel > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    color: #6a855e;
+    font-size: .85rem;
+    font-weight: 800;
+    list-style: none;
+}
+.profile-season-panel > summary::-webkit-details-marker { display: none; }
+.profile-season-panel > summary span:first-child { display: inline-flex; align-items: center; gap: 7px; }
+.profile-season-panel > summary span:first-child i { color: #d18812; }
+.profile-season-panel > summary::after {
+    content: '\f078';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: #7f8f78;
+    transition: transform .2s ease;
+}
+.profile-season-panel[open] > summary::after { transform: rotate(180deg); }
+.profile-season-panel__count {
+    margin-left: auto;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #eef4e7;
+    color: #365a33;
+    font-size: .68rem;
+    font-weight: 800;
+}
+.profile-season-panel .profile-recipe-grid { padding: 0 10px 10px; }
 .profile-recipe-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
 .profile-recipe-card { position: relative; display: grid; min-width: 0; grid-template-columns: 112px 1fr; overflow: hidden; border: 1px solid rgba(47,94,46,.14); border-radius: 13px; background: #fffdf8; transition: transform .2s ease, box-shadow .2s ease; }
 .profile-recipe-card:hover { transform: translateY(-3px); box-shadow: 0 10px 22px rgba(35,71,35,.1); }
@@ -57,6 +91,8 @@
 
 @media (max-width: 700px) {
     .profile-section-heading { align-items: flex-start; flex-direction: column; gap: 10px; }
+    .profile-season-panel > summary { align-items: flex-start; flex-direction: column; }
+    .profile-season-panel__count { margin-left: 0; }
     .profile-recipe-grid { grid-template-columns: 1fr; }
     .profile-my-recipe { grid-template-columns: 62px 1fr; }
     .profile-my-recipe__image { width: 62px; height: 58px; }

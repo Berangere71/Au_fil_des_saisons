@@ -45,35 +45,67 @@
                 <a href="{{ path('app_recette_index') }}">Découvrir des recettes <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
             </header>
 
-            {% set hasPublicRecipes = false %}
-            {% for season in seasons %}
-                {% set recettesDeSaison = publicRecettes|filter(recette => recette.primarySeason == season) %}
-                {% if recettesDeSaison is not empty %}
-                    {% set hasPublicRecipes = true %}
+            {% if favoriteRecipesBySeason is not empty or favoriteRecipesWithoutSeason is not empty %}
+                {% for seasonGroup in favoriteRecipesBySeason %}
                     <section class="profile-recipe-season">
-                        <h3><i class="fa-solid fa-leaf" aria-hidden="true"></i> {{ season }}</h3>
-                        <div class="profile-recipe-grid">
-                            {% for recette in recettesDeSaison %}
-                                <article class="profile-my-recipe profile-favorite-recipe">
-                                    <a class="profile-my-recipe__image" href="{{ path('app_recette_show', {id: recette.id}) }}">
-                                        {% if recette.photo %}<img src="{{ asset('uploads/recettes/' ~ recette.photo) }}" alt="">{% else %}<i class="fa-solid fa-utensils" aria-hidden="true"></i>{% endif %}
-                                    </a>
-                                    <div class="profile-my-recipe__content">
-                                        <span>{{ season }} · {{ recette.typePlat.value|capitalize }}</span>
-                                        <h3><a href="{{ path('app_recette_show', {id: recette.id}) }}">{{ recette.titre }}</a></h3>
-                                        <p>{% for product in recette.products|slice(0, 3) %}{{ product.nom }}{{ not loop.last ? ' · ' }}{% else %}Recette de saison{% endfor %}</p>
-                                    </div>
-                                    <div class="profile-my-recipe__actions">
-                                        <span class="profile-recettes__status profile-recettes__status--favorite"><i class="fa-solid fa-heart"></i> Favorite</span>
-                                        <a class="profile-recettes__view" href="{{ path('app_recette_show', {id: recette.id}) }}" aria-label="Voir {{ recette.titre }}"><i class="fa-solid fa-arrow-right"></i></a>
-                                    </div>
-                                </article>
-                            {% endfor %}
-                        </div>
+                        <details class="profile-season-panel"{{ loop.first ? ' open' }}>
+                            <summary>
+                                <span><i class="fa-solid fa-leaf" aria-hidden="true"></i> {{ seasonGroup.season }}</span>
+                                <span class="profile-season-panel__count">{{ seasonGroup.recipes|length }} recette{{ seasonGroup.recipes|length > 1 ? 's' }}</span>
+                            </summary>
+                            <div class="profile-recipe-grid">
+                                {% for recette in seasonGroup.recipes %}
+                                    <article class="profile-my-recipe profile-favorite-recipe">
+                                        <a class="profile-my-recipe__image" href="{{ path('app_recette_show', {id: recette.id}) }}">
+                                            {% if recette.photo %}<img src="{{ asset('uploads/recettes/' ~ recette.photo) }}" alt="">{% else %}<i class="fa-solid fa-utensils" aria-hidden="true"></i>{% endif %}
+                                        </a>
+                                        <div class="profile-my-recipe__content">
+                                            <span>{{ seasonGroup.season }} · {{ recette.typePlat.value|capitalize }}</span>
+                                            <h3><a href="{{ path('app_recette_show', {id: recette.id}) }}">{{ recette.titre }}</a></h3>
+                                            <p>{% for product in recette.products|slice(0, 3) %}{{ product.nom }}{{ not loop.last ? ' · ' }}{% else %}Recette de saison{% endfor %}</p>
+                                        </div>
+                                        <div class="profile-my-recipe__actions">
+                                            <span class="profile-recettes__status profile-recettes__status--favorite"><i class="fa-solid fa-heart"></i> Favorite</span>
+                                            <a class="profile-recettes__view" href="{{ path('app_recette_show', {id: recette.id}) }}" aria-label="Voir {{ recette.titre }}"><i class="fa-solid fa-arrow-right"></i></a>
+                                        </div>
+                                    </article>
+                                {% endfor %}
+                            </div>
+                        </details>
+                    </section>
+                {% endfor %}
+
+                {% if favoriteRecipesWithoutSeason is not empty %}
+                    <section class="profile-recipe-season">
+                        <details class="profile-season-panel"{{ favoriteRecipesBySeason is empty ? ' open' }}>
+                            <summary>
+                                <span><i class="fa-solid fa-leaf" aria-hidden="true"></i> Saison non renseignée</span>
+                                <span class="profile-season-panel__count">{{ favoriteRecipesWithoutSeason|length }} recette{{ favoriteRecipesWithoutSeason|length > 1 ? 's' }}</span>
+                            </summary>
+                            <div class="profile-recipe-grid">
+                                {% for recette in favoriteRecipesWithoutSeason %}
+                                    <article class="profile-my-recipe profile-favorite-recipe">
+                                        <a class="profile-my-recipe__image" href="{{ path('app_recette_show', {id: recette.id}) }}">
+                                            {% if recette.photo %}<img src="{{ asset('uploads/recettes/' ~ recette.photo) }}" alt="">{% else %}<i class="fa-solid fa-utensils" aria-hidden="true"></i>{% endif %}
+                                        </a>
+                                        <div class="profile-my-recipe__content">
+                                            <span>{{ recette.typePlat.value|capitalize }}</span>
+                                            <h3><a href="{{ path('app_recette_show', {id: recette.id}) }}">{{ recette.titre }}</a></h3>
+                                            <p>{% for product in recette.products|slice(0, 3) %}{{ product.nom }}{{ not loop.last ? ' · ' }}{% else %}Recette de saison{% endfor %}</p>
+                                        </div>
+                                        <div class="profile-my-recipe__actions">
+                                            <span class="profile-recettes__status profile-recettes__status--favorite"><i class="fa-solid fa-heart"></i> Favorite</span>
+                                            <a class="profile-recettes__view" href="{{ path('app_recette_show', {id: recette.id}) }}" aria-label="Voir {{ recette.titre }}"><i class="fa-solid fa-arrow-right"></i></a>
+                                        </div>
+                                    </article>
+                                {% endfor %}
+                            </div>
+                        </details>
                     </section>
                 {% endif %}
-            {% endfor %}
-            {% if not hasPublicRecipes %}<p class="profile-empty-state"><i class="fa-regular fa-heart"></i> Vous n’avez pas encore ajouté de recette à vos favoris. <a href="{{ path('app_recette_index') }}">Découvrir les recettes</a>.</p>{% endif %}
+            {% else %}
+                <p class="profile-empty-state"><i class="fa-regular fa-heart"></i> Vous n’avez pas encore ajouté de recette à vos favoris. <a href="{{ path('app_recette_index') }}">Découvrir les recettes</a>.</p>
+            {% endif %}
         </section>
 
         <section class="profile-recettes profile-recettes--mine" aria-labelledby="my-recipes-title">
