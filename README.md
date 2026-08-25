@@ -140,13 +140,12 @@ Ces informations permettent de proposer des recettes adaptées à la météo ain
 
 # ✅ Prérequis
 
-- PHP 8.2 ou supérieur
+- PHP 7.4
 - Composer
 - Symfony CLI (recommandé)
 - Extensions PHP :
   - ctype
   - iconv
-  - pdo_sqlite (développement)
   - pdo_mysql (production)
 
 ---
@@ -490,7 +489,7 @@ MONTH ||--o{ PRODUCT : "fin_recolte_mois_id"
 
 Projet réalisé dans le cadre de la formation **Développeur Web et Web Mobile**.
 
-🎓 Soutenance prévue : **7 septembre 2026**
+🎓 Soutenance prévue : **09 et 10 septembre 2026**
 
 ---
 
