@@ -11,6 +11,7 @@ use App\Enum\RecetteStatut;
 use App\Enum\SeasonName;
 use App\Form\ChangePasswordType;
 use App\Form\ProfileType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,10 +27,11 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 final class ProfileController extends AbstractController
 {
     #[Route('/profile', name: 'app_profile')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
         /** @var User $user */
         $user = $this->getUser();
+        $reportedContentCount = $userRepository->countReportedContentForUser($user);
         $favoriteRecipeIds = array_values(array_filter(array_map(
             static fn (Favoris $favori): ?int => $favori->getRecette()?->getId(),
             $entityManager->getRepository(Favoris::class)->findBy(['user' => $user]),
@@ -102,6 +104,7 @@ final class ProfileController extends AbstractController
             'favoriteRecipeIds' => $favoriteRecipeIds,
             'favoriteRecipesBySeason' => $favoriteRecipesBySeason,
             'favoriteRecipesWithoutSeason' => $favoriteRecipesWithoutSeason,
+            'reportedContentCount' => $reportedContentCount,
         ]);
     }
 

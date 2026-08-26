@@ -39,6 +39,12 @@
             <div><i class="fa-solid fa-heart" aria-hidden="true"></i><strong>{{ favoriteRecipeIds|length }}</strong><span>recette{{ favoriteRecipeIds|length > 1 ? 's' }} favorite{{ favoriteRecipeIds|length > 1 ? 's' }}</span></div>
         </div>
 
+        {% if reportedContentCount > 0 %}
+            <div class="alert alert-warning">
+                Votre compte est associé à {{ reportedContentCount }} contenu{{ reportedContentCount > 1 ? 's' }} signalé{{ reportedContentCount > 1 ? 's' }}. Si vous êtes à nouveau signalé, votre compte pourra être banni du site.
+            </div>
+        {% endif %}
+
         <section class="profile-recettes profile-recettes--community" aria-labelledby="community-recipes-title">
             <header class="profile-section-heading">
                 <div><p class="profile-eyebrow">Mon carnet d’inspirations</p><h2 id="community-recipes-title">Mes recettes favorites</h2></div>

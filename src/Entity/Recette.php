@@ -256,12 +256,17 @@ class Recette
     {
         if (!$this->products->contains($product)) {
             $this->products->add($product);
+            if (!$product->getRecettes()->contains($this)) {
+                $product->addRecette($this);
+            }
         }
         return $this;
     }
     public function removeProduct(Product $product): self
     {
-        $this->products->removeElement($product);
+        if ($this->products->removeElement($product) && $product->getRecettes()->contains($this)) {
+            $product->removeRecette($this);
+        }
         return $this;
     }
     public function getSeasons(): Collection

@@ -66,9 +66,15 @@
             </form>
             {% for avisItem in avis %}
                 <article class="recette-comment{{ 'ROLE_ADMIN' in avisItem.user.roles ? ' recette-comment--admin' }}"><header><strong>{{ 'ROLE_ADMIN' in avisItem.user.roles ? 'Avis de l’administrateur' : avisItem.user.prenom }}</strong>{% if avisItem.note %}<span class="recette-rating__stars">{% for i in 1..5 %}<i class="{{ i <= avisItem.note ? 'fa-solid' : 'fa-regular' }} fa-star"></i>{% endfor %}</span>{% endif %}</header>{% if avisItem.commentaire %}<p>{{ avisItem.commentaire }}</p>{% endif %}
+                    {% if app.user and avisItem.user and app.user.id == avisItem.user.id %}
+                        <form method="post" action="{{ path('app_recette_review_delete', {id: recette.id, avis: avisItem.id}) }}" onsubmit="return confirm('Supprimer définitivement ce commentaire ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-review-' ~ avisItem.id) }}">
+                            <button type="submit">Supprimer mon commentaire</button>
+                        </form>
+                    {% endif %}
                     {% if not is_granted('ROLE_ADMIN') %}<details><summary>Répondre</summary><form method="post" action="{{ path('app_recette_reply', {id: recette.id, avis: avisItem.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('reply-' ~ avisItem.id) }}"><textarea name="commentaire" required placeholder="Votre réponse"></textarea><button type="submit">Répondre</button></form></details>
                     <details><summary>Signaler ce commentaire</summary><form method="post" action="{{ path('app_recette_review_report', {id: recette.id, avis: avisItem.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('report-review-' ~ avisItem.id) }}"><input name="motif" required placeholder="Motif"><button type="submit">Signaler</button></form></details>{% endif %}
-                    {% for reponse in avisItem.reponses %}<div class="recette-reply"><strong>{{ reponse.user.prenom }}</strong><p>{{ reponse.commentaire }}</p></div>{% endfor %}
+                    {% for reponse in avisItem.reponses %}<div class="recette-reply"><strong>{{ reponse.user.prenom }}</strong><p>{{ reponse.commentaire }}</p>{% if app.user and reponse.user and app.user.id == reponse.user.id %}<form method="post" action="{{ path('app_recette_review_delete', {id: recette.id, avis: reponse.id}) }}" onsubmit="return confirm('Supprimer définitivement cette réponse ?');"><input type="hidden" name="_token" value="{{ csrf_token('delete-review-' ~ reponse.id) }}"><button type="submit">Supprimer ma réponse</button></form>{% endif %}</div>{% endfor %}
                 </article>
             {% else %}<p>Aucun commentaire pour le moment.</p>{% endfor %}
         </section>

@@ -66,6 +66,12 @@ class ProductType extends AbstractType
             'multiple' => true,
             'expanded' => true,
             'required' => false,
+            'by_reference' => false,
+            'choice_attr' => static function (Recette $recette): array {
+                return [
+                    'data-recipe-search' => mb_strtolower($recette->getTitre() . ' ' . $recette->getIngredient(), 'UTF-8'),
+                ];
+            },
         ])
 
         ->add('photoFile', FileType::class, [
