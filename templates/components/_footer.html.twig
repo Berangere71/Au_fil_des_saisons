@@ -1,20 +1,20 @@
-<footer class="footer">
+<footer class="footer" aria-label="Navigation principale">
 
-    <a href="{{ path('app_home') }}" class="footer-link">
+    <a href="{{ path('app_home') }}" class="footer-link"{{ app.request.attributes.get('_route') == 'app_home' ? ' aria-current="page"' }}>
         <img src="{{ asset('images/icons/home.svg') }}" alt="Accueil">
     </a>
 
     {% if app.user %}
-        <a href="{{ path('app_profile') }}" class="footer-link">
+        <a href="{{ path('app_profile') }}" class="footer-link"{{ app.request.attributes.get('_route') starts with 'app_profile' ? ' aria-current="page"' }}>
             <img src="{{ asset('images/icons/profile.svg') }}" alt="Mon profil">
         </a>
     {% else %}
-        <a href="{{ path('app_login') }}" class="footer-link">
+        <a href="{{ path('app_login') }}" class="footer-link"{{ app.request.attributes.get('_route') == 'app_login' ? ' aria-current="page"' }}>
             <img src="{{ asset('images/icons/profile.svg') }}" alt="Connexion">
         </a>
     {% endif %}
 
-    <a href="{{ path('app_product_index') }}" class="footer-link">
+    <a href="{{ path('app_product_index') }}" class="footer-link"{{ app.request.attributes.get('_route') starts with 'app_product_' ? ' aria-current="page"' }}>
         <img src="{{ asset('images/icons/search.svg') }}" alt="Produits">
     </a>
 

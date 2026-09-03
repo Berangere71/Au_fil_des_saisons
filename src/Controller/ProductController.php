@@ -44,6 +44,10 @@ final class ProductController extends AbstractController
             'search' => $search,
             'categories' => ProductCategory::cases(),
             'seasons' => SeasonName::cases(),
+            'seasonPeriods' => array_combine(
+                array_map(static fn (SeasonName $seasonName): string => $seasonName->value, SeasonName::cases()),
+                array_map(static fn (SeasonName $seasonName): string => $seasonName->periodLabel(), SeasonName::cases()),
+            ),
         ]);
     }
 
@@ -253,15 +257,8 @@ final class ProductController extends AbstractController
             SeasonName::AUTOMNE,
             SeasonName::HIVER,
         ];
-        $seasonMonths = [
-            SeasonName::PRINTEMPS->value => [3, 4, 5],
-            SeasonName::ETE->value => [6, 7, 8],
-            SeasonName::AUTOMNE->value => [9, 10, 11],
-            SeasonName::HIVER->value => [12, 1, 2],
-        ];
-
         foreach ($seasonNames as $seasonName) {
-            if ([] === array_intersect($activeMonths, $seasonMonths[$seasonName->value])) {
+            if ([] === array_intersect($activeMonths, $seasonName->months())) {
                 continue;
             }
 

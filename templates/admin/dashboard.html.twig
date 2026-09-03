@@ -24,7 +24,8 @@
         <p>Chaque utilisateur compte une seule fois par recette. Une nouvelle note remplace sa note précédente.</p>
         <div class="admin-rating-table-wrap">
             <table class="admin-rating-table">
-                <thead><tr><th>Recette</th><th>Note moyenne</th><th>Nombre de votes</th></tr></thead>
+                <caption>Notes moyennes et nombre de votes par recette</caption>
+                <thead><tr><th scope="col">Recette</th><th scope="col">Note moyenne</th><th scope="col">Nombre de votes</th></tr></thead>
                 <tbody>
                 {% for rating in recipeRatings %}
                     <tr>

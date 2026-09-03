@@ -94,6 +94,7 @@
     </head>
 
     <body>
+        <a class="skip-link" href="#main-content">Aller au contenu principal</a>
         {# =========================
                 HEADER
         ========================== #}
@@ -116,7 +117,7 @@
                 CONTENU DES PAGES
         ========================== #}
 
-        <main class="page-content {% block main_class %}{% endblock %}">
+        <main id="main-content" class="page-content {% block main_class %}{% endblock %}" tabindex="-1">
             {% block body %}{% endblock %}
         </main>
 

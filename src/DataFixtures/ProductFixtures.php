@@ -194,16 +194,9 @@ final class ProductFixtures extends Fixture implements DependentFixtureInterface
             $month = 12 === $month ? 1 : $month + 1;
         }
 
-        $seasonMonths = [
-            SeasonName::PRINTEMPS->value => [3, 4, 5],
-            SeasonName::ETE->value => [6, 7, 8],
-            SeasonName::AUTOMNE->value => [9, 10, 11],
-            SeasonName::HIVER->value => [12, 1, 2],
-        ];
-
         return array_values(array_filter(
             SeasonName::cases(),
-            static fn (SeasonName $season): bool => [] !== array_intersect($activeMonths, $seasonMonths[$season->value]),
+            static fn (SeasonName $season): bool => [] !== array_intersect($activeMonths, $season->months()),
         ));
     }
 

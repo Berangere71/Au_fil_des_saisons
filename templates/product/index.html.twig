@@ -99,7 +99,7 @@
                         <a href="{{ path('app_product_index', {saison: season.value}) }}" class="catalogue-season-card catalogue-season-card--{{ season.value }}">
                             <i class="fa-solid {{ seasonMeta[season.value].icon }}" aria-hidden="true"></i>
                             <strong>{{ seasonMeta[season.value].label }}</strong>
-                            <span>Voir les produits</span>
+                            <span>{{ seasonPeriods[season.value] }}</span>
                         </a>
                     {% endfor %}
                 </nav>
@@ -136,7 +136,8 @@
 
                 <div class="product-table-wrap">
                 <table class="product-table">
-                    <thead><tr><th>Nom</th><th>Saison</th><th>Récolte début</th><th>Récolte fin</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
+                    <caption>Produits, saisons et périodes de récolte</caption>
+                    <thead><tr><th scope="col">Nom</th><th scope="col">Saison</th><th scope="col">Récolte début</th><th scope="col">Récolte fin</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
                     <tbody>
                     {% for product in products %}
                         <tr>

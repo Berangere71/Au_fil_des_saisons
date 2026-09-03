@@ -40,8 +40,9 @@
         </div>
 
         {% if reportedContentCount > 0 %}
-            <div class="alert alert-warning">
-                Votre compte est associé à {{ reportedContentCount }} contenu{{ reportedContentCount > 1 ? 's' }} signalé{{ reportedContentCount > 1 ? 's' }}. Si vous êtes à nouveau signalé, votre compte pourra être banni du site.
+            <div class="alert alert-warning" role="status">
+                <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                <span>Votre compte est associé à {{ reportedContentCount }} contenu{{ reportedContentCount > 1 ? 's' }} signalé{{ reportedContentCount > 1 ? 's' }}. En cas de nouveau signalement, votre compte pourra être suspendu.</span>
             </div>
         {% endif %}
 

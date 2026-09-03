@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ recette.titre }}{% endblock %}
-{% block hero_title %}<i class="fa-solid fa-utensils"></i> Recette{% endblock %}
+{% block hero_title %}<i class="fa-solid fa-utensils" aria-hidden="true"></i> Recette{% endblock %}
 
 {% block body %}
 <div class="recette-page">
@@ -61,7 +61,8 @@
             <form class="recette-review-form" method="post" action="{{ path('app_recette_review', {id: recette.id}) }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('review-' ~ recette.id) }}">
                 <fieldset class="recette-star-input"><legend>Votre note</legend><div>{% for note in 5..1 %}<input id="recipe-note-{{ note }}" type="radio" name="note" value="{{ note }}"{{ currentUserRating == note ? ' checked' }} required><label for="recipe-note-{{ note }}" aria-label="{{ note }} étoile{{ note > 1 ? 's' }}"><i class="fa-solid fa-star"></i></label>{% endfor %}</div></fieldset>
-                <textarea name="commentaire" placeholder="Ajouter un commentaire (facultatif)"></textarea>
+                <label for="recipe-comment">Votre commentaire <span class="form-optional">(facultatif)</span></label>
+                <textarea id="recipe-comment" name="commentaire" placeholder="Ajouter un commentaire"></textarea>
                 <button type="submit">{{ currentUserRating ? 'Mettre à jour ma note' : 'Enregistrer ma note' }}</button>
             </form>
             {% for avisItem in avis %}
@@ -72,15 +73,15 @@
                             <button type="submit">Supprimer mon commentaire</button>
                         </form>
                     {% endif %}
-                    {% if not is_granted('ROLE_ADMIN') %}<details><summary>Répondre</summary><form method="post" action="{{ path('app_recette_reply', {id: recette.id, avis: avisItem.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('reply-' ~ avisItem.id) }}"><textarea name="commentaire" required placeholder="Votre réponse"></textarea><button type="submit">Répondre</button></form></details>
-                    <details><summary>Signaler ce commentaire</summary><form method="post" action="{{ path('app_recette_review_report', {id: recette.id, avis: avisItem.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('report-review-' ~ avisItem.id) }}"><input name="motif" required placeholder="Motif"><button type="submit">Signaler</button></form></details>{% endif %}
+                    {% if not is_granted('ROLE_ADMIN') %}<details><summary>Répondre</summary><form method="post" action="{{ path('app_recette_reply', {id: recette.id, avis: avisItem.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('reply-' ~ avisItem.id) }}"><label for="reply-{{ avisItem.id }}">Votre réponse</label><textarea id="reply-{{ avisItem.id }}" name="commentaire" required></textarea><button type="submit">Répondre</button></form></details>
+                    <details><summary>Signaler ce commentaire</summary><form method="post" action="{{ path('app_recette_review_report', {id: recette.id, avis: avisItem.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('report-review-' ~ avisItem.id) }}"><label for="report-comment-{{ avisItem.id }}">Motif du signalement</label><input id="report-comment-{{ avisItem.id }}" name="motif" required><button type="submit">Signaler</button></form></details>{% endif %}
                     {% for reponse in avisItem.reponses %}<div class="recette-reply"><strong>{{ reponse.user.prenom }}</strong><p>{{ reponse.commentaire }}</p>{% if app.user and reponse.user and app.user.id == reponse.user.id %}<form method="post" action="{{ path('app_recette_review_delete', {id: recette.id, avis: reponse.id}) }}" onsubmit="return confirm('Supprimer définitivement cette réponse ?');"><input type="hidden" name="_token" value="{{ csrf_token('delete-review-' ~ reponse.id) }}"><button type="submit">Supprimer ma réponse</button></form>{% endif %}</div>{% endfor %}
                 </article>
             {% else %}<p>Aucun commentaire pour le moment.</p>{% endfor %}
         </section>
 
         {% if not is_granted('ROLE_ADMIN') %}<aside class="recette-report-panel">
-            <details class="recette-report"><summary><i class="fa-solid fa-triangle-exclamation"></i> Signaler cette recette</summary><form method="post" action="{{ path('app_recette_report', {id: recette.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('report-' ~ recette.id) }}"><textarea name="motif" required placeholder="Motif du signalement"></textarea><button type="submit">Envoyer le signalement</button></form></details>
+            <details class="recette-report"><summary><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Signaler cette recette</summary><form method="post" action="{{ path('app_recette_report', {id: recette.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('report-' ~ recette.id) }}"><label for="report-recipe-{{ recette.id }}">Motif du signalement</label><textarea id="report-recipe-{{ recette.id }}" name="motif" required></textarea><button type="submit">Envoyer le signalement</button></form></details>
         </aside>{% endif %}
     {% endif %}
 </div>

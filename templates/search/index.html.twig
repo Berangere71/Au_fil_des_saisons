@@ -9,7 +9,7 @@
         <form class="search-page__form" action="{{ path('app_search') }}" method="get" role="search">
             <label for="search-query">Rechercher un produit ou une recette</label>
             <div>
-                <input id="search-query" name="q" type="search" value="{{ query }}" placeholder="Ex. fraise, tarte…" minlength="2" maxlength="100" required autofocus>
+                <input id="search-query" name="q" type="search" value="{{ query }}" placeholder="Ex. fraise, tarte…" minlength="2" maxlength="100" required>
                 <select name="type" aria-label="Type de résultat">
                     <option value="all" {{ type == 'all' ? 'selected' }}>Tout</option>
                     <option value="products" {{ type == 'products' ? 'selected' }}>Produits</option>

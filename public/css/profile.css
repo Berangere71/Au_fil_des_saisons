@@ -124,14 +124,14 @@ main.profile-edit-main {
 .profile-identity__visual > p { position: relative; z-index: 1; margin: 24px 0 0; color: #f7dfb5; font-size: .75rem; }
 .profile-identity__visual > p i { margin-right: 6px; }
 .profile-identity__content { padding: 42px 46px; }
-.profile-eyebrow { margin: 0 0 5px; color: #c97800; font-size: .7rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+.profile-eyebrow { margin: 0 0 5px; color: #8a5200; font-size: .7rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
 .profile-identity__content h1 { margin: 0; color: var(--color-primary); font-size: clamp(1.9rem, 4vw, 2.7rem); text-align: left; }
 .profile-identity__intro { max-width: 570px; margin: 10px 0 27px; color: #6c756a; line-height: 1.55; }
 .profile-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; }
 .profile-details > div { padding: 12px 14px; border-radius: 10px; background: #f5f1e7; }
 .profile-details__email { grid-column: 1 / -1; }
 .profile-details dt { color: #778074; font-size: .68rem; font-weight: 700; text-transform: uppercase; }
-.profile-details dt i { width: 18px; color: #c97800; }
+.profile-details dt i { width: 18px; color: #8a5200; }
 .profile-details dd { margin: 5px 0 0; overflow-wrap: anywhere; color: var(--color-primary); font-size: .92rem; font-weight: 700; }
 .profile-identity__actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
 .profile-identity__actions .btn { display: inline-flex; align-items: center; gap: 8px; margin: 0; padding: 11px 17px; background: var(--color-primary); color: white; font-size: .8rem; font-weight: 700; }

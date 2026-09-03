@@ -1,13 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Reset your password{% endblock %}
+{% block title %}Choisir un nouveau mot de passe{% endblock %}
+
+{% block hero_title %}Nouveau mot de passe{% endblock %}
 
 {% block body %}
     {% include 'components/_page_close.html.twig' with {return_route: 'app_login'} %}
-    <h1>Reset your password</h1>
-
-    {{ form_start(resetForm) }}
-        {{ form_row(resetForm.plainPassword) }}
-        <button class="btn btn-primary">Reset password</button>
-    {{ form_end(resetForm) }}
+    <section class="auth-container">
+        <div class="auth-card">
+            <p class="auth-description">Choisissez un mot de passe sécurisé que vous n’utilisez pas sur un autre site.</p>
+            {{ form_start(resetForm) }}
+                {{ form_row(resetForm.plainPassword) }}
+                <button class="btn btn-primary">Enregistrer le nouveau mot de passe</button>
+            {{ form_end(resetForm) }}
+        </div>
+    </section>
 {% endblock %}

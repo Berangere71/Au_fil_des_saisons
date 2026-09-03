@@ -39,6 +39,8 @@
 .weather-panel__content > div { display: flex; flex-direction: column; gap: 4px; }
 .weather-panel__content strong { font-size: 1.15rem; }
 .weather-panel__temperature { font-size: clamp(3.7rem, 8vw, 5.4rem); font-weight: 500; line-height: 1; }
+.weather-panel__range { display: flex; gap: 6px; align-items: center; margin-top: 5px; font-size: .78rem; }
+.weather-panel__range i { color: #f5dcae; font-size: .7rem; }
 .weather-panel__content img { width: 120px; height: 120px; object-fit: contain; filter: drop-shadow(0 8px 8px rgba(0,0,0,.2)); }
 .weather-panel__search { display: grid; grid-template-columns: auto 1fr auto; margin: 0 !important; padding: 0 !important; background: #100c55; }
 .weather-panel__search label { padding: 13px 0 13px 15px; }
@@ -48,9 +50,15 @@
 .weather-panel__empty > i { font-size: 3rem; }
 
 .daily-suggestions { min-height: 232px; box-sizing: border-box; padding: 25px 22px; }
-.daily-suggestions h2 { margin: 0 0 24px; color: #cb7300; font-size: 1rem; letter-spacing: .06em; }
+.daily-suggestions h2 { margin: 0 0 24px; color: #8a5200; font-size: 1rem; letter-spacing: .06em; }
 .daily-suggestions ol { display: grid; gap: 16px; margin: 0; padding-left: 24px; color: var(--color-primary); font-size: .88rem; font-weight: 700; text-align: left; }
 .daily-suggestions li { padding-left: 5px; text-align: left; }
+.daily-suggestions li a { color: var(--color-primary); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.daily-suggestions li a:hover { color: #a85f00; }
+.daily-suggestions__reason { margin: -13px 0 17px; color: #687166; font-size: .72rem; line-height: 1.4; }
+.daily-suggestions__login { display: inline-flex; align-items: center; margin-top: 18px; padding: 8px 12px; border-radius: 18px; background: var(--color-primary); color: white; font-size: .72rem; font-weight: 800; text-decoration: none; }
+.daily-suggestions__login:hover { background: var(--color-primary-dark); }
+.daily-suggestions__empty { color: #687166; font-size: .82rem; line-height: 1.5; }
 
 .seasonal-products { display: grid; grid-template-rows: repeat(4, minmax(150px, 1fr)); padding: 14px; }
 .seasonal-product { display: grid; grid-template-columns: 108px minmax(96px, .65fr) minmax(150px, 1.45fr); gap: 12px; align-items: center; min-height: 0; padding: 9px 4px; }
@@ -61,14 +69,14 @@
 .seasonal-product__body > span { color: var(--color-primary); font-size: .72rem; letter-spacing: .12em; }
 .seasonal-product h2 { margin: 1px 0 3px; color: #d27b00; font-size: 1.55rem; line-height: 1; }
 .seasonal-product strong { overflow: hidden; color: var(--color-primary); text-overflow: ellipsis; white-space: nowrap; }
-.seasonal-product small { margin-top: 7px; color: #bd7100; font-size: .72rem; font-weight: 700; line-height: 1.25; }
+.seasonal-product small { margin-top: 7px; color: #7a4900; font-size: .72rem; font-weight: 700; line-height: 1.25; }
 .seasonal-product__description { display: flex; height: 88px; align-self: center; box-sizing: border-box; align-items: center; justify-content: center; margin: 0; padding: 10px 16px; overflow: hidden; border-left: 3px solid #d28a16; border-radius: 7px; background: rgba(255,253,248,.72); color: #41563e; font-size: .78rem; font-weight: 600; line-height: 1.45; text-align: center; }
 .seasonal-product--empty { opacity: .82; }
 .seasonal-product--empty .seasonal-product__media { border: 2px dashed rgba(47,94,46,.28); }
 
 .season-calendar { margin-top: 24px !important; box-sizing: border-box; padding: 24px; border: 1px solid rgba(47,94,46,.2); border-radius: 16px; background: #fffdf8; box-shadow: 0 10px 28px rgba(35,71,35,.08); }
 .season-calendar__header { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 12px; }
-.season-calendar__eyebrow { margin: 0 0 4px; color: #c97800; font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.season-calendar__eyebrow { margin: 0 0 4px; color: #8a5200; font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
 .season-calendar h2 { margin: 0; color: var(--color-primary); font-size: 1.25rem; }
 .season-calendar__header > a { color: var(--color-primary); font-size: .78rem; font-weight: 700; text-decoration: none; }
 .season-calendar__header > a i { margin-left: 5px; }
@@ -84,7 +92,7 @@
 .season-calendar__month.is-current { background: #fff0d5; color: #a85f00; }
 .season-calendar__month span { position: absolute; top: 2px; padding: 1px 5px; border-radius: 8px; background: #d98500; color: white; font-size: .48rem; transform: translateY(-55%); }
 .season-calendar__name { position: sticky; z-index: 2; left: 0; overflow: hidden; background: #fffdf8; color: var(--color-primary); font-size: .7rem; font-weight: 700; text-decoration: none; text-overflow: ellipsis; white-space: nowrap; }
-.season-calendar__name:hover { color: #c97800; }
+.season-calendar__name:hover { color: #8a5200; }
 .season-calendar__cell { min-height: 40px; background: #fff; }
 .season-calendar__cell.is-current:not(.is-active) { background: #fffaf0; }
 .season-calendar__cell.is-active { position: relative; margin: 10px 0; min-height: 20px; border-right-color: transparent; border-bottom: 0; box-shadow: inset 0 1px rgba(255,255,255,.35), inset 0 -1px rgba(0,0,0,.04); }
