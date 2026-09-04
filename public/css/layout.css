@@ -264,7 +264,8 @@ h1 {
 
     overflow: hidden;
 
-    margin-top: 90px;
+    /* Le body réserve déjà la hauteur du header fixe. */
+    margin-top: 0;
 
 }
 
@@ -385,7 +386,7 @@ h1 {
 
     .hero {
         height: 300px;
-        margin-top: 110px;
+        margin-top: 0;
     }
 
     .footer {

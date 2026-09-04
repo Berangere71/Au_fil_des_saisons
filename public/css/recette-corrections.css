@@ -1,6 +1,5 @@
 /* L'espace autour du formulaire est géré par le layout global fixe. */
 @media (min-width: 769px) {
-    .hero { margin-top: 0; }
     main { padding-top: 0; padding-bottom: 42px; }
 }
 

@@ -79,15 +79,15 @@ class ProductType extends AbstractType
             'mapped' => false,
             'required' => false,
             'constraints' => [
-                new File([
-                    'maxSize' => '5M',
-                    'mimeTypes' => [
+                new File(
+                    maxSize: '5M',
+                    mimeTypes: [
                         'image/jpeg',
                         'image/png',
                         'image/webp'
                     ],
-                    'mimeTypesMessage' => 'Veuillez sélectionner une image valide.',
-                ])
+                    mimeTypesMessage: 'Veuillez sélectionner une image valide.',
+                )
             ]
         ]);
 }
