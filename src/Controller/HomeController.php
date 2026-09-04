@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Enum\ProductCategory;
+use App\Enum\SeasonName;
 use App\Repository\ProductRepository;
 use App\Service\WeatherService;
+use App\Service\RecipeSuggestionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,6 +19,7 @@ final class HomeController extends AbstractController
     public function index(
         Request $request,
         WeatherService $weatherService,
+        RecipeSuggestionService $recipeSuggestionService,
         ProductRepository $productRepository,
     ): Response {
         $now = new \DateTimeImmutable();
@@ -36,6 +39,7 @@ final class HomeController extends AbstractController
             null,
         );
         $currentProducts = $productRepository->findInSeasonForMonth((int) $now->format('n'));
+        $recipeSuggestions = $recipeSuggestionService->getSuggestions($weather, $currentProducts);
         $categoryOrder = ['fruit' => 0, 'legume' => 1, 'viande' => 2, 'poisson' => 3];
         usort($currentProducts, static function ($firstProduct, $secondProduct) use ($categoryOrder): int {
             $categoryComparison = $categoryOrder[$firstProduct->getCategory()->value]
@@ -70,21 +74,21 @@ final class HomeController extends AbstractController
             'EEEE d MMMM y',
         );
 
-        $currentSeason = match ((int) $now->format('n')) {
-            3, 4, 5 => 'printemps',
-            6, 7, 8 => 'ete',
-            9, 10, 11 => 'automne',
-            default => 'hiver',
-        };
+        $currentSeason = SeasonName::fromDate($now);
 
         return $this->render('home/index.html.twig', [
             'weather' => $weather,
             'weather_error' => $weatherError,
             'weather_city' => $city,
             'today_label' => ucfirst((string) $dateFormatter->format($now)),
-            'current_season' => $currentSeason,
+            'current_season' => $currentSeason->value,
+            'season_periods' => array_combine(
+                array_map(static fn (SeasonName $season): string => $season->value, SeasonName::cases()),
+                array_map(static fn (SeasonName $season): string => $season->periodLabel(), SeasonName::cases()),
+            ),
             'products_by_category' => $productsByCategory,
             'calendar_products' => $calendarProducts,
+            'recipe_suggestions' => $recipeSuggestions,
             'current_month' => (int) $now->format('n'),
             'categories' => [
                 'fruit' => ['label' => 'Fruits', 'icon' => 'fa-apple-whole'],

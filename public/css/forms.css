@@ -22,7 +22,13 @@ label{
 
 }
 
-input{
+input,
+select,
+textarea{
+
+    box-sizing:border-box;
+
+    max-width:100%;
 
     width:100%;
 
@@ -36,11 +42,18 @@ input{
 
     font-size:1rem;
 
-    outline:none;
-
 }
 
-input:focus{
+button,
+input,
+select,
+textarea{
+    font:inherit;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
 
     box-shadow:0 0 0 3px rgba(47,94,46,.25);
 

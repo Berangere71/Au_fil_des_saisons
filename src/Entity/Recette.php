@@ -4,13 +4,14 @@ namespace App\Entity;
 
 use App\Enum\RecetteStatut;
 use App\Enum\RecetteTypePlat;
+use App\Repository\RecetteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: RecetteRepository::class)]
 #[ORM\Table(name: 'recette')]
 class Recette
 {
@@ -20,7 +21,11 @@ class Recette
     private ?int $id = null;
 
     #[ORM\Column(length: 150)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message: 'Veuillez donner un nom à votre recette.')]
+    #[Assert\Length(
+        max: 150,
+        maxMessage: 'Le nom de la recette ne peut pas dépasser {{ limit }} caractères.',
+    )]
     private string $titre = '';
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -106,9 +111,10 @@ class Recette
     {
         return $this->titre;
     }
-    public function setTitre(string $titre): self
+    public function setTitre(?string $titre): self
     {
-        $this->titre = $titre;
+        $this->titre = trim($titre ?? '');
+
         return $this;
     }
     public function getPhoto(): ?string
@@ -160,18 +166,20 @@ class Recette
     {
         return $this->ingredient;
     }
-    public function setIngredient(string $ingredient): self
+    public function setIngredient(?string $ingredient): self
     {
-        $this->ingredient = $ingredient;
+        $this->ingredient = trim($ingredient ?? '');
+
         return $this;
     }
     public function getPreparation(): string
     {
         return $this->preparation;
     }
-    public function setPreparation(string $preparation): self
+    public function setPreparation(?string $preparation): self
     {
-        $this->preparation = $preparation;
+        $this->preparation = trim($preparation ?? '');
+
         return $this;
     }
 
@@ -256,12 +264,17 @@ class Recette
     {
         if (!$this->products->contains($product)) {
             $this->products->add($product);
+            if (!$product->getRecettes()->contains($this)) {
+                $product->addRecette($this);
+            }
         }
         return $this;
     }
     public function removeProduct(Product $product): self
     {
-        $this->products->removeElement($product);
+        if ($this->products->removeElement($product) && $product->getRecettes()->contains($this)) {
+            $product->removeRecette($this);
+        }
         return $this;
     }
     public function getSeasons(): Collection

@@ -4,6 +4,7 @@
     color: #29602a;
 }
 
+body.product-standalone-body { padding-top: 0; padding-bottom: 0; }
 main.product-standalone-main { min-height: 0; padding: 0; }
 
 .catalogue-header h1 {

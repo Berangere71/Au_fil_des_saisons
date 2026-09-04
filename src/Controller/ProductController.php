@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Entity\Recette;
 use App\Entity\Season;
 use App\Enum\ProductCategory;
 use App\Enum\RecetteStatut;
@@ -43,6 +44,10 @@ final class ProductController extends AbstractController
             'search' => $search,
             'categories' => ProductCategory::cases(),
             'seasons' => SeasonName::cases(),
+            'seasonPeriods' => array_combine(
+                array_map(static fn (SeasonName $seasonName): string => $seasonName->value, SeasonName::cases()),
+                array_map(static fn (SeasonName $seasonName): string => $seasonName->periodLabel(), SeasonName::cases()),
+            ),
         ]);
     }
 
@@ -105,6 +110,11 @@ final class ProductController extends AbstractController
             }
 
             $this->synchronizeSeasonsFromHarvestMonths($product, $entityManager);
+            $this->synchronizeRecettesFromProductName(
+                $product,
+                $entityManager,
+                $form->get('recettes')->getData()->toArray(),
+            );
 
             $entityManager->persist($product);
             $entityManager->flush();
@@ -162,6 +172,11 @@ final class ProductController extends AbstractController
             }
 
             $this->synchronizeSeasonsFromHarvestMonths($product, $entityManager);
+            $this->synchronizeRecettesFromProductName(
+                $product,
+                $entityManager,
+                $form->get('recettes')->getData()->toArray(),
+            );
 
             $entityManager->flush();
 
@@ -242,21 +257,51 @@ final class ProductController extends AbstractController
             SeasonName::AUTOMNE,
             SeasonName::HIVER,
         ];
-        $seasonMonths = [
-            SeasonName::PRINTEMPS->value => [3, 4, 5],
-            SeasonName::ETE->value => [6, 7, 8],
-            SeasonName::AUTOMNE->value => [9, 10, 11],
-            SeasonName::HIVER->value => [12, 1, 2],
-        ];
-
         foreach ($seasonNames as $seasonName) {
-            if ([] === array_intersect($activeMonths, $seasonMonths[$seasonName->value])) {
+            if ([] === array_intersect($activeMonths, $seasonName->months())) {
                 continue;
             }
 
             $season = $entityManager->getRepository(Season::class)->findOneBy(['nameSeason' => $seasonName]);
             if ($season instanceof Season) {
                 $product->addSeason($season);
+            }
+        }
+    }
+
+    /**
+     * @param list<Recette> $selectedRecettes
+     */
+    private function synchronizeRecettesFromProductName(
+        Product $product,
+        EntityManagerInterface $entityManager,
+        array $selectedRecettes
+    ): void {
+        foreach ($product->getRecettes()->toArray() as $linkedRecette) {
+            $product->removeRecette($linkedRecette);
+        }
+
+        foreach ($selectedRecettes as $selectedRecette) {
+            if ($selectedRecette instanceof Recette) {
+                $product->addRecette($selectedRecette);
+            }
+        }
+
+        $productName = trim(mb_strtolower($product->getNom()));
+        if ('' === $productName) {
+            return;
+        }
+
+        $matchingRecettes = $entityManager->getRepository(Recette::class)
+            ->createQueryBuilder('r')
+            ->where('LOWER(r.titre) LIKE :term OR LOWER(r.ingredient) LIKE :term')
+            ->setParameter('term', '%' . $productName . '%')
+            ->getQuery()
+            ->getResult();
+
+        foreach ($matchingRecettes as $matchingRecette) {
+            if ($matchingRecette instanceof Recette) {
+                $product->addRecette($matchingRecette);
             }
         }
     }

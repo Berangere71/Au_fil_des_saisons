@@ -23,7 +23,15 @@ final class RecetteType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('titre', TextType::class, ['label' => 'Nom de la recette'])
+            ->add('titre', TextType::class, [
+                'label' => 'Nom de la recette',
+                'empty_data' => '',
+                'attr' => [
+                    'placeholder' => 'Ex. Soupe de courge',
+                    'maxlength' => 150,
+                    'aria-describedby' => 'recette-titre-aide',
+                ],
+            ])
             ->add('typePlat', ChoiceType::class, ['label' => 'Catégorie', 'choices' => RecetteTypePlat::cases(), 'choice_label' => static fn (RecetteTypePlat $type) => ucfirst($type->value)])
             ->add('photoFile', FileType::class, ['label' => 'Photo', 'mapped' => false, 'required' => false, 'constraints' => [new Image(maxSize: '5M')]])
             ->add('nbrPerson', ChoiceType::class, [
@@ -34,11 +42,13 @@ final class RecetteType extends AbstractType
             ->add('ingredient', TextareaType::class, [
                 'label' => 'Ingrédients',
                 'required' => false,
+                'empty_data' => '',
                 'attr' => ['class' => 'js-ingredient-storage', 'hidden' => true],
             ])
             ->add('preparation', TextareaType::class, [
                 'label' => 'Préparation',
                 'required' => false,
+                'empty_data' => '',
                 'attr' => ['class' => 'js-preparation-storage', 'hidden' => true],
             ])
             ->add('isOven', CheckboxType::class, ['label' => 'Cuisson au four', 'required' => false])

@@ -2,11 +2,11 @@
 
 > **Découvrez les produits de saison et cuisinez des recettes adaptées à votre région et à la météo.**
 
-**Au fil des saisons** est une application web développée avec **Symfony 8** permettant de découvrir les produits alimentaires de saison en France, de créer et partager des recettes, tout en proposant des suggestions culinaires adaptées à la météo locale grâce à l'intégration de l'API **OpenWeather**.
+**Au fil des saisons** est une application web développée avec **Symfony 7** permettant de découvrir les produits alimentaires de saison en France, de créer et partager des recettes, tout en proposant des suggestions culinaires adaptées à la météo locale grâce à l'intégration de l'API **OpenWeather**.
 
 L'objectif du projet est de promouvoir une alimentation locale, responsable et respectueuse des saisons.
 
-![Symfony](https://img.shields.io/badge/Symfony-8-000000?logo=symfony)
+![Symfony](https://img.shields.io/badge/Symfony-7-000000?logo=symfony)
 ![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?logo=php)
 ![Doctrine](https://img.shields.io/badge/Doctrine-ORM-red)
 ![Twig](https://img.shields.io/badge/Twig-Template-green?logo=twig)
@@ -110,7 +110,7 @@ admin.png
 
 | Domaine | Technologie |
 |----------|-------------|
-| Backend | Symfony 8 |
+| Backend | Symfony 7.4 |
 | Langage | PHP 8.2 |
 | Templating | Twig |
 | Base de données | SQLite (développement) / MySQL (production) |
@@ -177,16 +177,11 @@ APP_ENV=dev
 
 APP_SECRET=change_moi
 
-DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
+DATABASE_URL="mysql://symfony:symfony@database:3306/aufildessaisons?serverVersion=8.4&charset=utf8mb4"
 
 OPENWEATHER_API_KEY=VotreCleAPI
 ```
 
-Production :
-
-```env
-DATABASE_URL="mysql://user:password@127.0.0.1:3306/au_fil_des_saisons?serverVersion=8.0"
-```
 
 ---
 

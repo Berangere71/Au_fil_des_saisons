@@ -3,33 +3,33 @@
 
 <header class="site-header">
 
-    <a href="{{ path('app_home') }}">
+    <a href="{{ path('app_home') }}" aria-label="Accueil – Au fil des saisons">
         <img
             src="{{ asset('images/logo/logo.png') }}"
-            alt="Au fil des saisons"
+            alt=""
             class="logo">
     </a>
 
     <div class="header-icons">
 
         <button class="icon-button js-menu-open" type="button" aria-label="Ouvrir le menu" aria-controls="site-menu" aria-expanded="false">
-            <i class="fa-solid fa-bars"></i>
+            <i class="fa-solid fa-bars" aria-hidden="true"></i>
         </button>
 
         {% if app.user %}
 
             <a href="{{ path('app_recette_index') }}" class="icon-button" aria-label="Catalogue des recettes">
-                <i class="fa-solid fa-utensils"></i>
+                <i class="fa-solid fa-utensils" aria-hidden="true"></i>
             </a>
 
-            <a href="{{ path('app_logout') }}" class="icon-button">
-                <i class="fa-solid fa-right-from-bracket"></i>
+            <a href="{{ path('app_logout') }}" class="icon-button" aria-label="Se déconnecter">
+                <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
             </a>
 
         {% else %}
 
-            <a href="{{ path('app_login') }}" class="icon-button">
-                <i class="fa-solid fa-user"></i>
+            <a href="{{ path('app_login') }}" class="icon-button" aria-label="Se connecter">
+                <i class="fa-solid fa-user" aria-hidden="true"></i>
             </a>
 
         {% endif %}

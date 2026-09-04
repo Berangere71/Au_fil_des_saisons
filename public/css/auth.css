@@ -18,9 +18,15 @@
 
     z-index:10;
 
+    box-sizing:border-box;
+
+    width:100%;
+
 }
 
 .auth-card{
+
+    box-sizing:border-box;
 
     width:min(90%,560px);
 
@@ -117,6 +123,7 @@
 
 .password-field {
     position: relative;
+    width: 100%;
 }
 
 .password-field input {
@@ -145,15 +152,71 @@
 }
 
 .rgpd-checkbox input{
-    margin-top:35px;
+    width:18px;
+    height:18px;
+    margin-top:8px;
+    padding:0;
 }
 
 .rgpd-checkbox label{
-    margin:5;
+    margin:5px 0 0;
     font-size:.90rem;
     font-weight:400;
     line-height:1.5;
     color:var(--color-text);
+}
+
+.rgpd-text,
+.rgpd-checkbox ul {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.rgpd-checkbox ul {
+    grid-column: 2;
+}
+
+@media (max-width: 480px) {
+    .auth-container {
+        margin-top: -32px;
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    .auth-card {
+        width: 100%;
+        padding: 24px 16px;
+        border-radius: 20px;
+    }
+
+    .auth-card .subtitle {
+        margin-bottom: 20px;
+        font-size: .95rem;
+    }
+
+    .auth-card form,
+    .auth-card--login form {
+        width: 100%;
+        padding: 6px 0;
+    }
+
+    .auth-card label {
+        margin-top: 20px;
+    }
+
+    .auth-card input:not([type="checkbox"]) {
+        padding: 15px 16px;
+        border-radius: 16px;
+    }
+
+    .auth-card .password-field input {
+        padding-right: 48px;
+    }
+
+    .auth-card .btn {
+        width: 100%;
+        min-width: 0;
+    }
 }
 
 .rgpd-checkbox a{

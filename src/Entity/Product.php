@@ -127,6 +127,26 @@ class Product
     {
         return $this->recettes;
     }
+
+    public function addRecette(Recette $recette): self
+    {
+        if (!$this->recettes->contains($recette)) {
+            $this->recettes->add($recette);
+            $recette->addProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRecette(Recette $recette): self
+    {
+        if ($this->recettes->removeElement($recette)) {
+            $recette->removeProduct($this);
+        }
+
+        return $this;
+    }
+
     public function getSeasons(): Collection
     {
         return $this->seasons;

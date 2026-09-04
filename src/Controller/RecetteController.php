@@ -8,6 +8,7 @@ use App\Entity\Avis;
 use App\Entity\Favoris;
 use App\Enum\RecetteStatut;
 use App\Form\RecetteType;
+use App\Service\CommentModerationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -108,7 +109,7 @@ final class RecetteController extends AbstractController
     }
 
     #[Route('/{id}/avis', name: 'app_recette_review', methods: ['POST'])]
-    public function review(Recette $recette, Request $request, EntityManagerInterface $entityManager): Response
+    public function review(Recette $recette, Request $request, EntityManagerInterface $entityManager, CommentModerationService $commentModeration): Response
     {
         if (!$this->isPublished($recette)) {
             return $this->redirectUnavailableRecipe($recette);
@@ -128,6 +129,17 @@ final class RecetteController extends AbstractController
                     $entityManager->persist($avis);
                 }
                 $avis->setNote($note);
+
+                if ('' !== $commentaire) {
+                    $forbiddenTerm = $commentModeration->findForbiddenTerm($commentaire);
+                    if (null !== $forbiddenTerm) {
+                        $entityManager->flush();
+                        $this->addFlash('danger', 'Votre note a été enregistrée, mais le commentaire contient un terme interdit et n’a pas été publié.');
+
+                        return $this->redirectToRoute('app_recette_show', ['id' => $recette->getId()]);
+                    }
+                }
+
                 if ('' !== $commentaire) {
                     $avis->setCommentaire($commentaire);
                 }
@@ -139,7 +151,7 @@ final class RecetteController extends AbstractController
     }
 
     #[Route('/{id}/avis/{avis}/repondre', name: 'app_recette_reply', methods: ['POST'])]
-    public function reply(Recette $recette, Avis $avis, Request $request, EntityManagerInterface $entityManager): Response
+    public function reply(Recette $recette, Avis $avis, Request $request, EntityManagerInterface $entityManager, CommentModerationService $commentModeration): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
             return $this->redirectAdminToReview($recette);
@@ -149,6 +161,12 @@ final class RecetteController extends AbstractController
         }
         $commentaire = trim((string) $request->request->get('commentaire'));
         if ($avis->getRecette() === $recette && $commentaire !== '' && $this->isCsrfTokenValid('reply-'.$avis->getId(), (string) $request->request->get('_token'))) {
+            if (null !== $commentModeration->findForbiddenTerm($commentaire)) {
+                $this->addFlash('danger', 'Votre réponse contient un terme interdit et n’a pas été publiée.');
+
+                return $this->redirectToRoute('app_recette_show', ['id' => $recette->getId()]);
+            }
+
             /** @var User $user */ $user = $this->getUser();
             $entityManager->persist((new Avis())->setUser($user)->setRecette($recette)->setParentAvis($avis)->setCommentaire($commentaire));
             $entityManager->flush();
@@ -187,6 +205,31 @@ final class RecetteController extends AbstractController
             $entityManager->flush();
             $this->addFlash('success', 'Le signalement a été transmis à l’administration.');
         }
+        return $this->redirectToRoute('app_recette_show', ['id' => $recette->getId()]);
+    }
+
+    #[Route('/{id}/avis/{avis}/supprimer', name: 'app_recette_review_delete', methods: ['POST'])]
+    public function deleteReview(Recette $recette, Avis $avis, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        if ($avis->getRecette() !== $recette) {
+            throw $this->createNotFoundException('Commentaire introuvable pour cette recette.');
+        }
+
+        if (!$this->isCsrfTokenValid('delete-review-'.$avis->getId(), (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton de sécurité invalide.');
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+        if ($avis->getUser() !== $user) {
+            throw $this->createAccessDeniedException('Vous ne pouvez supprimer que vos propres commentaires.');
+        }
+
+        $entityManager->remove($avis);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Votre commentaire a été supprimé.');
+
         return $this->redirectToRoute('app_recette_show', ['id' => $recette->getId()]);
     }
 

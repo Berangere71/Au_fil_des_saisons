@@ -13,7 +13,8 @@
     --color-primary-light: #4D7A47;
     --color-primary-dark: #234723;
 
-    --color-secondary: #D98A00;
+    /* Ambre suffisamment sombre pour du texte sur fond clair (contraste AA). */
+    --color-secondary: #8A5200;
     --color-secondary-light: #F2A93B;
 
     --color-background: #F7F3E9;
