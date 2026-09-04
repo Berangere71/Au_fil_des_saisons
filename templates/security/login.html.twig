@@ -18,8 +18,9 @@
 		</p>
 
 		{% if error %}
-			<div class="alert alert-danger">
-				{{ error.messageKey|trans(error.messageData, 'security') }}
+			<div class="alert alert-danger" role="alert">
+				<i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+				<span>{{ error.messageKey|trans(error.messageData, 'security') }}</span>
 			</div>
 		{% endif %}
 
@@ -27,7 +28,7 @@
 
 			<label for="username">Adresse e-mail</label>
 
-			<input type="email" value="{{ last_username }}" name="_username" id="username" autocomplete="email" required autofocus>
+			<input type="email" value="{{ last_username }}" name="_username" id="username" autocomplete="email" required>
 
 			<label for="password">Mot de passe</label>
 

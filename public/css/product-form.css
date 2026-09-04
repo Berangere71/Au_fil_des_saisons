@@ -31,7 +31,7 @@
 .season-list label, .recipe-list label { color: #286129; }
 .form-group ul, .upload-field ul, .season-list ul, .recipe-list ul { grid-column: 1 / -1; margin: 0; padding-left: 16px; color: #b42318; font-size: .75rem; }
 .form-buttons { display: flex; justify-content: space-between; gap: 16px; margin-top: 28px; }
-.btn-cancel, .btn-save { min-width: 120px; padding: 8px 18px; border: 0; border-radius: 18px; background: #dc8700; color: white; font: inherit; font-weight: 800; text-align: center; text-decoration: none; cursor: pointer; }
+.btn-cancel, .btn-save { min-width: 120px; padding: 8px 18px; border: 0; border-radius: 18px; background: #8a5200; color: white; font: inherit; font-weight: 800; text-align: center; text-decoration: none; cursor: pointer; }
 .btn-save { background: #286129; }
 .btn-cancel:hover, .btn-save:hover { filter: brightness(.9); }
 

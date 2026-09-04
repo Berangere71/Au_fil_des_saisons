@@ -9,10 +9,9 @@
 	{% include 'components/_page_close.html.twig' with {return_route: 'app_home'} %}
 
 	<div class="auth-container">
+		<section class="auth-card" aria-labelledby="registration-subtitle">
 
-		<div class="auth-card">
-
-			<p class="subtitle">
+			<p class="subtitle" id="registration-subtitle">
 				Rejoignez la communauté Au fil des saisons
 			</p>
 
@@ -47,48 +46,31 @@
 			{{ form_errors(registrationForm.plainPassword) }}
 
 			<div class="rgpd-container">
-
 				<div class="rgpd-checkbox">
-
 					{{ form_widget(registrationForm.agreeTerms) }}
-					
-
 					<div class="rgpd-text">
-
 						<label for="{{ registrationForm.agreeTerms.vars.id }}">
-							J'accepte les
+							J’accepte les
 							<a href="{{ path('app_cgu') }}">Conditions Générales d'Utilisation</a>
 							et la
 							<a href="{{ path('app_privacy') }}">Politique de confidentialité</a>.
 						</label>
-
-
 					</div>
-
 					{{ form_errors(registrationForm.agreeTerms) }}
-					{{ form_errors(registrationForm.agreeTerms) }}
-
-				
 				</div>
-                
+
 				<button type="submit" class="btn">
-					S'inscrire
+					S’inscrire
 				</button>
-
-				{{ form_end(registrationForm) }}
-
-				<div class="auth-footer">
-
-					Déjà un compte ?
-
-					<a href="{{ path('app_login') }}">
-						Se connecter
-					</a>
-
-				</div>
-
 			</div>
 
-		</div>
+			{{ form_end(registrationForm) }}
 
-	{% endblock %}
+			<div class="auth-footer">
+				Déjà un compte ?
+				<a href="{{ path('app_login') }}">Se connecter</a>
+			</div>
+		</section>
+	</div>
+
+{% endblock %}

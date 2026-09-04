@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -25,10 +27,27 @@ class SecurityController extends AbstractController
     }
 
     #[Route(path: '/login/redirect', name: 'app_login_redirect')]
-    public function loginRedirect(): Response
+    public function loginRedirect(UserRepository $userRepository): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
             return $this->redirectToRoute('app_admin_dashboard');
+        }
+
+        /** @var User|null $user */
+        $user = $this->getUser();
+        if ($user instanceof User) {
+            $reportedContentCount = $userRepository->countReportedContentForUser($user);
+            if ($reportedContentCount > 0) {
+                $this->addFlash(
+                    'warning',
+                    sprintf(
+                        'Avertissement: votre compte est associé à %d contenu%s signalé%s. En cas de nouveau signalement, vous pourrez être banni du site.',
+                        $reportedContentCount,
+                        $reportedContentCount > 1 ? 's' : '',
+                        $reportedContentCount > 1 ? 's' : '',
+                    ),
+                );
+            }
         }
 
         return $this->redirectToRoute('app_profile');

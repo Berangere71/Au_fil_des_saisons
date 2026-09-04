@@ -52,12 +52,7 @@ class ProductRepository extends ServiceEntityRepository
             $queryBuilder->innerJoin('product.debutRecolteMois', 'startMonth');
             $queryBuilder->innerJoin('product.finRecolteMois', 'endMonth');
 
-            $seasonMonths = match ($season) {
-                SeasonName::PRINTEMPS => [3, 4, 5],
-                SeasonName::ETE => [6, 7, 8],
-                SeasonName::AUTOMNE => [9, 10, 11],
-                SeasonName::HIVER => [12, 1, 2],
-            };
+            $seasonMonths = $season->months();
 
             $queryBuilder
                 ->andWhere('startMonth.monthOrder IN (:seasonMonths) OR (MOD(endMonth.monthOrder - startMonth.monthOrder + 12, 12) + 1) = 12')

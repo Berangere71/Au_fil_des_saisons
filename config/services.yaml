@@ -10,6 +10,29 @@ parameters:
     users_directory: '%kernel.project_dir%/public/uploads/users'
     product_images_directory: '%kernel.project_dir%/public/uploads/products'
     recette_images_directory: '%kernel.project_dir%/public/uploads/recettes'
+    app.comment_moderation.forbidden_terms:
+        # Vulgaire / insultes
+        - 'connard'
+        - 'connasse'
+        - 'encule'
+        - 'enculee'
+        - 'fdp'
+        - 'fils de pute'
+        - 'salope'
+        - 'batard'
+        - 'pute'
+        - 'merdeux'
+
+        # Raciste / discriminatoire
+        - 'sale race'
+        - 'race inferieure'
+        - 'retourne dans ton pays'
+        - 'raciste'
+
+        # Sexiste / haineux
+        - 'femme a la cuisine'
+        - 'ferme la salope'
+        - 'sexiste'
 
 services:
     # default configuration for services in *this* file
@@ -25,6 +48,10 @@ services:
     App\Service\WeatherService:
         arguments:
             $openWeatherApiKey: '%env(OPENWEATHER_API_KEY)%'
+
+    App\Service\CommentModerationService:
+        arguments:
+            $forbiddenTerms: '%app.comment_moderation.forbidden_terms%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

@@ -66,6 +66,12 @@ class ProductType extends AbstractType
             'multiple' => true,
             'expanded' => true,
             'required' => false,
+            'by_reference' => false,
+            'choice_attr' => static function (Recette $recette): array {
+                return [
+                    'data-recipe-search' => mb_strtolower($recette->getTitre() . ' ' . $recette->getIngredient(), 'UTF-8'),
+                ];
+            },
         ])
 
         ->add('photoFile', FileType::class, [
@@ -73,15 +79,15 @@ class ProductType extends AbstractType
             'mapped' => false,
             'required' => false,
             'constraints' => [
-                new File([
-                    'maxSize' => '5M',
-                    'mimeTypes' => [
+                new File(
+                    maxSize: '5M',
+                    mimeTypes: [
                         'image/jpeg',
                         'image/png',
                         'image/webp'
                     ],
-                    'mimeTypesMessage' => 'Veuillez sélectionner une image valide.',
-                ])
+                    mimeTypesMessage: 'Veuillez sélectionner une image valide.',
+                )
             ]
         ]);
 }

@@ -8,11 +8,17 @@
     {% include 'components/_page_close.html.twig' %}
     <h1>{{ isNew ? 'Ajouter une recette' : 'Modifier la recette' }}</h1>
     <p class="recette-form-page__intro">Choisissez les produits auxquels cette recette doit être associée.</p>
-    {{ form_start(recetteForm, {attr: {class: 'recette-form'}}) }}
+    {{ form_start(recetteForm, {attr: {class: 'recette-form', novalidate: 'novalidate'}}) }}
     {{ form_errors(recetteForm) }}
     <section class="recette-form__section recette-form__main">
         <div class="recette-form__grid">
-            {{ form_row(recetteForm.titre) }} {{ form_row(recetteForm.typePlat) }}
+            <div class="recette-form__field">
+                {{ form_label(recetteForm.titre) }}
+                {{ form_widget(recetteForm.titre) }}
+                <small id="recette-titre-aide" class="recette-form__field-help">Choisissez un nom court et explicite.</small>
+                {{ form_errors(recetteForm.titre) }}
+            </div>
+            {{ form_row(recetteForm.typePlat) }}
             {{ form_row(recetteForm.photoFile) }} {{ form_row(recetteForm.nbrPerson) }}
             {{ form_row(recetteForm.timePrepa) }}
         </div>

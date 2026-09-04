@@ -3,29 +3,27 @@ html { overflow-x: hidden; }
 body { overflow-x: hidden; }
 img { max-width: 100%; }
 
+/* Tous les éléments flex/grid peuvent rétrécir sans provoquer de débordement. */
+*, *::before, *::after { box-sizing: border-box; }
+main.page-content > *,
+form,
+fieldset,
+.auth-card,
+.password-field,
+.profile,
+.recette-form-page,
+.recette-detail,
+.product-catalogue,
+.season-catalogue { min-width: 0; }
+input, select, textarea, button { max-width: 100%; }
+pre, code { max-width: 100%; overflow-wrap: anywhere; }
+table { max-width: 100%; }
+
 /* Navigation fixe : le body réserve sa place pour éviter tout recouvrement. */
 body {
     box-sizing: border-box;
     padding-top: var(--header-height);
     padding-bottom: var(--footer-height);
-}
-.site-header {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    flex: 0 0 auto;
-    box-sizing: border-box;
-}
-.hero { flex: 0 0 auto; margin-top: 0; }
-.footer {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    flex: 0 0 auto;
-    margin-top: 0;
-    border-radius: 0;
 }
 
 @media (min-width: 769px) {
@@ -60,6 +58,10 @@ body {
     .auth-card { box-sizing: border-box; width: min(100%, 680px); padding: 28px 20px; border-radius: 22px; }
     .auth-card form, .auth-card--login form { padding: 12px 0; }
 
+    .admin-dashboard-counts { grid-template-columns: 1fr; }
+    .admin-user-table-wrap, .product-table-wrap { max-width: 100%; overflow-x: auto; }
+    .profile-danger-zone { width: 100%; }
+
     .recette-list, .recette-form-page, .recette-detail,
     .recette-comments, .recette-report-panel { width: calc(100% - 28px); }
     .recette-detail__header h1 { max-width: 100%; font-size: clamp(1.35rem, 7vw, 2rem); white-space: normal; }
@@ -80,6 +82,7 @@ body {
     .header-icons { gap: 10px; }
     .icon-button { font-size: 23px; }
     .hero { height: 145px; min-height: 145px; }
+    .hero-page-title { overflow-wrap: anywhere; }
 
     .profile { padding: 12px; }
     .profile-card { padding: 24px 16px; }
@@ -95,4 +98,15 @@ body {
 
     .recipe-builder__row--ingredient { grid-template-columns: 18px 72px minmax(0, 1fr) 40px; }
     .recipe-builder__row--step { grid-template-columns: 27px minmax(0, 1fr) 40px; }
+
+    .recette-form__actions,
+    .product-form-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .recette-form__actions .btn,
+    .product-form-actions .btn,
+    .btn-save,
+    .btn-cancel { width: 100%; min-width: 0; }
 }

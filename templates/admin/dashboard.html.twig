@@ -8,7 +8,7 @@
 <section class="admin-dashboard">
     <div class="admin-dashboard-links">
         <a href="{{ path('app_product_index') }}"><i class="fa-solid fa-basket-shopping"></i> Gestion des produits</a>
-        <div class="admin-dashboard-disabled"><i class="fa-solid fa-user"></i> Gestion des utilisateurs <span>À venir</span></div>
+        <a href="{{ path('app_admin_users') }}"><i class="fa-solid fa-user"></i> Gestion des utilisateurs</a>
         <a href="{{ path('app_recette_index') }}"><i class="fa-solid fa-utensils"></i> Gestion des recettes</a>
         <a href="{{ path('app_admin_reports') }}"><i class="fa-solid fa-flag"></i> Signalements</a>
     </div>
@@ -24,7 +24,8 @@
         <p>Chaque utilisateur compte une seule fois par recette. Une nouvelle note remplace sa note précédente.</p>
         <div class="admin-rating-table-wrap">
             <table class="admin-rating-table">
-                <thead><tr><th>Recette</th><th>Note moyenne</th><th>Nombre de votes</th></tr></thead>
+                <caption>Notes moyennes et nombre de votes par recette</caption>
+                <thead><tr><th scope="col">Recette</th><th scope="col">Note moyenne</th><th scope="col">Nombre de votes</th></tr></thead>
                 <tbody>
                 {% for rating in recipeRatings %}
                     <tr>
