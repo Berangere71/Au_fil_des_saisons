@@ -12,12 +12,12 @@ class Favoris
 {
     #[ORM\Id]
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'favoris')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn]
     private ?User $user = null;
 
     #[ORM\Id]
     #[ORM\ManyToOne(targetEntity: Recette::class, inversedBy: 'favoris')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn]
     private ?Recette $recette = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]

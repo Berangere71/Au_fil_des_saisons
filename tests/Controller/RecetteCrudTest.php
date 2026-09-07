@@ -48,6 +48,30 @@ final class RecetteCrudTest extends CrudWebTestCase
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('.recette-detail__header h1', 'Velouté de test');
 
+        $this->client->request('GET', '/recettes/'.$recipe->getId().'?from=home');
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists('.page-close-button[href="/"]');
+
+        $this->client->request('GET', '/recettes/'.$recipe->getId().'?from=recipes');
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists('.page-close-button[href="/recettes"]');
+        self::assertSelectorExists(sprintf(
+            'a[href="/products/%d?from=recipe&recipe=%d&recipe_from=recipes"]',
+            $product->getId(),
+            $recipe->getId(),
+        ));
+
+        $this->client->request('GET', sprintf(
+            '/products/%d?from=recipe&recipe=%d&recipe_from=recipes',
+            $product->getId(),
+            $recipe->getId(),
+        ));
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists(sprintf(
+            '.product-close[href="/recettes/%d?from=recipes"]',
+            $recipe->getId(),
+        ));
+
         $crawler = $this->client->request('GET', '/recettes/'.$recipe->getId().'/modifier');
         $form = $crawler->selectButton('Enregistrer')->form([
             'recette[titre]' => 'Velouté modifié',

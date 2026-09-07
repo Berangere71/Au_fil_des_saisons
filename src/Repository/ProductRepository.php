@@ -40,6 +40,11 @@ class ProductRepository extends ServiceEntityRepository
     public function findByFilters(?ProductCategory $category, ?SeasonName $season, ?string $search = null): array
     {
         $queryBuilder = $this->createQueryBuilder('product')
+            ->addSelect('startMonth', 'endMonth', 'season')
+            ->innerJoin('product.debutRecolteMois', 'startMonth')
+            ->innerJoin('product.finRecolteMois', 'endMonth')
+            ->leftJoin('product.seasons', 'season')
+            ->distinct()
             ->orderBy('product.nom', 'ASC');
 
         if (null !== $category) {
@@ -49,9 +54,6 @@ class ProductRepository extends ServiceEntityRepository
         }
 
         if (null !== $season) {
-            $queryBuilder->innerJoin('product.debutRecolteMois', 'startMonth');
-            $queryBuilder->innerJoin('product.finRecolteMois', 'endMonth');
-
             $seasonMonths = $season->months();
 
             $queryBuilder

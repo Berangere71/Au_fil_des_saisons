@@ -8,6 +8,8 @@ use App\Entity\Avis;
 use App\Enum\UserRole;
 use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
+use App\Repository\AvisRepository;
+use App\Repository\RecetteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,10 +26,11 @@ final class AdminController extends AbstractController
     public function dashboard(
         ProductRepository $productRepository,
         UserRepository $userRepository,
+        RecetteRepository $recetteRepository,
         EntityManagerInterface $entityManager,
     ): Response {
         $recipeRatings = [];
-        foreach ($entityManager->getRepository(Recette::class)->findBy([], ['titre' => 'ASC']) as $recette) {
+        foreach ($recetteRepository->findAllWithReviews() as $recette) {
             $notesByUser = [];
             foreach ($recette->getAvis() as $avis) {
                 if (null === $avis->getParentAvis() && null !== $avis->getNote()) {
@@ -51,20 +54,15 @@ final class AdminController extends AbstractController
     }
 
     #[Route('/signalements', name: 'app_admin_reports', methods: ['GET'])]
-    public function reports(Request $request, EntityManagerInterface $entityManager): Response
+    public function reports(Request $request, AvisRepository $avisRepository, RecetteRepository $recetteRepository): Response
     {
-        $avisRepository = $entityManager->getRepository(Avis::class);
-        $allAvis = $avisRepository->findBy([], ['createdAt' => 'DESC']);
         $readCommentIds = $this->getReadCommentIds($request);
-        $activeAvis = array_values(array_filter(
-            $allAvis,
-            static fn (Avis $avis): bool => !in_array($avis->getId(), $readCommentIds, true),
-        ));
+        $activeAvis = $avisRepository->findForModeration($readCommentIds);
         $reportedAvis = array_values(array_filter(
             $activeAvis,
             static fn (Avis $avis): bool => $avis->isSignale(),
         ));
-        $reportedRecettes = $entityManager->getRepository(Recette::class)->findBy(['signale' => true], ['createdAt' => 'DESC']);
+        $reportedRecettes = $recetteRepository->findReportedWithAuthor();
 
         return $this->render('admin/reports.html.twig', [
             'reportedRecettes' => $reportedRecettes,

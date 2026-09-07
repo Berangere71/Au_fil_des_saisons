@@ -30,7 +30,7 @@
                     <div class="search-results__grid">
                         {% for product in products %}
                             <a class="search-result-card" href="{{ path('app_product_show', {id: product.id}) }}">
-                                {% if product.photo %}<img src="{{ asset('uploads/products/' ~ product.photo) }}" alt="">{% else %}<span class="search-result-card__placeholder"><i class="fa-regular fa-image"></i></span>{% endif %}
+                                {% if product.photo %}<img src="{{ asset('uploads/products/' ~ product.photo) }}" alt="" loading="lazy" decoding="async">{% else %}<span class="search-result-card__placeholder"><i class="fa-regular fa-image"></i></span>{% endif %}
                                 <span><strong>{{ product.nom }}</strong><small>{{ product.category.value|capitalize }} · {{ product.debutRecolteMois }} à {{ product.finRecolteMois }}</small></span>
                             </a>
                         {% else %}<p class="search-results__empty">Aucun produit correspondant.</p>{% endfor %}
@@ -44,7 +44,7 @@
                     <div class="search-results__grid">
                         {% for recipe in recipes %}
                             <a class="search-result-card" href="{{ app.user ? path('app_recette_show', {id: recipe.id}) : path('app_login') }}">
-                                {% if recipe.photo %}<img src="{{ asset('uploads/recettes/' ~ recipe.photo) }}" alt="">{% else %}<span class="search-result-card__placeholder"><i class="fa-solid fa-utensils"></i></span>{% endif %}
+                                {% if recipe.photo %}<img src="{{ asset('uploads/recettes/' ~ recipe.photo) }}" alt="" loading="lazy" decoding="async">{% else %}<span class="search-result-card__placeholder"><i class="fa-solid fa-utensils"></i></span>{% endif %}
                                 <span><strong>{{ recipe.titre }}</strong><small>{{ recipe.typePlat.value|capitalize }}{{ app.user ? '' : ' · Connectez-vous pour voir la recette' }}</small></span>
                             </a>
                         {% else %}<p class="search-results__empty">Aucune recette correspondante.</p>{% endfor %}

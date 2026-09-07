@@ -64,7 +64,7 @@
                                 {% for recette in seasonGroup.recipes %}
                                     <article class="profile-my-recipe profile-favorite-recipe">
                                         <a class="profile-my-recipe__image" href="{{ path('app_recette_show', {id: recette.id}) }}">
-                                            {% if recette.photo %}<img src="{{ asset('uploads/recettes/' ~ recette.photo) }}" alt="">{% else %}<i class="fa-solid fa-utensils" aria-hidden="true"></i>{% endif %}
+                                            {% if recette.photo %}<img src="{{ asset('uploads/recettes/' ~ recette.photo) }}" alt="" loading="lazy" decoding="async">{% else %}<i class="fa-solid fa-utensils" aria-hidden="true"></i>{% endif %}
                                         </a>
                                         <div class="profile-my-recipe__content">
                                             <span>{{ seasonGroup.season }} · {{ recette.typePlat.value|capitalize }}</span>
@@ -93,7 +93,7 @@
                                 {% for recette in favoriteRecipesWithoutSeason %}
                                     <article class="profile-my-recipe profile-favorite-recipe">
                                         <a class="profile-my-recipe__image" href="{{ path('app_recette_show', {id: recette.id}) }}">
-                                            {% if recette.photo %}<img src="{{ asset('uploads/recettes/' ~ recette.photo) }}" alt="">{% else %}<i class="fa-solid fa-utensils" aria-hidden="true"></i>{% endif %}
+                                            {% if recette.photo %}<img src="{{ asset('uploads/recettes/' ~ recette.photo) }}" alt="" loading="lazy" decoding="async">{% else %}<i class="fa-solid fa-utensils" aria-hidden="true"></i>{% endif %}
                                         </a>
                                         <div class="profile-my-recipe__content">
                                             <span>{{ recette.typePlat.value|capitalize }}</span>
@@ -126,7 +126,7 @@
                     {% for recette in myRecettes %}
                         <article class="profile-my-recipe {{ recette.statut.value != 'publiee' ? 'is-draft' }}">
                             <div class="profile-my-recipe__image">
-                                {% if recette.photo %}<img src="{{ asset('uploads/recettes/' ~ recette.photo) }}" alt="">{% else %}<i class="fa-solid fa-utensils"></i>{% endif %}
+                                {% if recette.photo %}<img src="{{ asset('uploads/recettes/' ~ recette.photo) }}" alt="" loading="lazy" decoding="async">{% else %}<i class="fa-solid fa-utensils"></i>{% endif %}
                             </div>
                             <div class="profile-my-recipe__content">
                                 <span>{{ recette.primarySeason ? recette.primarySeason : 'Toutes saisons' }}</span>

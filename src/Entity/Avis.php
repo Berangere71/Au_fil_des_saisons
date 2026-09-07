@@ -2,12 +2,15 @@
 
 namespace App\Entity;
 
+use App\Repository\AvisRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: AvisRepository::class)]
 #[ORM\Table(name: 'avis')]
+#[ORM\Index(name: 'idx_avis_reported_created', columns: ['signale', 'created_at'])]
+#[ORM\Index(name: 'idx_avis_user_reported', columns: ['user_id', 'signale'])]
 class Avis
 {
     #[ORM\Id]

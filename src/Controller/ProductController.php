@@ -6,6 +6,8 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Entity\Recette;
 use App\Entity\Season;
+use App\Entity\Favoris;
+use App\Entity\User;
 use App\Enum\ProductCategory;
 use App\Enum\RecetteStatut;
 use App\Enum\SeasonName;
@@ -52,17 +54,73 @@ final class ProductController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_product_show', methods: ['GET'], priority: -1)]
-    public function show(Product $product): Response
+    public function show(Product $product, EntityManagerInterface $entityManager): Response
     {
         $publishedRecipes = array_values(array_filter(
             $product->getRecettes()->toArray(),
             static fn ($recette): bool => $recette->getStatut() === RecetteStatut::PUBLIEE,
         ));
 
+        $favoriteRecipeIds = [];
+        if ($this->getUser() instanceof User && !$this->isGranted('ROLE_ADMIN')) {
+            $favoriteRecipeIds = array_map(
+                static fn (Favoris $favorite): ?int => $favorite->getRecette()?->getId(),
+                $entityManager->getRepository(Favoris::class)->findBy([
+                    'user' => $this->getUser(),
+                    'recette' => $publishedRecipes,
+                ]),
+            );
+        }
+
         return $this->render('product/show.html.twig', [
             'product' => $product,
             'publishedRecipes' => $publishedRecipes,
+            'favoriteRecipeIds' => $favoriteRecipeIds,
         ]);
+    }
+
+    #[Route('/{id}/favorites', name: 'app_product_favorites', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function saveFavorites(Product $product, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Les favoris sont réservés aux utilisateurs.');
+        }
+        if (!$this->isCsrfTokenValid('product-favorites-'.$product->getId(), (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton de sécurité invalide.');
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+        $publishedRecipes = array_filter(
+            $product->getRecettes()->toArray(),
+            static fn (Recette $recipe): bool => $recipe->getStatut() === RecetteStatut::PUBLIEE && $recipe->isPublic(),
+        );
+        $allowedRecipesById = [];
+        foreach ($publishedRecipes as $recipe) {
+            if (null !== $recipe->getId()) {
+                $allowedRecipesById[$recipe->getId()] = $recipe;
+            }
+        }
+        $selectedIds = array_values(array_unique(array_map(
+            static fn (mixed $id): int => (int) $id,
+            array_filter($request->request->all('recipe_ids'), static fn (mixed $id): bool => is_numeric($id)),
+        )));
+
+        $favoriteRepository = $entityManager->getRepository(Favoris::class);
+        foreach ($allowedRecipesById as $recipeId => $recipe) {
+            $favorite = $favoriteRepository->findOneBy(['user' => $user, 'recette' => $recipe]);
+            if (in_array($recipeId, $selectedIds, true) && !$favorite instanceof Favoris) {
+                $entityManager->persist((new Favoris())->setUser($user)->setRecette($recipe));
+            } elseif (!in_array($recipeId, $selectedIds, true) && $favorite instanceof Favoris) {
+                $entityManager->remove($favorite);
+            }
+        }
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Vos recettes favorites ont été enregistrées dans votre profil.');
+
+        return $this->redirectToRoute('app_profile');
     }
 
     #[Route('/new', name: 'app_product_new', methods: ['GET', 'POST'])]

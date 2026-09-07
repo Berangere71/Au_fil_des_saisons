@@ -46,6 +46,10 @@ final class ProductCrudTest extends CrudWebTestCase
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('h1', 'Topinambour test');
 
+        $this->client->request('GET', '/products/'.$product->getId().'?from=home');
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists('.product-close[href="/"]');
+
         $crawler = $this->client->request('GET', '/products/'.$product->getId().'/edit');
         $form = $crawler->selectButton('Enregistrer')->form([
             'product[nom]' => 'Topinambour modifié',

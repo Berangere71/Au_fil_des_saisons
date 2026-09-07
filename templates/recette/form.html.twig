@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 
+{% block page_scripts %}
+    <script src="{{ asset('js/product-category-filter.js') }}?v=20260805-3" defer></script>
+    <script src="{{ asset('js/recipe-list-format.js') }}" defer></script>
+{% endblock %}
+
 {% block title %}{{ isNew ? 'Ajouter une recette' : 'Modifier une recette' }}{% endblock %}
 {% block hero_title %}<i class="fa-solid fa-utensils"></i> Gestion des recettes{% endblock %}
 

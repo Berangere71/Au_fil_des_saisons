@@ -217,6 +217,13 @@ main.page-content > .season-catalogue { max-width: 1180px; }
     background: #fff3de;
 }
 
+.product-favorites-form { margin-top: 0; padding-top: 0; }
+.product-favorites-form .product-recipe-list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.product-favorites-form label { display: flex; min-width: 0; align-items: center; gap: 9px; cursor: pointer; }
+.product-favorites-form input[type="checkbox"] { width: 18px; height: 18px; flex: 0 0 auto; accent-color: var(--color-primary); }
+.product-favorites-form li > a { color: var(--color-primary); }
+.product-favorites-form > button { width: 100%; margin-top: 14px; padding: 10px 14px; border: 0; border-radius: 18px; background: #b9c795; color: #29602a; font: inherit; font-weight: 800; cursor: pointer; }
+
 main.page-content.product-standalone-main > .product-detail-shell {
     width: 100%;
     max-width: none;
@@ -256,7 +263,7 @@ main.page-content.product-standalone-main > .product-detail-shell {
 .product-detail-page h2 { margin: 44px 0 30px; text-align: center; font-size: .95rem; }
 .product-recipe-list { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
 .product-recipe-list li { display: flex; align-items: center; gap: 18px; padding: 8px 12px; border-radius: 11px; background: #f2d29b; font-size: .87rem; font-weight: 800; }
-.product-recipe-list li span { box-sizing: border-box; width: 16px; height: 16px; border: 1px solid #286129; background: #fffdf8; flex: 0 0 auto; }
+.product-recipe-list li > span { box-sizing: border-box; width: 16px; height: 16px; border: 1px solid #286129; background: #fffdf8; flex: 0 0 auto; }
 .product-recipe-list .product-no-recipe { justify-content: center; color: #68835c; font-weight: 600; }
 .product-detail-edit { display: block; width: max-content; margin: 44px auto 0; padding: 11px 31px; background: #286129; color: white; }
 

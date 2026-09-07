@@ -14,8 +14,8 @@
         </a>
     {% endif %}
 
-    <a href="{{ path('app_product_index') }}" class="footer-link"{{ app.request.attributes.get('_route') starts with 'app_product_' ? ' aria-current="page"' }}>
-        <img src="{{ asset('images/icons/search.svg') }}" alt="Produits">
+    <a href="{{ path('app_search') }}" class="footer-link"{{ app.request.attributes.get('_route') == 'app_search' ? ' aria-current="page"' }}>
+        <img src="{{ asset('images/icons/search.svg') }}" alt="Rechercher">
     </a>
 
 </footer>

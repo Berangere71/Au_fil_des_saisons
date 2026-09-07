@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% block page_scripts %}<script src="{{ asset('js/product-carousel.js') }}" defer></script>{% endblock %}
+
 {% set seasonMeta = {
     printemps: {label: 'Printemps', icon: 'fa-seedling'},
     ete: {label: 'Été', icon: 'fa-sun'},
@@ -59,7 +61,7 @@
                                 <a href="{{ path('app_product_show', {id: product.id}) }}">
                                     <span class="season-product-card__image">
                                         {% if product.photo %}
-                                            <img src="{{ asset('uploads/products/' ~ product.photo) }}" alt="{{ product.nom }}">
+                                            <img src="{{ asset('uploads/products/' ~ product.photo) }}" alt="{{ product.nom }}" loading="lazy" decoding="async">
                                         {% else %}
                                             <i class="fa-regular fa-image" aria-hidden="true"></i>
                                         {% endif %}

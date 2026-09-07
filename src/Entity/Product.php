@@ -12,6 +12,7 @@ use App\Repository\ProductRepository;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ORM\Table(name: 'product')]
+#[ORM\Index(name: 'idx_product_category_name', columns: ['category', 'nom'])]
 class Product
 {
     #[ORM\Id]

@@ -11,7 +11,18 @@
 {% block body %}
 <div class="product-detail-shell">
     <section class="product-detail-page">
-        <a href="{{ path(is_granted('ROLE_ADMIN') ? 'app_admin_dashboard' : (app.user ? 'app_profile' : 'app_product_index')) }}" class="product-close page-close-button" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></a>
+        {% set origin = app.request.query.get('from') %}
+        {% if origin == 'recipe' and app.request.query.get('recipe') %}
+            {% set closeUrl = path('app_recette_show', {
+                id: app.request.query.get('recipe'),
+                from: app.request.query.get('recipe_from') ?: null
+            }) %}
+        {% elseif origin == 'home' %}
+            {% set closeUrl = path('app_home') %}
+        {% else %}
+            {% set closeUrl = path(is_granted('ROLE_ADMIN') ? 'app_admin_dashboard' : (app.user ? 'app_profile' : 'app_product_index')) %}
+        {% endif %}
+        <a href="{{ closeUrl }}" class="product-close page-close-button" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></a>
         <h1>{{ product.nom }}</h1>
 
         <div class="product-detail-summary">
@@ -37,9 +48,28 @@
         </section>
 
         <h2>Liste des recettes :</h2>
-        <ul class="product-recipe-list">
-            {% for recette in publishedRecipes %}<li><span aria-hidden="true"></span><a href="{{ path('app_recette_show', {id: recette.id}) }}">{{ recette }}</a></li>{% else %}<li class="product-no-recipe">Aucune recette publiée pour le moment.</li>{% endfor %}
-        </ul>
+        {% if app.user and not is_granted('ROLE_ADMIN') and publishedRecipes is not empty %}
+            <form class="product-favorites-form" method="post" action="{{ path('app_product_favorites', {id: product.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('product-favorites-' ~ product.id) }}">
+                <ul class="product-recipe-list">
+                    {% for recette in publishedRecipes %}
+                        <li>
+                            <label>
+                                <input type="checkbox" name="recipe_ids[]" value="{{ recette.id }}"{{ recette.id in favoriteRecipeIds ? ' checked' }}>
+                                {{ recette }}
+                            </label>
+                            <a href="{{ path('app_recette_show', {id: recette.id}) }}" aria-label="Voir la recette {{ recette.titre }}"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <button type="submit">Enregistrer dans mes favoris</button>
+            </form>
+        {% else %}
+            <ul class="product-recipe-list">
+                {% for recette in publishedRecipes %}<li><span aria-hidden="true"></span><a href="{{ path('app_recette_show', {id: recette.id}) }}">{{ recette }}</a></li>{% else %}<li class="product-no-recipe">Aucune recette publiée pour le moment.</li>{% endfor %}
+            </ul>
+            {% if not app.user and publishedRecipes is not empty %}<p><a href="{{ path('app_login') }}">Connectez-vous pour enregistrer vos recettes favorites.</a></p>{% endif %}
+        {% endif %}
         {% if is_granted('ROLE_ADMIN') %}
             <a class="product-detail-edit" href="{{ path('app_product_edit', {id: product.id}) }}">Modifier la fiche</a>
         {% endif %}

@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% block page_scripts %}<script src="{{ asset('js/product-carousel.js') }}" defer></script>{% endblock %}
+
 {% block title %}Au fil des saisons - Accueil
 {% endblock %}
 
@@ -79,7 +81,7 @@
 						{% for recette in recipe_suggestions %}
 							<li>
 								{% if app.user %}
-									<a href="{{ path('app_recette_show', {id: recette.id}) }}">{{ recette.titre }}</a>
+									<a href="{{ path('app_recette_show', {id: recette.id, from: 'home'}) }}">{{ recette.titre }}</a>
 								{% else %}
 									<span>{{ recette.titre }}</span>
 								{% endif %}
@@ -101,9 +103,9 @@
 			{% for key, category in categories %}
 				{% set product = products_by_category[key] %}
 				<article class="seasonal-product {{ product ? '' : 'seasonal-product--empty' }}">
-					<a href="{{ product ? path('app_product_show', {id: product.id}) : path('app_product_index', {categorie: key, saison: current_season}) }}" class="seasonal-product__media">
+					<a href="{{ product ? path('app_product_show', {id: product.id, from: 'home'}) : path('app_product_index', {categorie: key, saison: current_season}) }}" class="seasonal-product__media">
 						{% if product and product.photo %}
-							<img src="{{ asset('uploads/products/' ~ product.photo) }}" alt="{{ product.nom }}">
+							<img src="{{ asset('uploads/products/' ~ product.photo) }}" alt="{{ product.nom }}" loading="lazy" decoding="async">
 						{% else %}
 							<i class="fa-solid {{ category.icon }}" aria-hidden="true"></i>
 						{% endif %}
@@ -168,7 +170,7 @@
 					{% endfor %}
 					{% for product in calendar_products %}
 						{% set key = product.category.value %}
-						<a class="season-calendar__name" href="{{ path('app_product_show', {id: product.id}) }}">
+						<a class="season-calendar__name" href="{{ path('app_product_show', {id: product.id, from: 'home'}) }}">
 							<i class="is-{{ key }}" aria-hidden="true"></i>
 							{{ product.nom }}
 						</a>

@@ -30,4 +30,42 @@ class RecetteRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /** @return list<Recette> */
+    public function findPublishedForIndex(): array
+    {
+        return $this->createQueryBuilder('recette')
+            ->addSelect('product', 'author')
+            ->leftJoin('recette.products', 'product')
+            ->innerJoin('recette.user', 'author')
+            ->andWhere('recette.statut = :status')
+            ->andWhere('recette.isPublic = :public')
+            ->setParameter('status', RecetteStatut::PUBLIEE)
+            ->setParameter('public', true)
+            ->orderBy('recette.createdAt', 'DESC')
+            ->getQuery()->getResult();
+    }
+
+    /** @return list<Recette> */
+    public function findAllWithReviews(): array
+    {
+        return $this->createQueryBuilder('recette')
+            ->addSelect('review', 'reviewer')
+            ->leftJoin('recette.avis', 'review')
+            ->leftJoin('review.user', 'reviewer')
+            ->orderBy('recette.titre', 'ASC')
+            ->getQuery()->getResult();
+    }
+
+    /** @return list<Recette> */
+    public function findReportedWithAuthor(): array
+    {
+        return $this->createQueryBuilder('recette')
+            ->addSelect('author')
+            ->innerJoin('recette.user', 'author')
+            ->andWhere('recette.signale = :reported')
+            ->setParameter('reported', true)
+            ->orderBy('recette.createdAt', 'DESC')
+            ->getQuery()->getResult();
+    }
 }

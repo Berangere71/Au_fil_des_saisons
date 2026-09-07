@@ -21,32 +21,50 @@ final class SearchController extends AbstractController
         $type = in_array($type, ['all', 'products', 'recipes'], true) ? $type : 'all';
         $products = [];
         $recipes = [];
+ 
+                if (mb_strlen($query) >= 2) {
+            $keywords = array_slice(array_values(array_filter(
+                preg_split('/[\s,;]+/u', mb_strtolower($query)) ?: [],
+                static fn (string $keyword): bool => mb_strlen($keyword) >= 2,
+            )), 0, 8);
 
-        if (mb_strlen($query) >= 2) {
-            $term = '%'.mb_strtolower($query).'%';
-
-            if ('recipes' !== $type) {
-                $products = $entityManager->getRepository(Product::class)->createQueryBuilder('product')
-                    ->andWhere('LOWER(product.nom) LIKE :term OR LOWER(product.description) LIKE :term')
-                    ->setParameter('term', $term)
-                    ->orderBy('product.nom', 'ASC')
-                    ->setMaxResults(20)
-                    ->getQuery()
-                    ->getResult();
+            if ([] !== $keywords && 'recipes' !== $type) {
+                $productQuery = $entityManager->getRepository(Product::class)->createQueryBuilder('product');
+                $productQuery
+                    ->addSelect('startMonth', 'endMonth')
+                    ->innerJoin('product.debutRecolteMois', 'startMonth')
+                    ->innerJoin('product.finRecolteMois', 'endMonth');
+                foreach ($keywords as $index => $keyword) {
+                    $parameter = 'productTerm'.$index;
+                    $productQuery
+                        ->andWhere(sprintf(
+                            '(LOWER(product.nom) LIKE :%1$s OR LOWER(product.description) LIKE :%1$s OR LOWER(product.conservation) LIKE :%1$s)',
+                            $parameter,
+                        ))
+                        ->setParameter($parameter, '%'.$keyword.'%');
+                }
+                $products = $productQuery->orderBy('product.nom', 'ASC')->setMaxResults(20)->getQuery()->getResult();
             }
 
-            if ('products' !== $type) {
-                $recipes = $entityManager->getRepository(Recette::class)->createQueryBuilder('recipe')
+            if ([] !== $keywords && 'products' !== $type) {
+                $recipeQuery = $entityManager->getRepository(Recette::class)->createQueryBuilder('recipe')
+                    ->addSelect('recipeProduct')
+                    ->leftJoin('recipe.products', 'recipeProduct')
+                    ->distinct()
                     ->andWhere('recipe.statut = :published')
                     ->andWhere('recipe.isPublic = :public')
-                    ->andWhere('LOWER(recipe.titre) LIKE :term OR LOWER(recipe.ingredient) LIKE :term')
                     ->setParameter('published', RecetteStatut::PUBLIEE)
-                    ->setParameter('public', true)
-                    ->setParameter('term', $term)
-                    ->orderBy('recipe.titre', 'ASC')
-                    ->setMaxResults(20)
-                    ->getQuery()
-                    ->getResult();
+                    ->setParameter('public', true);
+                foreach ($keywords as $index => $keyword) {
+                    $parameter = 'recipeTerm'.$index;
+                    $recipeQuery
+                        ->andWhere(sprintf(
+                            '(LOWER(recipe.titre) LIKE :%1$s OR LOWER(recipe.ingredient) LIKE :%1$s OR LOWER(recipe.preparation) LIKE :%1$s OR LOWER(recipeProduct.nom) LIKE :%1$s)',
+                            $parameter,
+                        ))
+                        ->setParameter($parameter, '%'.$keyword.'%');
+                }
+                $recipes = $recipeQuery->orderBy('recipe.titre', 'ASC')->setMaxResults(20)->getQuery()->getResult();
             }
         }
 

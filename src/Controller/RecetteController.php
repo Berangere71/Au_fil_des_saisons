@@ -9,6 +9,7 @@ use App\Entity\Favoris;
 use App\Enum\RecetteStatut;
 use App\Form\RecetteType;
 use App\Service\CommentModerationService;
+use App\Repository\RecetteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -23,7 +24,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 final class RecetteController extends AbstractController
 {
     #[Route('', name: 'app_recette_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager, RecetteRepository $recetteRepository): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -33,7 +34,7 @@ final class RecetteController extends AbstractController
         );
 
         return $this->render('recette/index.html.twig', [
-            'recettes' => $entityManager->getRepository(Recette::class)->findBy(['statut' => RecetteStatut::PUBLIEE], ['createdAt' => 'DESC']),
+            'recettes' => $recetteRepository->findPublishedForIndex(),
             'favoriteRecipeIds' => $favoriteRecipeIds,
         ]);
     }

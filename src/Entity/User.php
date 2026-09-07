@@ -19,6 +19,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'user')]
+#[ORM\Index(name: 'idx_user_admin_filters', columns: ['role', 'is_blocked', 'created_at'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -156,6 +157,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
+    #[\Deprecated]
     public function eraseCredentials(): void
     {
         // Si tu ajoutes un champ plainPassword plus tard,

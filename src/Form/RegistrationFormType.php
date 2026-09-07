@@ -56,9 +56,9 @@ class RegistrationFormType extends AbstractType
                 'label' => "J'accepte les Conditions Générales d'Utilisation (CGU) et la Politique de confidentialité.",
                 'mapped' => false,
                 'constraints' => [
-                    new IsTrue([
-                        'message' => 'Vous devez accepter les conditions pour créer votre compte.',
-                    ]),
+                    new IsTrue(
+                        message: 'Vous devez accepter les conditions pour créer votre compte.',
+                    ),
                 ],
             ])
             ->add('plainPassword', RepeatedType::class, [

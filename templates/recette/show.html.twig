@@ -5,7 +5,11 @@
 
 {% block body %}
 <div class="recette-page">
-    {% include 'components/_page_close.html.twig' %}
+    {% include 'components/_page_close.html.twig' with {
+        return_route: app.request.query.get('from') == 'home'
+            ? 'app_home'
+            : (app.request.query.get('from') == 'recipes' ? 'app_recette_index' : null)
+    } %}
     <article class="recette-detail">
         {% if recette.statut.value != 'publiee' %}
             <div class="recette-pending recette-pending--top"><p><i class="fa-solid fa-lock"></i> Cette recette est un brouillon privé, visible uniquement par vous.</p>{% if recette.statut.value == 'attente' and recette.user == app.user %}<form method="post" action="{{ path('app_recette_share', {id: recette.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('share-recette-' ~ recette.id) }}"><button type="submit"><i class="fa-solid fa-share-nodes"></i> Publier la recette pour tous</button></form>{% endif %}</div>
@@ -19,7 +23,12 @@
                 <div><dt>Catégorie</dt><dd>{{ recette.typePlat.value|capitalize }}</dd></div>
                 <div><dt>Pour</dt><dd>{{ recette.nbrPerson }} personne(s)</dd></div>
                 <div><dt>Préparation</dt><dd>{{ recette.timePrepa ?? '—' }} minutes</dd></div>
-                <div><dt>Produits</dt><dd>{% for product in recette.products %}<a href="{{ path('app_product_show', {id: product.id}) }}">{{ product.nom }}</a>{{ not loop.last ? ', ' }}{% endfor %}</dd></div>
+                <div><dt>Produits</dt><dd>{% for product in recette.products %}<a href="{{ path('app_product_show', {
+                    id: product.id,
+                    from: 'recipe',
+                    recipe: recette.id,
+                    recipe_from: app.request.query.get('from')
+                }) }}">{{ product.nom }}</a>{{ not loop.last ? ', ' }}{% endfor %}</dd></div>
                 <div><dt>Saison principale</dt><dd>{{ recette.primarySeason ?? '—' }}</dd></div>
                 <div><dt>Autres saisons</dt><dd>{% for season in recette.otherSeasons %}{{ season }}{{ not loop.last ? ', ' }}{% else %}—{% endfor %}</dd></div>
             </dl>

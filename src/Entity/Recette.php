@@ -13,6 +13,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RecetteRepository::class)]
 #[ORM\Table(name: 'recette')]
+#[ORM\Index(name: 'idx_recette_publication', columns: ['statut', 'is_public', 'created_at'])]
+#[ORM\Index(name: 'idx_recette_reported', columns: ['signale', 'created_at'])]
+#[ORM\Index(name: 'idx_recette_user_created', columns: ['user_id', 'created_at'])]
 class Recette
 {
     #[ORM\Id]

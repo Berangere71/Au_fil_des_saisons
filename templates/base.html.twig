@@ -8,14 +8,17 @@
             {% block title %}Au fil des saisons{% endblock %}
         </title>
 
-        <link rel="icon" href="{{ asset('images/logo/favicon.png') }}">
-
         {# =========================
             FEUILLES DE STYLE
         ========================== #}
 
         {% block stylesheets %}
-            <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/variables.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/layout.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/buttons.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/forms.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/legal.css') }}">
             <link rel="stylesheet" href="{{ asset('css/components.css') }}">
             <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
             <link rel="stylesheet" href="{{ asset('css/profile-recettes.css') }}">
@@ -90,6 +93,7 @@
             <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
         {% endif %}
 
+        <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     </head>
 
@@ -129,11 +133,8 @@
             {% include 'components/_footer.html.twig' %}
         {% endblock %}
 
-        <script src="{{ asset('js/flash.js') }}"></script>
-        <script src="{{ asset('js/product-category-filter.js') }}?v=20260805-3"></script>
-        <script src="{{ asset('js/recipe-list-format.js') }}"></script>
-        <script src="{{ asset('js/product-recipe-sync.js') }}"></script>
-        <script src="{{ asset('js/burger-menu.js') }}"></script>
-        <script src="{{ asset('js/product-carousel.js') }}"></script>
+        <script src="{{ asset('js/flash.js') }}" defer></script>
+        <script src="{{ asset('js/burger-menu.js') }}" defer></script>
+        {% block page_scripts %}{% endblock %}
     </body>
 </html>
